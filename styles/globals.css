@@ -1,3 +1,39 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.hoverPointer:hover {
+    background: #e9e9f5;
+    box-shadow: 6px 6px 15px #c8c8d3, -6px -6px 15px #ffffff;
+}
+
+.neumorphism {
+    box-shadow: 12px 12px 10px #c8c8d3, -12px -12px 10px #ffffff;
+}
+.neumorphism-inset {
+    box-shadow: inset 6px 6px 5px #c8c8d3, inset -6px -6px 5px #ffffff;
+}
+
+.neumorphism-1 {
+    box-shadow:  6px 6px 9px #c8c8d3, -6px -6px 9px #ffffff;
+}
+.neumorphism-1-inset {
+    box-shadow: inset 4.5px 4.5px 3px #c8c8d3, inset -4.5px -4.5px 3px #ffffff;
+}
+
+
+
+.neumorphism:hover {
+    box-shadow: 4px 4px 4px #c8c8d3, -4px -4px 4px #ffffff;
+}
+.neumorphism-inset:hover {
+    box-shadow: 4px 4px 4px #c8c8d3, -4px -4px 4px #ffffff;
+}
+
+.neumorphism-1:hover {
+    box-shadow: 3px 3px 4px #c8c8d3, -3px -3px 4px #ffffff;
+}
+.neumorphism-1-inset:hover {
+    box-shadow: inset 2px 2px 3px #c8c8d3, inset -2px -2px 3px #ffffff;
+}
