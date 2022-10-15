@@ -16,7 +16,7 @@ const Sidebar = (props:Props) => {
     const [open, setOpen] = useState<boolean>(true)
     console.log('menu', menu)
     return (
-        <div className={`flex flex-col gap-5 ${open ? 'w-60' : 'w-24'} duration-500 px-3 py-8 bg-white rounded-2xl`}>
+        <nav className={`flex flex-col gap-5  duration-500 ${open ? 'w-52' : 'w-24'} px-3 py-8 bg-white rounded-2xl`}>
             <div className="mb-10 hover:scale-110 duration-500">
                 <div onClick={() => setOpen(!open)} className={`flex justify-start  gap-2 items-center cursor-pointer h-16 rounded-2xl px-3 duration-500`}>
 
@@ -25,7 +25,7 @@ const Sidebar = (props:Props) => {
                         <Snotebooks width={28} height={28} fill={'white'}/>
                     </div>
                 </div>
-                <h1 className={`text-orange-500 text-xl font-bold ${!open ? "scale-0 w-0" : "delay-100"}  duration-300`}>Notebooks</h1>
+                <h1 className={`text-orange-500 text-xl font-bold duration-500 ${!open ? "scale-0 opacity-0 duration-300" : "scale-100 delay-100"}`}>Facebook</h1>
                 </div>
             </div>
 
@@ -34,7 +34,7 @@ const Sidebar = (props:Props) => {
                     <IconMenu>
                         <DashboardIcon width={30} height={30} fill={`${menu === "dashboard" ? "white" : "#94a3b8"}`}/>
                     </IconMenu>
-                    <h1 className={`${menu === "dashboard" ? "text-white" : "text-slate-400" }  text-sm font-semibold ${!open && "scale-0 w-0 "} duration-500`}>
+                    <h1 className={`${menu === "dashboard" ? "text-white" : "text-slate-400" }  text-sm font-semibold duration-500 ${!open ? "scale-0 opacity-0 duration-300" : "scale-100 delay-100"}`}>
                         Dashboard
                     </h1>
                 </Menus>
@@ -42,7 +42,7 @@ const Sidebar = (props:Props) => {
                     <IconMenu>
                         <AtendimentoIcon width={32} height={32} fill={`${menu === "atendimento" ? "white" : "#94a3b8"}`}/>
                     </IconMenu>
-                    <h1 className={`${menu === "atendimento" ? "text-white" : "text-slate-400" }  text-sm font-semibold ${!open && "scale-0 w-0 "} duration-500`}>
+                    <h1 className={`${menu === "atendimento" ? "text-white" : "text-slate-400" }  text-sm font-semibold duration-500 ${!open ? "scale-0 opacity-0 duration-300" : "scale-100 delay-100"}`}>
                         Atendimento
                     </h1>
                 </Menus>
@@ -50,14 +50,13 @@ const Sidebar = (props:Props) => {
                     <IconMenu>
                         <CloudPlus width={30} height={30} fill={`${menu === "servicos" ? "white" : "#94a3b8"}`}/>
                     </IconMenu>
-                    <h1 className={`${menu === "servicos" ? "text-white" : "text-slate-400" }  text-sm font-semibold ${!open && "scale-0 w-0 "} duration-500`}>
+                    <h1 className={`${menu === "servicos" ? "text-white" : "text-slate-400" }  text-sm font-semibold duration-500 ${!open ? "scale-0 opacity-0 duration-300" : "scale-100 delay-100"}`}>
                         Serviços
                     </h1>
                 </Menus>
-
-
             </div>
-        </div>
+
+        </nav>
        
     )
 }
