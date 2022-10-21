@@ -14,7 +14,6 @@ interface Props {
 const Sidebar = (props:Props) => {
     const { menu } = props
     const [open, setOpen] = useState<boolean>(true)
-    console.log('menu', menu)
     return (
         <nav className={`flex flex-col gap-5  duration-500 ${open ? 'w-52' : 'w-24'} px-3 py-8 bg-white rounded-2xl`}>
             <div className="mb-10 hover:scale-110 duration-500">
