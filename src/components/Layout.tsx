@@ -17,9 +17,9 @@ const Layout = ({page, children}:Props) => {
     return (
         <>
             <Header/>
-            <div className="flex justify-center h-screen w-sreen bg-gray-200 p-3">
+            <div className="flex justify-center h-screen w-sreen bg-slate-200 p-3">
 
-                <section className="flex h-full w-[105rem] bg-gray-200 p-3">
+                <section className="flex h-full w-[105rem] bg-slate-200 p-3">
                     <Sidebar menu={page}/>
                         <main className="flex flex-col w-full gap-4 p-4">
                             {children}

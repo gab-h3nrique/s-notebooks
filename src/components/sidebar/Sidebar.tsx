@@ -29,7 +29,7 @@ const Sidebar = (props:Props) => {
             </div>
 
             <div className="flex flex-col gap-4 ">
-                <Menus className={`${menu === "dashboard" && 'bg-orange-400' }`}>
+                <Menus className={`${menu === "dashboard" && 'bg-orange-500' }`}>
                     <IconMenu>
                         <DashboardIcon width={30} height={30} fill={`${menu === "dashboard" ? "white" : "#94a3b8"}`}/>
                     </IconMenu>
@@ -45,7 +45,7 @@ const Sidebar = (props:Props) => {
                         Atendimento
                     </h1>
                 </Menus>
-               <Menus className={`${menu === "servicos" && 'bg-orange-400' }`}>
+               <Menus className={`${menu === "servicos" && 'bg-orange-500' }`}>
                     <IconMenu>
                         <CloudPlus width={30} height={30} fill={`${menu === "servicos" ? "white" : "#94a3b8"}`}/>
                     </IconMenu>

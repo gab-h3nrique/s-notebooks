@@ -23,7 +23,7 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head />
-        <body>
+        <body className="bg-slate-200">
           <Main />
           <NextScript />
           <div id="portal"></div>

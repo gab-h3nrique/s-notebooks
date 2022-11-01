@@ -1,4 +1,20 @@
 @tailwind base;
+
+
+*::-webkit-scrollbar {
+    width: 5px;
+    background: transparent !important;
+  }
+  *::-webkit-scrollbar-thumb {
+    background-color: #fa7900;
+    border-radius: 9999px;
+    border: 1px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
 @tailwind components;
 @tailwind utilities;
 
@@ -37,3 +53,4 @@
 .neumorphism-1-inset:hover {
     box-shadow: inset 2px 2px 3px #c8c8d3, inset -2px -2px 3px #ffffff;
 }
+

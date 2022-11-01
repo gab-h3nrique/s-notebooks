@@ -15,25 +15,25 @@ export interface Props {
 
 
 export default function InfoCard({ title, total, porcent, children } :Props) {
-return (
-    <>
-        <div className="flex flex-col justify-between gap-1 bg-white w-full p-4 rounded-2xl">
-            <section className="flex items-center gap-1">
-                {children}
-                <p className="text-xl text-slate-400 font-semibold ">{title}</p>
-            </section>
-            <section className="flex justify-between items-center gap-1 px-2">
-                <p className="text-3xl text-slate-600 font-semibold"><>{total}</></p>
-                <div className="flex justify-center items-center">
-                    <IconMenu>
-                        <ArrowUpIcon width={20} height={20} fill={`rgb(34 197 94)`}/>
-                    </IconMenu>
-                    <p className="text-sm text-green-500 font-bold ">{`${porcent}%`}</p>
-                </div>
-            </section>
-        </div>
-    </>
-)
+    return (
+        <>
+            <div className="flex flex-col justify-between gap-1 bg-white w-full p-4 rounded-2xl">
+                <section className="flex items-center gap-1">
+                    {children}
+                    <p className="text-xl text-slate-400 font-semibold ">{title}</p>
+                </section>
+                <section className="flex justify-between items-center gap-1 px-2">
+                    <p className="text-3xl text-slate-600 font-semibold"><>{total}</></p>
+                    <div className="flex justify-center items-center">
+                        <IconMenu>
+                            <ArrowUpIcon width={20} height={20} fill={`rgb(34 197 94)`}/>
+                        </IconMenu>
+                        <p className="text-sm text-green-500 font-bold ">{`${porcent}%`}</p>
+                    </div>
+                </section>
+            </div>
+        </>
+    )
 }
 
 // CARD ANTIGO
