@@ -17,6 +17,22 @@ export async function postApi<JSON = any>(url: string, object: any,): Promise<JS
   
 }
 
+export async function getApi<JSON = any>(url: string, object: any = null): Promise<JSON> {
+        
+    const response = await fetch(url + `${ object ? `?${new URLSearchParams(object)}` : ''}`, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+            'Allow-Access-Control-Origin': `${absoluteUrl()}`,
+            'Content-Type': 'application/json;charset=utf-8',
+            'Authorization': `Bearer ${await getCookie('auth')}`,
+        },
+    })
+    const data = await response.json()
+    return data
+  
+}
+
 
 
 export async function authApi<JSON = any>(url: string, method:string, object: any,): Promise<JSON> {

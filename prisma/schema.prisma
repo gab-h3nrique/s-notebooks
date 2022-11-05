@@ -75,6 +75,7 @@ model Orders {
   charger      Boolean @default(false)
   battery      Boolean @default(false)
   energyCable  Boolean @default(false)
+  bag          Boolean @default(false)
   others       String?
 
   warranty            Boolean @default(false)
@@ -83,11 +84,14 @@ model Orders {
   backup            Boolean @default(false)
   backupDescription String?
 
-  isWorking           Boolean @default(true)
-  workingDescription  String?
+  // isWorking           Boolean @default(true)
+  // workingDescription  String?
   defectDescription   String?
   technicalReport     String?
   generalDescription  String?
+
+  deliveryConfirmation Boolean @default(false)
+
   value               Float? @default(0.00)
   
   createdAt    DateTime @default(now())

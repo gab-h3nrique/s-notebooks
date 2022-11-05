@@ -24,9 +24,9 @@ CREATE TABLE "shelf" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "type" TEXT NOT NULL,
     "userId" INTEGER NOT NULL,
-    "orderId" INTEGER NOT NULL,
+    "orderId" INTEGER,
     CONSTRAINT "shelf_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "shelf_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "orders" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "shelf_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "orders" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -42,17 +42,17 @@ CREATE TABLE "orders" (
     "charger" BOOLEAN NOT NULL DEFAULT false,
     "battery" BOOLEAN NOT NULL DEFAULT false,
     "energyCable" BOOLEAN NOT NULL DEFAULT false,
+    "bag" BOOLEAN NOT NULL DEFAULT false,
     "others" TEXT,
     "warranty" BOOLEAN NOT NULL DEFAULT false,
     "warrantyDescription" TEXT,
     "backup" BOOLEAN NOT NULL DEFAULT false,
     "backupDescription" TEXT,
-    "isWorking" BOOLEAN NOT NULL DEFAULT true,
-    "workingDescription" TEXT,
     "defectDescription" TEXT,
     "technicalReport" TEXT,
     "generalDescription" TEXT,
-    "value" REAL NOT NULL DEFAULT 0.00,
+    "deliveryConfirmation" BOOLEAN NOT NULL DEFAULT false,
+    "value" REAL DEFAULT 0.00,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
     CONSTRAINT "orders_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "clients" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
