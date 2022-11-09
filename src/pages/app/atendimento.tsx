@@ -1,6 +1,7 @@
 import type { GetStaticPaths, GetServerSideProps, NextPage } from 'next'
 /* hooks */
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { getApi } from '../../../lib/api'
 
 /* components */
 import ArrowUpIcon from '../../components/icons/ArrowUpIcon'
@@ -18,9 +19,24 @@ import Menus from '../../components/sidebar/Menus'
 
 
 
-const Atendimento: NextPage = (props) => {
+const Atendimento: NextPage = () => {
 
   const [newOrderModal, setNewOrderModal] = useState<boolean>(false)
+
+  const [arrayOrder, setArrayOrder] = useState<any[]>()
+
+  const getOrders = async() => {
+
+    const {response:orders} = await getApi('/api/auth/orders')
+    console.log(orders)
+    return orders
+  } 
+
+  useEffect(()=>{
+    (async () => {
+      setArrayOrder(await getOrders())
+    })()
+  },[])
 
   return (
     <Layout page={'atendimento'}>
@@ -61,19 +77,16 @@ const Atendimento: NextPage = (props) => {
       </section>
       <section className="w-full h-full">
         <article className="flex flex-col gap-2">
-          <OrderList  osNumber={1755} clientName={"Gabriel Henrique dsaf"} clientDocument={"15783488605"} deviceName={'MacBook 14 pro max'} osStatus={'finalizado'}/>
-          <OrderList  osNumber={1756} clientName={"Junior Augusto"} clientDocument={"15783488605"} deviceName={'Ipad 8 mini'} osStatus={'finalizado'}/>
-          <OrderList  osNumber={1757} clientName={"Julio Cesar"} clientDocument={"15783488605"} deviceName={'SmartWhat'} osStatus={'finalizado'}/>
-          <OrderList  osNumber={1758} clientName={"Romario Oliveira"} clientDocument={"15783488605"} deviceName={'Iphone 13'} osStatus={'finalizado'}/>
-          <OrderList  osNumber={1761} clientName={"Vinicius Lima"} clientDocument={"15783488605"} deviceName={'Ipad 8 mini'} osStatus={'finalizado'}/>
-          <OrderList  osNumber={1759} clientName={"Maria Vitoria"} clientDocument={"15783488605"} deviceName={'Dell 248'} osStatus={'finalizado'}/>
-          <OrderList  osNumber={1760} clientName={"Darlan Augusto"} clientDocument={"15783488605"} deviceName={'Positivo'} osStatus={'finalizado'}/>
-          <OrderList  osNumber={1762} clientName={"Marlon"} clientDocument={"15783488605"} deviceName={'Placa mãe'} osStatus={'finalizado'}/>
-          <OrderList  osNumber={1763} clientName={"Roberto Augusto"} clientDocument={"15783488605"} deviceName={'Xiaomi 7lus'} osStatus={'finalizado'}/>
-          <OrderList  osNumber={1764} clientName={"Talita Fernanda"} clientDocument={"15783488605"} deviceName={'Desktop'} osStatus={'finalizado'}/>
+          {
+            arrayOrder ? 
+              arrayOrder.map(({id,name, client, status}:any)=>{
+                return  <OrderList onClick={()=>console.log('atendimento', id)} osNumber={id}  clientName={client.name}  clientDocument={client.document} deviceName={name ? name : 'não informado'}  osStatus={status ? status : 'aberto'}/>
+              }) 
+            : null
+          }
         </article>
       </section>
-      <NewOrderModal isOpen={newOrderModal} onClose={()=> setNewOrderModal(false)} formOder={{name:'Gabriel'}} />
+      <NewOrderModal isOpen={newOrderModal} onClose={()=> setNewOrderModal(false)} />
     </Layout>
   )
 }

@@ -1,6 +1,6 @@
 import prisma from "../../db/prisma"
 
-export function Users() {
+function model() {
 
     const getUserById = async(idParam:number) => {
         const user = await prisma.users.findFirst({
@@ -16,7 +16,7 @@ export function Users() {
         return user
     }
 
-
+    
 
 
 
@@ -30,3 +30,4 @@ export function Users() {
     // export all function that is in the return
     return { getUserById, getAllUsers }
 }
+export const Users = model();

@@ -3,23 +3,26 @@ import { Order } from "../../types/order"
 
 
 
-export function Orders() {
+function model() {
 
     const createOrUpdateOrder = async(order:Order) => {
-        const createdOrder = await prisma.orders.upsert({
-            where: { id: order.id },
+        const orderDb = await prisma.orders.upsert({
+            where: { id: order.id ? order.id : -1 },
             update: {...order},
             create: { ...order},
         })
-        return createdOrder
+        return orderDb
     }
 
-
-
-
-
-
+    const getAllOrders = async() => {
+        const orderDb = await prisma.orders.findMany({
+            include:{client:true}
+        })
+        return orderDb
+    }
 
     // export all function that is in the return
-    return { createOrUpdateOrder }
+    return { createOrUpdateOrder, getAllOrders }
 }
+
+export const Orders = model();

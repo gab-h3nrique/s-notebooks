@@ -50,7 +50,8 @@ interface OrderInfo {
     technicalReport?: string;
     generalDescription?: string;
     deliveryConfirmation: boolean;
-    IdTechinical?: number | null;
+    userId?: number | null;
+    status: string;
 }
 interface User {
     id: number;
@@ -93,8 +94,9 @@ const NewOrderModal = ({isOpen, onClose}:Props) => {
 
     const [accessories, setAccessories] = useState<Accessories>({charger: false, battery: false, energyCable: false, bag: false, others: ""})
 
-    const [orderInfo, setOrderInfo] = useState<OrderInfo>({backup: false, backupDescription: "", defectDescription: "", technicalReport: "", generalDescription: "", deliveryConfirmation: false, IdTechinical: null})
+    const [orderInfo, setOrderInfo] = useState<OrderInfo>({backup: false, backupDescription: "", defectDescription: "", technicalReport: "", generalDescription: "", deliveryConfirmation: false, userId: null, status: ""})
     const [dropdownOrderInfo, setDropdownOrderInfo] = useState<boolean>(false)
+    const [dropdownStatus, setDropdownStatus] = useState<boolean>(false)
 
     const [userArray, setUserArray] = useState<User[]>()
     console.log('render')
@@ -218,7 +220,6 @@ const NewOrderModal = ({isOpen, onClose}:Props) => {
                                             </div>
                                         </div>
                                     </div>
-                                    {/* ___________________________________________________________________________________ */}
                                     
                                     <div >
                                             <label className="block text-sm font-medium text-slate-500">Número de série</label>
@@ -329,18 +330,16 @@ const NewOrderModal = ({isOpen, onClose}:Props) => {
 
                                     </article>
 
-                                    <article className="flex justify-between gap-2">
+                                    <article className="grid grid-cols-12 gap-x-2">
                                     
-                                        
-
-                                        <div className="w-full">
+                                        <div className="col-span-4">
                                             <div >
                                                 <label className="block text-sm font-medium text-slate-500">Técnico responsável</label>
                                                 <button type="button" onClick={()=> setDropdownOrderInfo(!dropdownOrderInfo)} className="flex justify-between px-5 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150">
                                                 <label className="block text-sm font-medium text-slate-500">
                                                     {
                                                         userArray ?
-                                                            userArray.map(({id, name})=>{return orderInfo.IdTechinical === id ? name : null})
+                                                            userArray.map(({id, name})=>{return orderInfo.userId === id ? name : null})
                                                             : null
                                                     }
                                                 </label>
@@ -351,13 +350,13 @@ const NewOrderModal = ({isOpen, onClose}:Props) => {
                                                 </button>
                                             </div>
 
-                                            <div className={`${!dropdownOrderInfo ? "opacity-0 pointer-events-none" : "opacity-1 pointer-events-auto"} duration-150 absolute  right-16 bottom-2 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg`} >
+                                            <div className={`${!dropdownOrderInfo ? "opacity-0 pointer-events-none" : "opacity-1 pointer-events-auto"} duration-150 absolute left-48 bottom-20 z-10  w-56 origin-top-right rounded-md bg-white shadow-2xl`} >
                                                 <div className="py-1" >
                                                     <>
                                                         {
                                                             userArray ? 
                                                                 userArray.map(({id, name})=>{
-                                                                    return <a key={id} onClick={()=>{setDropdownOrderInfo(!dropdownOrderInfo); setOrderInfo({...orderInfo, IdTechinical: id}) ; console.log(id, name)}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-lg" >{name}</a>
+                                                                    return <a key={id} onClick={()=>{setDropdownOrderInfo(!dropdownOrderInfo); setOrderInfo({...orderInfo, userId: id}) ; console.log(id, name)}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-lg" >{name}</a>
                                                                 })
                                                                 : null
                                                         }
@@ -366,16 +365,39 @@ const NewOrderModal = ({isOpen, onClose}:Props) => {
                                             </div>
                                         </div>
                                         
+                                        <div className="col-span-3">
+                                            <div onClick={()=> setDropdownStatus(!dropdownStatus)}>
+                                                <label className="block text-sm font-medium text-slate-500">Status</label>
+                                                <button type="button" className="flex justify-between px-5 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150">
+                                                <label className="block text-sm font-medium text-slate-500">{orderInfo.status ? orderInfo.status : ""}</label>
+                                                
+                                                <svg className={`-mr-1 ml-2 h-5 w-5 ${dropdownStatus ? "rotate-[-180deg]" : "rotate-[0deg]"} duration-150`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" >
+                                                    <path  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" />
+                                                </svg>
+                                                </button>
+                                            </div>
 
-                                        <div className="w-full flex items-end py-[2.1px]">
-                                            {/* <label className="block text-sm font-medium text-slate-500">&nbsp;</label> */}
+                                            <div className={`${!dropdownStatus ? "opacity-0 pointer-events-none" : "opacity-1 pointer-events-auto"} duration-150 absolute  right-3 bottom-5 z-10  w-56 origin-top-right rounded-md bg-white shadow-2xl`} >
+                                                <div className="py-1" >
+
+                                                    <a onClick={()=>{setDropdownStatus(!dropdownStatus); setOrderInfo({...orderInfo, status: "aberto"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointe rounded-md" >aberto</a>
+                                                    <a onClick={()=>{setDropdownStatus(!dropdownStatus); setOrderInfo({...orderInfo, status: "andamento"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >andamento</a>
+                                                    <a onClick={()=>{setDropdownStatus(!dropdownStatus); setOrderInfo({...orderInfo, status: "pendente"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >pendente</a>
+                                                    <a onClick={()=>{setDropdownStatus(!dropdownStatus); setOrderInfo({...orderInfo, status: "finalizado"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >finalizado</a>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="col-span-5 flex items-end py-[2.1px]">
                                             <div onClick={()=>setOrderInfo({...orderInfo, deliveryConfirmation: !orderInfo.deliveryConfirmation})} className={`flex items-center ${orderInfo.deliveryConfirmation ? 'bg-orange-100' : 'bg-slate-100' } gap-1 px-1 py-2  rounded-lg w-full hover:scale-105 duration-150 cursor-pointer `}>
                                                 {orderInfo.deliveryConfirmation ? <CircleCheckIcon  width={20} height={20} fill={`#F06531`} />
                                                         : <CircleIcon  width={20} height={20} fill={`#94a3b8`} />}
                                                 <label  className={`text-sm text-slate-500  ${orderInfo.deliveryConfirmation ? 'text-orange-500' : 'text-slate-500' } font-semibold cursor-pointer`}>Confirmação de entrega</label>
                                             </div>
                                         </div>
-                                    
+
+                                        
 
                                     </article>
                 

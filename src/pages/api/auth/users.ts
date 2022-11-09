@@ -8,14 +8,13 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
     if(method === 'GET') {
 
         try {
-            const UsersModel = Users()
 
             const { id } = req.query
 
             let response;
 
-            if(id) response = await UsersModel.getUserById(Number(id))
-            if(!id) response = await UsersModel.getAllUsers()
+            if(id) response = await Users.getUserById(Number(id))
+            if(!id) response = await Users.getAllUsers()
 
 
             return res.status(200).json({response})
