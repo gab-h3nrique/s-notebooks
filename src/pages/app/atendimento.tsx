@@ -24,17 +24,18 @@ const Atendimento: NextPage = () => {
   const [newOrderModal, setNewOrderModal] = useState<boolean>(false)
 
   const [arrayOrder, setArrayOrder] = useState<any[]>()
-
-  const getOrders = async() => {
-
-    const {response:orders} = await getApi('/api/auth/orders')
+ 
+  const getOrders = async(page:number, limit:number) => {
+   
+    const {response:orders} = await getApi('/api/auth/orders', {page, limit})
     console.log(orders)
-    return orders
+    setArrayOrder(orders.results)
+
   } 
 
   useEffect(()=>{
     (async () => {
-      setArrayOrder(await getOrders())
+      await getOrders(1, 20)
     })()
   },[])
 
@@ -75,15 +76,27 @@ const Atendimento: NextPage = () => {
             </InfoCard>
         </article>
       </section>
-      <section className="w-full h-full">
-        <article className="flex flex-col gap-2">
-          {
-            arrayOrder ? 
-              arrayOrder.map(({id,name, client, status}:any)=>{
-                return  <OrderList onClick={()=>console.log('atendimento', id)} osNumber={id}  clientName={client.name}  clientDocument={client.document} deviceName={name ? name : 'não informado'}  osStatus={status ? status : 'aberto'}/>
-              }) 
-            : null
-          }
+      <section className="w-full h-full overflow-hidden pb-[5rem]">
+        <div className="w-full h-full overflow-auto py-1 border-solid border-4 border-slate-100 px-1 rounded-2xl">
+
+          <article className="flex flex-col gap-2 ">
+            {
+              arrayOrder ? 
+                arrayOrder.map(({id,name, client, status}:any)=>{
+                  return  <OrderList onClick={()=>console.log('atendimento', id)} osNumber={id}  clientName={client.name}  clientDocument={client.document} deviceName={name ? name : 'não informado'}  osStatus={status ? status : 'aberto'}/>
+                }) 
+              : null
+            }
+          </article>
+          {/* <div className="flex justify-center items-center p-2 h-20 w-96">
+            
+          </div> */}
+        </div>
+
+        <article className="relative bottom-[-0.5rem] flex justify-center items-center p-2 h-16 w-full pointer-events-none">
+          <div className=" bg-white drop-shadow-md shadow-slate-100 h-[3.6rem] w-[30rem] rounded-full pointer-events-auto">
+
+          </div>
         </article>
       </section>
       <NewOrderModal isOpen={newOrderModal} onClose={()=> setNewOrderModal(false)} />

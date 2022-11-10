@@ -21,7 +21,7 @@ const Layout = ({page, children}:Props) => {
 
                 <section className="flex h-full w-[105rem] bg-slate-200 p-3">
                     <Sidebar menu={page}/>
-                        <main className="flex flex-col w-full gap-4 p-4">
+                        <main className="flex flex-col w-full gap-4 pt-4 px-4">
                             {children}
                         </main>
                     <Asidebar/>

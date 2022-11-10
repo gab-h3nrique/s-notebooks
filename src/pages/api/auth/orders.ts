@@ -62,15 +62,40 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
     if(method === 'GET') {
         try {
 
-            const { id } = req.query
+            const { id }= req.query
 
-            let response;
+            const page = Number(req.query.page)
+            const limit = Number(req.query.limit)
 
-            // if(id) response = await Orders.getOrderById(Number(id))
-            if(!id) response = await Orders.getAllOrders()
+            let orders;
 
+            // if(id) orders = await Orders.getOrderById(Number(id))
+            if(!id) orders = await Orders.getAllOrders()
+            
+            if(!page || !limit)  return res.status(200).json({response: orders})
 
-            return res.status(200).json({response})
+            const startIndex = (page - 1) * limit
+            const endIndex = page * limit
+
+            const response:any = {}
+
+            if(orders && endIndex < orders.length) {
+                response.next = {
+                    page: page + 1,
+                    limit: limit
+                }
+            }
+
+            if(startIndex > 0) {
+                response.previus = {
+                    page: page - 1,
+                    limit: limit
+                }
+            }
+
+            response.results = await Orders.getPageOrders(startIndex, limit)
+
+            return res.status(200).json({response: response})
 
         } catch(error) {
 
