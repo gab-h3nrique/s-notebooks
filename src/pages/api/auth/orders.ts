@@ -75,26 +75,13 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
             if(!page || !limit)  return res.status(200).json({response: orders})
 
             const startIndex = (page - 1) * limit
-            const endIndex = page * limit
             
-            const response:any = {}
-
-            if(orders && endIndex < orders.length) {
-                response.next = {
-                    page: page + 1,
-                    limit: limit
-                }
+            const response = {
+                currentPage: page,
+                total: await Orders.getTotalOrders(),
+                totalPages: Math.ceil(await Orders.getTotalOrders() / limit),
+                results: await Orders.getPageOrders(startIndex, limit)
             }
-
-            if(startIndex > 0) {
-                response.previus = {
-                    page: page - 1,
-                    limit: limit
-                }
-            }
-            response.currentPage = page
-            response.total = await Orders.getTotalOrders()
-            response.totalPages = Math.ceil(await Orders.getTotalOrders() / limit)
             
             response.results = await Orders.getPageOrders(startIndex, limit)
 
