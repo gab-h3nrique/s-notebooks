@@ -29,10 +29,16 @@ function model() {
         return orderDb
     }
 
-
+    const getTotalOrders = async(index: number | undefined = undefined, limit: number | undefined = undefined) => {
+        const orderDb = await prisma.orders.count({
+            skip: index ? index : undefined,
+            take: limit ? limit : undefined
+        })
+        return orderDb
+    }
 
     // export all function that is in the return
-    return { createOrUpdateOrder, getAllOrders, getPageOrders }
+    return { createOrUpdateOrder, getAllOrders, getPageOrders, getTotalOrders }
 }
 
 export const Orders = model();
