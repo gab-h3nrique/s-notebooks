@@ -1,14 +1,8 @@
 /* components */
 
-import ArrowUpIcon from "../../icons/ArrowUpIcon";
-import ChipsetIcon from "../../icons/ChipsetIcon";
-import ClipboardCheck from "../../icons/ClipboardCheck";
 import DescktopIcon from "../../icons/DescktopIcon";
-import IconComponent from "../../icons/IconComponent";
-import LaptopIcon from "../../icons/LaptopIcon";
 import TagIcon from "../../icons/TagIcon";
 import UserIcon from "../../icons/UserIcon";
-import IconMenu from "../../sidebar/IconMenu";
 import StatusInfo from "./StatusInfo";
 
 /* components */
@@ -20,14 +14,15 @@ export interface Props {
     clientDocument: string
     deviceName: string;
     osStatus: string;
+    background: boolean;
 }
 
 
 export default function OrderList(props :Props) {
-    const { osNumber, clientName, clientDocument, deviceName, osStatus, onClick } = props;
+    const { osNumber, clientName, clientDocument, deviceName, osStatus, onClick, background } = props;
 return (
     <>
-        <div onClick={onClick} className="flex items-center justify-between gap-6 bg-white w-full h-fit p-2 rounded-2xl cursor-pointer  opacity-75 hover:opacity-100 hover:scale-x-95 duration-300">
+        <div onClick={onClick} className={`flex items-center justify-between gap-6 ${background ? 'bg-white': 'bg-slate-100'} bg-white w-full h-fit p-2 rounded-2xl cursor-pointer  opacity-75 hover:opacity-100 hover:scale-x-95 duration-300`}>
             
              <section className="flex  rounded-lg justify-center p-1 items-center gap-2">
                 <div className={`flex bg-orange-500 w-fit h-fit rounded-lg p-1.5`}>

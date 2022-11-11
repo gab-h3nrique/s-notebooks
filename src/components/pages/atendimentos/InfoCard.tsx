@@ -2,7 +2,7 @@
 
 import ArrowUpIcon from "../../icons/ArrowUpIcon";
 import PasteIcon from "../../icons/PasteIcon";
-import IconMenu from "../../sidebar/IconMenu";
+import IconMenu from "../../barComponent/IconMenu";
 
 /* components */
 

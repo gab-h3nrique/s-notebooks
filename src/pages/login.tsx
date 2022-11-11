@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import { useContext, useEffect, useState } from 'react';
-import { authApi } from '../../lib/api';
+import Api from '../../lib/api';
 
 import Router from 'next/router';
 
@@ -18,7 +18,7 @@ const Home: NextPage = () => {
   const { setAuthUserLogin }:any = useContext(AuthContext)
 
   const login = async() => {
-    let data = await authApi('/api/login', 'POST', {name, email, password});
+    let data = await Api.auth('/api/login', 'POST', {name, email, password});
     if(data.accessToken && data.user) {
       await setAuthUserLogin(data.user)
       Router.push('/app/atendimento');

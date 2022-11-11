@@ -1,9 +1,6 @@
 /* components */
 
-import ArrowUpIcon from "../../icons/ArrowUpIcon";
-import PasteIcon from "../../icons/PasteIcon";
-import UserPenIcon from "../../icons/UserPenIcon";
-import IconMenu from "../../sidebar/IconMenu";
+
 
 /* components */
 

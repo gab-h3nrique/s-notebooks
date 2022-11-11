@@ -1,62 +1,53 @@
 /* components */
 
-import { useState } from "react";
-import { getApi } from "../../../lib/api";
 import AngleUpIcon from "../icons/AngleUpIcon";
-
-
 
 /* components */
 
 export interface Props {
-    value: any;
+    page: number;
+    pageHandle: any;
+    total: number;
 }
 
 
-export default function Paginate(props :any) {
-    
-    const { arrayOrder, setArrayOrder, paginateConfig, setPaginateConfig } = props;
+export default function Paginate({ page, pageHandle, total}:Props) {
 
-    // const [ currentPage, setCurrentPage ] = useState<number>(page ? page : 1)
-
-    // const [ firstPage, setFirstPage] = useState<number>()
-
-    // const getOrders = async(page:number, limit:number) => {
-   
-    //     const {response:orders} = await getApi('/api/auth/orders', {page, limit})
-    //     console.log(orders)
-    //     setArrayOrder(orders.results)
-    
-    // } 
-    console.log('teste: ', arrayOrder && arrayOrder)
+    // const { page, pageHandle, total}:Props = props
 
     return (
         <>
-           <article className="flex justify-center items-centerw-full ">
-                <section className=" bg-white w-full rounded-2xl flex items-center p-3 justify-between">
-                    <div className="flex bg-orange-500 rounded-2xl p-3 gap-1 items-center hover:scale-110 duration-200 cursor-pointer">
+            <article className="flex justify-center items-centerw-full ">
+                <section className=" bg-white w-full rounded-2xl flex items-center p-2 justify-between">
+                    <button disabled={page && page === 1 ? true : false} onClick={()=>pageHandle(page?page-1: 1)} className={`flex bg-orange-500 rounded-2xl p-3 gap-1 items-center  hover:scale-110 duration-300 cursor-pointer ${page && page === 1 ? 'opacity-50' : 'opacity-1'}`}>
                         <AngleUpIcon transform={'rotate(270)'} width={22} height={22} fill={`white`}/>
-                        <p className={`text-white text-base font-semibold duration-500`}>Página anterior</p>
-                    </div>
+                        <p className={`text-white text-sm font-semibold duration-300`}>Prev</p>
+                    </button>
+                    <div className="flex gap-2">
+
                     {
-
-                        Array.from(Array(7)).map((e, index) => {
-
+                        total && page ? 
+                        Array.from(Array(total)).map((e, index) => {
+                            if(index+1 > page - 4 && index+1 < page + 4) {
                             return (
-                                <div key={index} className={`flex ${(index) === 1 ? 'bg-orange-500' : 'bg-slate-300'} items-center justify-center rounded-2xl py-[.6rem] px-[1.1rem] gap-1 hover:scale-110 duration-200 cursor-pointer`}>
-                                    <p className={`text-white text-2xl font-bold duration-500`}>{index}</p>
+                                <div onClick={()=>pageHandle(index+1)} key={index} className={`flex ${(index+1) === page ? 'bg-orange-500' : 'bg-slate-300'} items-center justify-center rounded-2xl py-[.6rem] px-[1.1rem] gap-1 hover:scale-110 duration-300 cursor-pointer`}>
+                                    <p className={`text-white text-2xl font-bold duration-300`}>{index+1}</p>
                                 </div>
                             )
-                         })
+                            }
+                            
+                        })
+                        : null
                     }
+                    </div>
                     
 
-                    <div className="flex bg-orange-500 rounded-2xl p-3 gap-1 items-center  hover:scale-110 duration-200 cursor-pointer">
-                        <p className={`text-white text-base font-semibold duration-500`}>Página seguinte</p>
-                        <AngleUpIcon transform={'rotate(90)'} width={22} height={22} fill={`white`}/>
-                    </div>
+                <button disabled={total && page === total ? true : false} onClick={()=>pageHandle(page?page+1: 1)} className={`flex bg-orange-500 rounded-2xl p-3 gap-1 items-center  hover:scale-110 duration-300 cursor-pointer ${total && page === total ? 'opacity-50' : 'opacity-1'}`}>
+                    <p className={`text-white text-sm font-semibold duration-300`}>Next</p>
+                    <AngleUpIcon transform={'rotate(90)'} width={22} height={22} fill={`white`}/>
+                </button>
                 </section>
-            </article>
+            </article>  
         </>
     )
 }

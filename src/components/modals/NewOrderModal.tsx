@@ -3,7 +3,7 @@
 
 import { Key, ReactElement, ReactNode, useEffect, useState } from "react";
 import ReactDom from "react-dom";
-import { getApi, postApi } from "../../../lib/api";
+import Api from "../../../lib/api";
 import CheckDouble from "../icons/CheckDouble";
 import CheckIcon from "../icons/CheckIcon";
 import CircleCheckIcon from "../icons/CircleCheckIcon";
@@ -66,14 +66,14 @@ const NewOrderModal = ({isOpen, onClose}:Props) => {
 
     const getUsers = async() => {
 
-        const {response:user} = await getApi('/api/auth/users')
+        const {response:user} = await Api.get('/api/auth/users')
 
         return user
     }
 
     const saveOrder = async() => {
         console.log('slkdfjlkasdflkdfjlksldf')
-        const response = await postApi('/api/auth/orders', {client, equipament, accessories, orderInfo})
+        const response = await Api.post('/api/auth/orders', {client, equipament, accessories, orderInfo})
     }
 
     const [portal, setPortal] = useState<HTMLElement>()
