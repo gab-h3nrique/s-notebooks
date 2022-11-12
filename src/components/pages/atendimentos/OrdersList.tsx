@@ -20,9 +20,13 @@ export interface Props {
 
 export default function OrderList(props :Props) {
     const { osNumber, clientName, clientDocument, deviceName, osStatus, onClick, background } = props;
+
+
+
+
 return (
     <>
-        <div onClick={onClick} className={`flex items-center justify-between gap-6 ${background ? 'bg-white': 'bg-slate-100'} bg-white w-full h-fit p-2 rounded-2xl cursor-pointer  opacity-75 hover:opacity-100 hover:scale-x-95 duration-300`}>
+        <div onClick={onClick} className={`flex items-center justify-between gap-6 ${background ? 'bg-white': 'bg-slate-100'}  w-full h-fit p-2 rounded-2xl cursor-pointer  opacity-75 hover:opacity-100 hover:scale-x-95 duration-300`}>
             
              <section className="flex  rounded-lg justify-center p-1 items-center gap-2">
                 <div className={`flex bg-orange-500 w-fit h-fit rounded-lg p-1.5`}>
@@ -66,7 +70,21 @@ return (
             </section>
 
             <section className="flex justify-center items-center gap-1">
-                <StatusInfo textColor="text-green-700" backgroundColor="bg-green-100" status={osStatus} />
+                <StatusInfo 
+                textColor={`${
+                        osStatus === 'finalizado' ? 'text-green-700' : 
+                        osStatus === 'andamento' ? 'text-blue-700' :
+                        osStatus === 'pendente' ? 'text-yellow-700' :
+                        osStatus === 'aberto' ? 'text-cyan-700' :
+                        'text-blue-700'
+                    }`} 
+                    backgroundColor={`${
+                        osStatus === 'finalizado' ? 'bg-green-100' : 
+                        osStatus === 'andamento' ? 'bg-blue-100' :
+                        osStatus === 'pendente' ? 'bg-yellow-100' :
+                        osStatus === 'aberto' ? 'bg-cyan-100' :
+                        'bg-blue-100'
+                    }`}  status={osStatus} />
             </section>
 
             

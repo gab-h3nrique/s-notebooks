@@ -18,6 +18,7 @@ import ModalComponent from "./ModalComponent";
 /* components */
 
 export interface Props {
+    id?: number | null
     isOpen: boolean;
     onClose: any;
 }
@@ -62,7 +63,26 @@ interface User {
 
 
 
-const NewOrderModal = ({isOpen, onClose}:Props) => {
+const NewOrderModal = ({isOpen, onClose, id}:Props) => {
+
+    const [portal, setPortal] = useState<HTMLElement>()
+
+    const getOrderById = async(id:number | null) => {
+        try {
+            if(!id) return;
+    
+            const {response} = await Api.get('/api/auth/orders', {id:id})
+            
+            if(!response.id) return;
+            
+            setClient({...client, ...response.client})
+            setEquipament({name: response.name, serialNumber: response.serialNumber, brand: response.brand, model: response.model})
+            setAccessories({charger: response.charger, battery: response.battery, energyCable: response.energyCable, bag: response.bag, others: response.others})
+            setOrderInfo({backup: response.backup, backupDescription: response.backupDescription, defectDescription: response.defectDescription, technicalReport: response.technicalReport, generalDescription: response.generalDescription, deliveryConfirmation: response.deliveryConfirmation, userId: response.userId, status: response.status})
+        } catch (err) {
+            console.error(err)
+        }
+    }
 
     const getUsers = async() => {
 
@@ -72,33 +92,55 @@ const NewOrderModal = ({isOpen, onClose}:Props) => {
     }
 
     const saveOrder = async() => {
-        console.log('slkdfjlkasdflkdfjlksldf')
         const response = await Api.post('/api/auth/orders', {client, equipament, accessories, orderInfo})
     }
 
-    const [portal, setPortal] = useState<HTMLElement>()
+    const handleSearchClient = async(param:string) => {
+        const {response} = await Api.get('/api/auth/search/clients', { content: param })
+        if(response.id) setClient({...client, ...response})
+    }
+
+    const [client, setClient] = useState<Client>({name: "", document: "", email: "", number: "", cep: "", info: ""})
+    const [equipament, setEquipament] = useState<Equipment>({name: "", serialNumber: "", brand: "", model: ""})
+    const [accessories, setAccessories] = useState<Accessories>({charger: false, battery: false, energyCable: false, bag: false, others: ""})
+    const [orderInfo, setOrderInfo] = useState<OrderInfo>({backup: false, backupDescription: "", defectDescription: "", technicalReport: "", generalDescription: "", deliveryConfirmation: false, userId: null, status: ""})
+    const [userArray, setUserArray] = useState<User[]>()
+    
+    const [dropdownEquipament, setDropdownEquipament] = useState<boolean>(false)
+    const [dropdownOrderInfo, setDropdownOrderInfo] = useState<boolean>(false)
+    const [dropdownStatus, setDropdownStatus] = useState<boolean>(false)
     useEffect(()=>{
         if (typeof window !== "undefined") {
             setPortal(document.getElementById('portal') as HTMLElement);
             (async()=>{
                 setUserArray(await getUsers())
             })()
+           
         }
+        closeHandle()
     },[])
-    
 
-    const [client, setClient] = useState<Client>({name: "", document: "", email: "", number: "", cep: "", info: ""})
+    useEffect(()=>{
+        if (typeof window !== "undefined") {
+            (async()=>{
+                id ? getOrderById(id ? id : null) : null
+            })()
+        }
+    },[id])
 
-    const [equipament, setEquipament] = useState<Equipment>({name: "", serialNumber: "", brand: "", model: ""})
-    const [dropdownEquipament, setDropdownEquipament] = useState<boolean>(false)
+    useEffect(()=>{
+        closeHandle()
+    },[isOpen])
 
-    const [accessories, setAccessories] = useState<Accessories>({charger: false, battery: false, energyCable: false, bag: false, others: ""})
+    function closeHandle() {
+        if(!isOpen) {
+            setClient({name: "", document: "", email: "", number: "", cep: "", info: ""})
+            setEquipament({name: "", serialNumber: "", brand: "", model: ""})
+            setAccessories({charger: false, battery: false, energyCable: false, bag: false, others: ""})
+            setOrderInfo({backup: false, backupDescription: "", defectDescription: "", technicalReport: "", generalDescription: "", deliveryConfirmation: false, userId: null, status: ""})
+        }
+    }
 
-    const [orderInfo, setOrderInfo] = useState<OrderInfo>({backup: false, backupDescription: "", defectDescription: "", technicalReport: "", generalDescription: "", deliveryConfirmation: false, userId: null, status: ""})
-    const [dropdownOrderInfo, setDropdownOrderInfo] = useState<boolean>(false)
-    const [dropdownStatus, setDropdownStatus] = useState<boolean>(false)
-
-    const [userArray, setUserArray] = useState<User[]>()
     console.log('render')
     return (
         portal ? ReactDom.createPortal(
@@ -143,7 +185,7 @@ const NewOrderModal = ({isOpen, onClose}:Props) => {
                                         <label className="block text-sm font-medium text-slate-500">Documento</label>
                                         <div className="flex justify-center items-center gap-1">
                                             <input type="text" onChange={(x)=> setClient({...client, document: x.target.value})} value={client.document} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder="000-000-000-00"/>
-                                            <div className={`flex bg-orange-500 w-fit h-fit rounded-lg p-1.5 duration-300 hover:scale-110 cursor-pointer`}>
+                                            <div onClick={()=> client.document && handleSearchClient(client.document)} className={`flex bg-orange-500 w-fit h-fit rounded-lg p-1.5 duration-300 hover:scale-110 cursor-pointer`}>
                                                 <IconComponent width={20} height={19} fill={`white`}>
                                                     <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/>
                                                 </IconComponent>

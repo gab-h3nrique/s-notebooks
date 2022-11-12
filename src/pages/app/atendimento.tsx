@@ -13,6 +13,7 @@ import InfoCard from '../../components/pages/atendimentos/InfoCard'
 import OrderList from '../../components/pages/atendimentos/OrdersList'
 import Paginate from '../../components/pages/Paginate'
 import IconMenu from '../../components/barComponent/IconMenu'
+import SearchIcon from '../../components/icons/SearchIcon'
 
 /* components */
 
@@ -35,6 +36,11 @@ const Atendimento: NextPage = () => {
 
   const [currentPage, setCurrentPage] = useState(1)
 
+  const [searchOpen, setSearchOpen] = useState<boolean>(false)
+  const [search, setSearch] = useState<string>("")
+
+  const [orderId, setOrderId] = useState<number | null>()
+
   const getOrders = async(page:number, limit:number) => {
    
     const {response} = await Api.get('/api/auth/orders', {page, limit})
@@ -42,12 +48,16 @@ const Atendimento: NextPage = () => {
     setTotal(response.totalPages)
     setPage(response.currentPage)
     setArrayOrder(response.results)
-    console.log('current page: ', page)
   } 
 
   const pageHandle = async(paramPage:number) => {
     await getOrders(paramPage, 10)
   }
+
+  const handleSearch = async() => {
+    const {response} = await Api.get('/api/auth/search/orders',{content: search})
+    setArrayOrder(response)
+  } 
 
   useEffect(()=>{
     (async () => {
@@ -57,60 +67,85 @@ const Atendimento: NextPage = () => {
 
   return (
     <Layout page={'atendimento'}>
+      <main className="flex overflow-auto flex-col w-full h-full gap-4 px-4">
 
-      <section className="flex flex-col w-full gap-4">
-        <article className="flex w-full justify-between">
-          <div onClick={() =>console.log('click')}className="flex justify-center items-center">
-            <p className="text-3xl text-slate-600 font-semibold">Atendimentos</p>
-          </div>
-          <div onClick={() => setNewOrderModal(true)} className="flex">
-            <div className={`flex justify-start items-center bg-orange-500 gap-2 cursor-pointer h-12 rounded-2xl px-3 duration-300 hover:scale-110`}>
-                <IconMenu>
-                    <PlusIcon width={22} height={22} fill={`white`}/>
-                </IconMenu>
-                <p className={`text-white text-sm font-semibold duration-300`}>
-                    Novo atendimento
-                </p>
+        <section>
+          <article className="flex w-full justify-between py-2">
+
+            <div onClick={() =>console.log('click')}className="flex justify-center items-center">
+              <p className="text-3xl text-slate-600 font-semibold">Atendimentos</p>
             </div>
-          </div>
-        </article>
-        <article className="flex w-full gap-4">
-            <InfoCard title="Serviços" total={1.987} porcent={12.5}>
-              <IconMenu>
-                  <PasteIcon width={22} height={22} fill={`#94a3b8`}/>
-              </IconMenu>
-            </InfoCard>
-            <InfoCard title="Em andamento" total={347} porcent={9.5}>
-              <IconMenu>
-                  <PasteIcon width={22} height={22} fill={`#94a3b8`}/>
-              </IconMenu>
-            </InfoCard>
-            <InfoCard title="Finalizados" total={242} porcent={7.2}>
-              <IconMenu>
-                  <PasteIcon width={22} height={22} fill={`#94a3b8`}/>
-              </IconMenu>
-            </InfoCard>
-        </article>
-      </section>
-      <section className="w-full h-full overflow-hidden">
-        <div className="w-full h-full overflow-auto py-1 border-solid border-4 bg-white border-slate-100 px-1 rounded-2xl">
-          <article className="flex flex-col gap-2 ">
-            {
-                arrayOrder?.map(({id,name, client, status}:any, index)=>{
-                  return  (
-                    <React.Fragment key={index}>
-                      <OrderList background={index % 2 === 0 ? false : true} onClick={()=>console.log('atendimento', id)} osNumber={id}  clientName={client.name}  clientDocument={client.document} deviceName={name ? name : 'não informado'}  osStatus={status ? status : 'aberto'}/>
-                    </React.Fragment>
-                  )
-                }) 
-            }
+
+            <div className="flex gap-3">
+              <div onClick={() => !searchOpen && setSearchOpen(true)} className={`flex justify-center items-center bg-orange-500 gap-2 cursor-pointer rounded-2xl p-3 duration-500 hover:scale-110  ${searchOpen ? 'bg-slate-100 border-solid border-[.2rem] border-white' : ''}`}>
+                  <div  onClick={() => searchOpen && handleSearch()} className="w-fit h-fit">
+                    <SearchIcon width={20} height={20} fill={`${searchOpen ? '#94a3b8' : 'white'}`}/>
+                  </div>
+                  
+                  <input 
+                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()} 
+                    onChange={(x)=> setSearch(x.target.value)} value={search}
+                    type="text" className={`text-slate-500 bg-slate-100 outline-0 text-sm font-semibold duration-500 ${searchOpen ? 'w-full' : 'hidden'}`}/>
+
+              </div>
+
+              <div onClick={() => {setOrderId(null); setNewOrderModal(!newOrderModal)}} className={`flex justify-start items-center bg-orange-500 gap-2 p-3 cursor-pointer  rounded-2xl duration-300 hover:scale-110`}>
+                      <PlusIcon width={22} height={22} fill={`white`}/>
+                  <p className={`text-white text-sm font-semibold`}>
+                      Novo atendimento
+                  </p>
+              </div>
+            </div>
+
+
+            
           </article>
-        </div>
-      </section>
-      <section>
-          <Paginate page={page ? page : 1} pageHandle={pageHandle} total={total ? total : 1} />
-      </section>
-      <NewOrderModal isOpen={newOrderModal} onClose={()=> setNewOrderModal(false)} />
+        </section>
+        
+        <section className="">
+          
+          <article className="flex w-full gap-4">
+              <InfoCard title="Serviços" total={1.987} porcent={12.5}>
+                <IconMenu>
+                    <PasteIcon width={22} height={22} fill={`#94a3b8`}/>
+                </IconMenu>
+              </InfoCard>
+              <InfoCard title="Em andamento" total={347} porcent={9.5}>
+                <IconMenu>
+                    <PasteIcon width={22} height={22} fill={`#94a3b8`}/>
+                </IconMenu>
+              </InfoCard>
+              <InfoCard title="Finalizados" total={242} porcent={7.2}>
+                <IconMenu>
+                    <PasteIcon width={22} height={22} fill={`#94a3b8`}/>
+                </IconMenu>
+              </InfoCard>
+          </article>
+        </section>
+
+        <section className="flex w-full h-full overflow-hidden border-solid border-4 bg-white border-slate-100 px-1 py-1 rounded-2xl">
+              
+          <article className="w-full overflow-auto">
+            {
+                  arrayOrder?.map(({id,name, client, status}:any, index)=>{
+                    return  (
+                      <React.Fragment key={index}>
+                        <OrderList background={index % 2 === 0 ? true : false} onClick={()=>{setOrderId(id);  setNewOrderModal(true)} } osNumber={id}  clientName={client.name}  clientDocument={client.document} deviceName={name ? name : 'não informado'}  osStatus={status ? status : 'aberto'}/>
+                      </React.Fragment>
+                    )
+                  }) 
+              }
+          </article>
+
+        </section>
+        
+        <section>
+            <Paginate page={page ? page : 1} pageHandle={pageHandle} total={total ? total : 1} />
+        </section>
+
+      </main>
+      
+      <NewOrderModal isOpen={newOrderModal} onClose={()=> setNewOrderModal(false)} id={orderId}/>
     </Layout>
   )
 }

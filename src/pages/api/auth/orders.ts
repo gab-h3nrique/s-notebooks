@@ -8,9 +8,9 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
     
     const { method } = req
 
-    if(method === 'POST') {
+    try{
 
-        try {
+        if(method === 'POST') {
 
             const {client, orderInfo, equipament, accessories} =  req.body
 
@@ -51,25 +51,18 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
             return res.status(201).json( { response: createdOrder } )
 
-        } catch(error) {
-            console.log('--------------------------------')
-            console.error(error)
-            return res.status(500).json({ message: error })
-            
         }
 
-    }
-    if(method === 'GET') {
-        try {
-
-            const { id }= req.query
+        if(method === 'GET') {
+        
+            const { id } = req.query
 
             const page = Number(req.query.page)
             const limit = Number(req.query.limit)
 
             let orders;
 
-            // if(id) orders = await Orders.getOrderById(Number(id))
+            if(id) orders = await Orders.getOrderById(Number(id))
             if(!id) orders = await Orders.getAllOrders()
             
             if(!page || !limit)  return res.status(200).json({response: orders})
@@ -86,14 +79,16 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
             response.results = await Orders.getPageOrders(startIndex, limit)
 
             return res.status(200).json({response: response})
-
-        } catch(error) {
-
-            console.error(error)
-            return res.status(500).json({ message: error })
             
         }
+
+        return res.status(405).json({ message: 'method Not allowed' })
+
+    } catch(error) {
+
+        console.error(error)
+        return res.status(500).json({ message: error })
+        
     }
 
-    // return res.status(405).json({ message: 'method Not allowed' })
 }

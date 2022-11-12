@@ -1,6 +1,7 @@
 import { NextPage } from "next"
 import { useState } from "react"
 import Snotebooks from "../../components/icons/Snotebooks"
+import AngleUpIcon from "../icons/AngleUpIcon"
 import AtendimentoIcon from "../icons/AtendimentoIcon"
 import CloudPlus from "../icons/CloudPlus"
 import DashboardIcon from "../icons/DashboardIcon"
@@ -15,25 +16,36 @@ const Sidebar = (props:Props) => {
     const { menu } = props
     const [open, setOpen] = useState<boolean>(true)
     return (
-        <aside className={`flex flex-col gap-5 duration-500 ${open ? 'w-52' : 'w-24'} px-3 py-8 bg-white rounded-2xl`}>
-            <div className="mb-10 hover:scale-110 duration-500">
-                <div onClick={() => setOpen(!open)} className={`flex justify-start  gap-2 items-center cursor-pointer h-16 rounded-2xl px-3 duration-500`}>
+        <aside className={`relative flex flex-col gap-12 duration-700  ${open ? 'w-[15rem]' :'w-[6.1rem]'} px-3 py-8 bg-white rounded-2xl`}>
 
-                <div className={`flex duration-500 ${open && "rotate-[360deg]"} duration-500 border-2 bg-orange-500 border-white w-fit h-fit rounded-lg p-2 `}>
-                    <div className={`cursor-pointer duration-500 ${open && "rotate-[-360deg]"} duration-500`}>
-                        <Snotebooks width={28} height={28} fill={'white'}/>
+
+            <div className={`absolute w-fit h-fit duration-700 ${!open ? 'rotate-0' :'rotate-180'} -right-3 top-12 bg-orange-500 border-4 border-solid border-white rounded-full p-[.3rem]`}>
+                <AngleUpIcon transform={'rotate(90)'} width={15} height={15} fill={`white`}/>
+            </div>        
+
+            <section className="hover:scale-110 duration-300 ">
+                <div onClick={() => setOpen(!open)} className={`flex ${open ? ' justify-start' :' delay-500'} w-full gap-2 items-center cursor-pointer h-16 rounded-2xl px-3 duration-700`}>
+
+                    <div className={ `flex duration-300 delay-200 ${open && "rotate-[360deg]"} border-2 bg-orange-500 border-white w-fit h-fit rounded-lg p-2`}>
+                        <div className={`cursor-pointer duration-300 ${open && "rotate-[-360deg]"} w-full delay-200`}>
+                            <Snotebooks width={28} height={28} fill={'white'}/>
+                        </div>
                     </div>
-                </div>
-                <h1 className={`text-orange-500 text-xl font-bold duration-500 ${!open ? "scale-0 opacity-0 duration-300" : "scale-100 delay-100"}`}>Facebook</h1>
-                </div>
-            </div>
 
-            <div className="flex flex-col gap-4 ">
+                    <div className="">
+                        <h1 className={`text-orange-500 text-xl font-bold w-0 ${!open ? "w-0 opacity-0 duration-300" : "w-full opacity-1 duration-700 delay-500"}`}>Notebooks</h1>
+                    </div>
+
+                </div>
+            </section>
+
+
+            <section className="flex flex-col gap-4 ">
                 <Menus className={`${menu === "dashboard" && 'bg-orange-500' }`}>
                     <IconMenu>
                         <DashboardIcon width={30} height={30} fill={`${menu === "dashboard" ? "white" : "#94a3b8"}`}/>
                     </IconMenu>
-                    <h1 className={`${menu === "dashboard" ? "text-white" : "text-slate-400" }  text-sm font-semibold duration-500 ${!open ? "scale-0 opacity-0 duration-300" : "scale-100 delay-100"}`}>
+                    <h1 className={`${menu === "dashboard" ? "text-white" : "text-slate-400" }  text-sm font-semibold duration-500 w-0 ${!open ? "w-0 opacity-0 duration-300" : "w-full opacity-1 duration-700 delay-500"}`}>
                         Dashboard
                     </h1>
                 </Menus>
@@ -41,7 +53,7 @@ const Sidebar = (props:Props) => {
                     <IconMenu>
                         <AtendimentoIcon width={32} height={32} fill={`${menu === "atendimento" ? "white" : "#94a3b8"}`}/>
                     </IconMenu>
-                    <h1 className={`${menu === "atendimento" ? "text-white" : "text-slate-400" }  text-sm font-semibold duration-500 ${!open ? "scale-0 opacity-0 duration-300" : "scale-100 delay-100"}`}>
+                    <h1 className={`${menu === "atendimento" ? "text-white" : "text-slate-400" }  text-sm font-semibold duration-500 w-0 ${!open ? "w-0 opacity-0 duration-300" : "w-full opacity-1 duration-700 delay-500"}`}>
                         Atendimento
                     </h1>
                 </Menus>
@@ -49,11 +61,11 @@ const Sidebar = (props:Props) => {
                     <IconMenu>
                         <CloudPlus width={30} height={30} fill={`${menu === "servicos" ? "white" : "#94a3b8"}`}/>
                     </IconMenu>
-                    <h1 className={`${menu === "servicos" ? "text-white" : "text-slate-400" }  text-sm font-semibold duration-500 ${!open ? "scale-0 opacity-0 duration-300" : "scale-100 delay-100"}`}>
+                    <h1 className={`${menu === "servicos" ? "text-white" : "text-slate-400" }  text-sm font-semibold duration-500 w-0 ${!open ? "w-0 opacity-0 duration-300" : "w-full opacity-1 duration-700 delay-500"}`}>
                         Serviços
                     </h1>
                 </Menus>
-            </div>
+            </section>
 
         </aside>
        
