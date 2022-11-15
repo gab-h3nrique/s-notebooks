@@ -34,7 +34,7 @@ const Atendimento: NextPage = () => {
   const [total, setTotal] = useState<number>()
   const [page, setPage] = useState<number>()
 
-  const [currentPage, setCurrentPage] = useState(1)
+  // const [currentPage, setCurrentPage] = useState(1)
 
   const [searchOpen, setSearchOpen] = useState<boolean>(false)
   const [search, setSearch] = useState<string>("")
@@ -52,6 +52,9 @@ const Atendimento: NextPage = () => {
 
   const pageHandle = async(paramPage:number) => {
     await getOrders(paramPage, 10)
+  }
+  const orderHandle = async() => {
+    await getOrders(page ? page : 1, 10).then(()=>setNewOrderModal(false))
   }
 
   const handleSearch = async() => {
@@ -130,7 +133,12 @@ const Atendimento: NextPage = () => {
                   arrayOrder?.map(({id,name, client, status}:any, index)=>{
                     return  (
                       <React.Fragment key={index}>
-                        <OrderList background={index % 2 === 0 ? true : false} onClick={()=>{setOrderId(id);  setNewOrderModal(true)} } osNumber={id}  clientName={client.name}  clientDocument={client.document} deviceName={name ? name : 'não informado'}  osStatus={status ? status : 'aberto'}/>
+                        <OrderList 
+                          background={index % 2 === 0 ? true : false} 
+                          onClick={()=>{setOrderId(id),  setNewOrderModal(true)} } 
+                          
+                          osNumber={id}  clientName={client.name}  clientDocument={client.document} deviceName={name ? name : 'não informado'}  osStatus={status ? status : 'aberto'}
+                        />
                       </React.Fragment>
                     )
                   }) 
@@ -145,7 +153,7 @@ const Atendimento: NextPage = () => {
 
       </main>
       
-      <NewOrderModal isOpen={newOrderModal} onClose={()=> setNewOrderModal(false)} id={orderId}/>
+      <NewOrderModal isOpen={newOrderModal} onClose={()=> setNewOrderModal(false)} id={orderId} orderHandle={orderHandle} />
     </Layout>
   )
 }

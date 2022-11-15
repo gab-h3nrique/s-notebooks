@@ -12,6 +12,7 @@ import CloseIcon from "../icons/CloseIcon";
 import DescktopIcon from "../icons/DescktopIcon";
 import IconComponent from "../icons/IconComponent";
 import PasteIcon from "../icons/PasteIcon";
+import SpinnerIcon from "../icons/SpinnerIcon";
 import UserPenIcon from "../icons/UserPenIcon";
 import ModalComponent from "./ModalComponent";
 
@@ -21,6 +22,7 @@ export interface Props {
     id?: number | null
     isOpen: boolean;
     onClose: any;
+    orderHandle:any;
 }
 
 interface Client {
@@ -45,6 +47,7 @@ interface Accessories {
     others: string;
 }
 interface OrderInfo {
+    id?: number | null;
     backup: boolean;
     backupDescription?: string;
     defectDescription?: string;
@@ -63,42 +66,8 @@ interface User {
 
 
 
-const NewOrderModal = ({isOpen, onClose, id}:Props) => {
-
+const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
     const [portal, setPortal] = useState<HTMLElement>()
-
-    const getOrderById = async(id:number | null) => {
-        try {
-            if(!id) return;
-    
-            const {response} = await Api.get('/api/auth/orders', {id:id})
-            
-            if(!response.id) return;
-            
-            setClient({...client, ...response.client})
-            setEquipament({name: response.name, serialNumber: response.serialNumber, brand: response.brand, model: response.model})
-            setAccessories({charger: response.charger, battery: response.battery, energyCable: response.energyCable, bag: response.bag, others: response.others})
-            setOrderInfo({backup: response.backup, backupDescription: response.backupDescription, defectDescription: response.defectDescription, technicalReport: response.technicalReport, generalDescription: response.generalDescription, deliveryConfirmation: response.deliveryConfirmation, userId: response.userId, status: response.status})
-        } catch (err) {
-            console.error(err)
-        }
-    }
-
-    const getUsers = async() => {
-
-        const {response:user} = await Api.get('/api/auth/users')
-
-        return user
-    }
-
-    const saveOrder = async() => {
-        const response = await Api.post('/api/auth/orders', {client, equipament, accessories, orderInfo})
-    }
-
-    const handleSearchClient = async(param:string) => {
-        const {response} = await Api.get('/api/auth/search/clients', { content: param })
-        if(response.id) setClient({...client, ...response})
-    }
 
     const [client, setClient] = useState<Client>({name: "", document: "", email: "", number: "", cep: "", info: ""})
     const [equipament, setEquipament] = useState<Equipment>({name: "", serialNumber: "", brand: "", model: ""})
@@ -109,39 +78,77 @@ const NewOrderModal = ({isOpen, onClose, id}:Props) => {
     const [dropdownEquipament, setDropdownEquipament] = useState<boolean>(false)
     const [dropdownOrderInfo, setDropdownOrderInfo] = useState<boolean>(false)
     const [dropdownStatus, setDropdownStatus] = useState<boolean>(false)
-    useEffect(()=>{
-        if (typeof window !== "undefined") {
-            setPortal(document.getElementById('portal') as HTMLElement);
-            (async()=>{
-                setUserArray(await getUsers())
-            })()
-           
-        }
-        closeHandle()
-    },[])
 
-    useEffect(()=>{
-        if (typeof window !== "undefined") {
-            (async()=>{
-                id ? getOrderById(id ? id : null) : null
-            })()
-        }
-    },[id])
 
-    useEffect(()=>{
-        closeHandle()
-    },[isOpen])
+    const [loading, setLoading] = useState<boolean>(false)
 
-    function closeHandle() {
-        if(!isOpen) {
-            setClient({name: "", document: "", email: "", number: "", cep: "", info: ""})
-            setEquipament({name: "", serialNumber: "", brand: "", model: ""})
-            setAccessories({charger: false, battery: false, energyCable: false, bag: false, others: ""})
-            setOrderInfo({backup: false, backupDescription: "", defectDescription: "", technicalReport: "", generalDescription: "", deliveryConfirmation: false, userId: null, status: ""})
+
+    const getOrderById = async(id:number | null | undefined) => {
+        if(!id) return;
+
+        const {response} = await Api.get('/api/auth/orders', {id:id})
+        
+        if(!response.id) return;
+        
+        setClient({...client, ...response.client})
+        setEquipament({name: response.name, serialNumber: response.serialNumber, brand: response.brand, model: response.model})
+        setAccessories({charger: response.charger, battery: response.battery, energyCable: response.energyCable, bag: response.bag, others: response.others})
+        setOrderInfo({id: response.id, backup: response.backup, backupDescription: response.backupDescription, defectDescription: response.defectDescription, technicalReport: response.technicalReport, generalDescription: response.generalDescription, deliveryConfirmation: response.deliveryConfirmation, userId: response.userId, status: response.status})
+    }
+
+    const getUsers = async() => {
+        const {response:user} = await Api.get('/api/auth/users')
+
+        return user
+    }
+
+    const saveOrder = async() => {
+        setLoading(true)
+        const { response } = await Api.post('/api/auth/orders', {client, equipament, accessories, orderInfo})
+        
+        if(response) {
+            await orderHandle()
+            setLoading(false)
         }
     }
 
-    console.log('render')
+    const handleSearchClient = async(param:string) => {
+        const {response} = await Api.get('/api/auth/search/clients', { content: param })
+        if(response.id) setClient({...client, ...response})
+    }
+
+    
+    useEffect(()=>{
+        if (typeof window !== "undefined") {
+            setPortal(document.getElementById('portal') as HTMLElement);
+        }
+    },[])
+
+    useEffect(()=>{
+
+        if(isOpen) {
+
+            (async()=>{
+                setUserArray(await getUsers())
+                getOrderById(id)
+            })()
+
+        } else {
+
+            clearModal()
+        }
+
+    },[isOpen])
+
+    function clearModal() {
+        console.log('limpou')
+        setLoading(false)
+        setClient({name: "", document: "", email: "", number: "", cep: "", info: ""})
+        setEquipament({name: "", serialNumber: "", brand: "", model: ""})
+        setAccessories({charger: false, battery: false, energyCable: false, bag: false, others: ""})
+        setOrderInfo({id: null, backup: false, backupDescription: "", defectDescription: "", technicalReport: "", generalDescription: "", deliveryConfirmation: false, userId: null, status: ""})
+    }
+
     return (
         portal ? ReactDom.createPortal(
             <>
@@ -153,7 +160,7 @@ const NewOrderModal = ({isOpen, onClose, id}:Props) => {
                                 setDropdownEquipament(false)
                             }
                        })} className="flex flex-col bg-slate-100 w-[36rem] h-fit scale-[.93] rounded-2xl py-4 gap-4">
-                        <header onClick={()=> console.log(userArray)} className="px-4">
+                        <header className="px-4">
                             <section className="flex w-full justify-between">
                                 <div className="flex justify-center items-center">
                                     <p className="text-2xl text-slate-500 font-semibold">Ordem de serviço</p>
@@ -450,9 +457,12 @@ const NewOrderModal = ({isOpen, onClose, id}:Props) => {
                         <footer className="flex justify-center items-center">
                             <div onClick={saveOrder} className="flex w-full px-6">
                                 <div className={`flex justify-center items-center bg-orange-500 gap-2 cursor-pointer w-full rounded-2xl py-3 px-3 duration-150 hover:scale-y-110`}>
-                                        <CheckIcon width={22} height={22} fill={`white`}/>
+                                    {!loading ? 
+                                        <CheckIcon width={22} height={22} className="fill-white"/> : 
+                                        <SpinnerIcon className="h-5 w-5 text-orange-300 fill-white"/>
+                                    } 
                                     <p className={`text-white text-sm font-semibold duration-500`}>
-                                        Salvar ordem de serviço
+                                        {!loading ? 'Salvar ordem de serviço' : 'Carregando . . .'}
                                     </p>
                                 </div>
                             </div>

@@ -1,5 +1,6 @@
 /* components */
 
+import Api from "../../../../lib/api";
 import DescktopIcon from "../../icons/DescktopIcon";
 import TagIcon from "../../icons/TagIcon";
 import UserIcon from "../../icons/UserIcon";
@@ -21,14 +22,17 @@ export interface Props {
 export default function OrderList(props :Props) {
     const { osNumber, clientName, clientDocument, deviceName, osStatus, onClick, background } = props;
 
-
+    const orderPdf = async() => {
+        const { response } = await Api.get('/api/auth/orderPdf', {id: osNumber})
+        console.log('response:', response)
+    }
 
 
 return (
     <>
-        <div onClick={onClick} className={`flex items-center justify-between gap-6 ${background ? 'bg-white': 'bg-slate-100'}  w-full h-fit p-2 rounded-2xl cursor-pointer  opacity-75 hover:opacity-100 hover:scale-x-95 duration-300`}>
+        <div className={`flex items-center justify-between gap-2 ${background ? 'bg-white': 'bg-slate-100'}  w-full h-fit p-2 rounded-2xl cursor-pointer  opacity-75 hover:opacity-100 hover:scale-x-95 duration-300`}>
             
-             <section className="flex  rounded-lg justify-center p-1 items-center gap-2">
+            <section onClick={onClick} className="flex w-36 rounded-lg justify-start p-1 items-center gap-2">
                 <div className={`flex bg-orange-500 w-fit h-fit rounded-lg p-1.5`}>
                     <TagIcon width={22} height={22} fill={`white`}/>
                 </div>
@@ -37,19 +41,19 @@ return (
                 </div>
             </section>
 
-            <section className="flex w-full gap-4 ">
+            <section onClick={onClick} className="grid gap-2 grid-cols-6 w-full">
                
 
-                <section className="flex w-1/3 justify-start items-center gap-2">
+                <article className="flex justify-start items-center gap-2 col-span-2">
                     <div className={`flex bg-slate-400 w-fit h-fit rounded-lg p-1.5`}>
                         <DescktopIcon width={18} height={18} fill={`white`}/>
                     </div>
                     <div className="flex justify-center items-center">
                         <p className="text-lg text-slate-600 font-semibold">{deviceName}</p>
                     </div>
-                </section>
+                </article>
 
-                <section className="flex w-1/3 justify-start items-center gap-2">
+                <article className="flex justify-start items-center gap-2 col-span-4">
                     <div className={`flex bg-slate-400 w-fit h-fit rounded-lg p-1.5`}>
                         <UserIcon width={18} height={18} fill={`white`}/>
                     </div>
@@ -58,18 +62,14 @@ return (
                         <p className="text-lg text-slate-600 font-semibold">{clientName}</p>
                         <p className="text-xs text-slate-500 font-semibold">cpf: {clientDocument}</p>
                     </div>
-                </section>
-
-                <section className="flex  w-1/3 justify-center items-center gap-2">
-
-                    <div className="flex justify-center items-center">
-                        <p className="text-sm text-slate-600 font-semibold">há 5 horas</p>
-                    </div>
-                </section>
+                </article>
 
             </section>
 
-            <section className="flex justify-center items-center gap-1">
+            <section onClick={()=>{orderPdf(), console.log('download')}} className="flex w-36 justify-end items-center gap-1">
+                    {/* <div className="flex justify-center items-center">
+                        <p className="text-sm text-slate-600 font-semibold">há 5 horas</p>
+                    </div> */}
                 <StatusInfo 
                 textColor={`${
                         osStatus === 'finalizado' ? 'text-green-700' : 

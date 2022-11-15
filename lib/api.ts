@@ -43,7 +43,6 @@ function fetchApi() {
             method: method,
             mode: 'cors',
             headers: {
-                'Allow-Access-Control-Origin': `${absoluteUrl()}`,
                 'Content-Type': 'application/json;charset=utf-8'
             },
             body: JSON.stringify(object)
@@ -55,56 +54,8 @@ function fetchApi() {
 
     return {post,  get, auth}
 }
-export async function postApi<JSON = any>(url: string, object: any,): Promise<JSON> {
-        
-    const response = await fetch(url, {
-        method: 'POST',
-        mode: 'cors',
-        headers: {
-            'Allow-Access-Control-Origin': `${absoluteUrl()}`,
-            'Content-Type': 'application/json;charset=utf-8',
-            'Authorization': `Bearer ${await getCookie('auth')}`,
-        },
-        body: JSON.stringify(object)
-    })
-    const data = await response.json()
-    return data
-  
-}
-
-export async function getApi<JSON = any>(url: string, object: any = null): Promise<JSON> {
-        
-    const response = await fetch(url + `${ object ? `?${new URLSearchParams(object)}` : ''}`, {
-        method: 'GET',
-        mode: 'cors',
-        headers: {
-            'Allow-Access-Control-Origin': `${absoluteUrl()}`,
-            'Content-Type': 'application/json;charset=utf-8',
-            'Authorization': `Bearer ${await getCookie('auth')}`,
-        },
-    })
-    const data = await response.json()
-    return data
-  
-}
 
 
-
-export async function authApi<JSON = any>(url: string, method:string, object: any,): Promise<JSON> {
-    console.log('url:', absoluteUrl())
-    const response = await fetch(url, {
-        method: method,
-        mode: 'cors',
-        headers: {
-            'Allow-Access-Control-Origin': `${absoluteUrl()}`,
-            'Content-Type': 'application/json;charset=utf-8'
-        },
-        body: JSON.stringify(object)
-    })
-    const data = await response.json()
-    await setCookie('auth', data.accessToken, 360)
-    return data
-}
 
 const Api = fetchApi();
 
