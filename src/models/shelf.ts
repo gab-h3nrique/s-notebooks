@@ -23,7 +23,7 @@ function model() {
             where: {
                 userId: userId,
                 order: {
-                     is: null
+                    is: null
                 }
             }
         })
