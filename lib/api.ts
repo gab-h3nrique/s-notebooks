@@ -1,4 +1,4 @@
-import { getCookie, setCookie } from "./cookie";
+import { deleteCookie, getCookie, setCookie } from "./cookie";
 
 
 
@@ -10,7 +10,7 @@ function fetchApi() {
             method: 'POST',
             mode: 'cors',
             headers: {
-                'Allow-Access-Control-Origin': `${absoluteUrl()}`,
+                // 'Allow-Access-Control-Origin': `${absoluteUrl()}`,
                 'Content-Type': 'application/json;charset=utf-8',
                 'Authorization': `Bearer ${await getCookie('auth')}`,
             },
@@ -27,7 +27,7 @@ function fetchApi() {
             method: 'GET',
             mode: 'cors',
             headers: {
-                'Allow-Access-Control-Origin': `${absoluteUrl()}`,
+                // 'Allow-Access-Control-Origin': `${absoluteUrl()}`,
                 'Content-Type': 'application/json;charset=utf-8',
                 'Authorization': `Bearer ${await getCookie('auth')}`,
             },
@@ -37,10 +37,10 @@ function fetchApi() {
       
     }
 
-    async function auth<JSON = any>(url: string, method:string, object: any,): Promise<JSON> {
+    async function auth<JSON = any>(url: string, object: any,): Promise<JSON> {
         console.log('url:', absoluteUrl())
         const response = await fetch(url, {
-            method: method,
+            method: 'POST',
             mode: 'cors',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
@@ -52,7 +52,21 @@ function fetchApi() {
         return data
     }
 
-    return {post,  get, auth}
+    async function signOut(): Promise<void> {
+        try{
+
+            await deleteCookie('auth')
+            if(typeof window !== 'undefined') window.location.reload()
+
+        } catch(err){
+
+            console.log('An error occurred when logging out: ', err)
+            if(typeof window !== 'undefined') window.location.reload()
+
+        }
+    }
+
+    return {post,  get, auth, signOut}
 }
 
 

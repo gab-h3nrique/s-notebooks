@@ -1,5 +1,7 @@
 import { NextPage } from "next"
 import { useState } from "react"
+import Api from "../../../lib/api"
+import { deleteCookie } from "../../../lib/cookie"
 import Snotebooks from "../../components/icons/Snotebooks"
 import AngleUpIcon from "../icons/AngleUpIcon"
 import AtendimentoIcon from "../icons/AtendimentoIcon"
@@ -68,16 +70,19 @@ const Sidebar = (props:Props) => {
                 </Menus>
             </section>
 
-            <section className="px-2">
+            <section className="px-2 mt-auto">
                 
-                <div className="flex items-center justify-start gap-2 hover:scale-110 duration-300 cursor-pointer hover:bg-slate-100 rounded-2xl p-3">
+                <div onClick={()=> Api.signOut()} className="flex items-center justify-start gap-3 hover:scale-110 duration-300 cursor-pointer hover:bg-slate-100 rounded-2xl p-3">
 
                     <div className="">
                         <SignOutIcon className={`w-8 h-8 fill-slate-400`} />
                     </div>
+                    <div className="">
+
                     <h1 className={`text-slate-400 text-sm font-semibold duration-500 w-0 ${!open ? "w-0 opacity-0 duration-300" : "w-full opacity-1 duration-700 delay-500"}`}>
                         Sair
                     </h1>
+                    </div>
 
                 </div>
 

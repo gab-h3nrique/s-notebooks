@@ -18,7 +18,7 @@ const Home: NextPage = () => {
   const { setAuthUserLogin }:any = useContext(AuthContext)
 
   const login = async() => {
-    let data = await Api.auth('/api/login', 'POST', {name, email, password});
+    let data = await Api.auth('/api/login', {name, email, password});
     if(data.accessToken && data.user) {
       await setAuthUserLogin(data.user)
       Router.push('/app/atendimento');
