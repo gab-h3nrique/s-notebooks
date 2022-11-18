@@ -35,7 +35,7 @@ const Home: NextPage<Props> = ({content}) => {
 return (
   order &&
     <>
-        <main className="flex overflow-auto flex-col gap-4 p-4 bg-white w-[210mm] h-[297mm] m-auto mt-10" >
+        <main className="flex overflow-auto flex-col gap-4 p-4 bg-white w-[210mm] h-[297mm]" >
 
         <div className="w-full h-full">
 
@@ -43,7 +43,7 @@ return (
           <Image src="/savassi.png" alt="Logo" width={150} height={50}/>
           <div className="">
             <p className="text-2xl text-slate-600 font-semibold flex justify-center"> Ordem de serviço - {order.id}</p>
-            <p className="text-sm text-slate-600 font-semibold flex justify-center"> Prateleira - {order.id}</p>
+            <p className="text-sm text-slate-600 font-semibold flex justify-center"> Prateleira - {order.shelfId}</p>
             </div>
           <Image src="/savassi.png" alt="Logo" width={150} height={50}/>
           </section>
