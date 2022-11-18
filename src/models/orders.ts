@@ -1,5 +1,5 @@
 import prisma from "../../db/prisma"
-import { Order } from "../../types/order"
+import { Order } from "../types/order"
 
 
 function model() {
@@ -23,7 +23,7 @@ function model() {
     const getOrderById = async(id:number) => {
         const orderDb = <Order> await prisma.orders.findUnique({
             where:{id:id},
-            include:{client:true}
+            include:{client:true},
         })
         return orderDb
     }

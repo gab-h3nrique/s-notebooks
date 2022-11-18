@@ -1,8 +1,11 @@
+import { Shelf } from "./shelf";
+
 export interface Order {
     id?:number
     status: string;
     clientId: number;
     userId:number
+    shelfId?:number
     model: string
     brand:string;
     name:string;
@@ -21,5 +24,4 @@ export interface Order {
     generalDescription:string;
     deliveryConfirmation:boolean;
     value:number;
-  
 }

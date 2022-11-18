@@ -1,6 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { Client } from '../../../../../types/client'
-import { Order } from '../../../../../types/order'
 import { Clients } from '../../../../models/clients'
 import { Orders } from '../../../../models/orders'
 

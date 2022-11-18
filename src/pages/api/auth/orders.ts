@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { Client } from '../../../../types/client'
-import { Order } from '../../../../types/order'
 import { Clients } from '../../../models/clients'
 import { Orders } from '../../../models/orders'
+import { Shelfs } from '../../../models/shelf'
+import { Order } from '../../../types/order'
 
 export default async function handler( req: NextApiRequest,res: NextApiResponse<Object>) {
     
@@ -22,11 +22,15 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
             if(!createdClient) return res.status(500).json( { message: "error saving client"})
 
+            const shelfEmpty = await Shelfs.getFirstShelfEmpty(orderInfo.userId)
+            
+
             const order:Order = {
                 id: orderInfo.id ? orderInfo.id : undefined,
                 status: orderInfo.status ? orderInfo.status : 'aberto',
                 clientId: createdClient.id,
                 userId: orderInfo.userId,
+                shelfId: shelfEmpty?  shelfEmpty.id : undefined,
                 model: equipament.model,
                 brand: equipament.brand,
                 name: equipament.name,

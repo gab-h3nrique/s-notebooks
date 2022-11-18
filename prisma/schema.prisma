@@ -49,8 +49,9 @@ model Shelf {
   user        Users @relation("shelfUser", fields: [userId], references: [id])
   userId      Int
 
-  order       Orders? @relation("shelfOrder", fields: [orderId], references: [id])
-  orderId     Int?
+  // order       Orders? @relation("shelfOrder", fields: [orderId], references: [id])
+  // orderId     Int? @unique
+  order       Orders? @relation("shelfOrder")
 
   @@map("shelf")
 }
@@ -65,7 +66,9 @@ model Orders {
   user         Users @relation("OrdersUser", fields: [userId], references: [id])
   userId       Int
 
-  shelf        Shelf[] @relation("shelfOrder")
+  // shelf        Shelf[] @relation("shelfOrder")
+  shelf        Shelf? @relation("shelfOrder", fields: [shelfId], references: [id])
+  shelfId      Int? @unique
 
   model        String
   brand        String
