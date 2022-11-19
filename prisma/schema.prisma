@@ -15,8 +15,6 @@ generator client {
 }
 
 datasource db {
-  // provider = "mys"
-  // url      = "file:./dev.db"
   provider = "mysql"
   url = env("DATABASE_URL")
   referentialIntegrity = "prisma"
