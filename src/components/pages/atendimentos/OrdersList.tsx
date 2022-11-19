@@ -72,18 +72,18 @@ return (
                     </div> */}
                 <StatusInfo 
                 textColor={`${
-                        osStatus === 'finalizado' ? 'text-green-700' : 
-                        osStatus === 'andamento' ? 'text-blue-700' :
+                        osStatus === 'finalizado' ? 'text-emerald-700' : 
+                        osStatus === 'andamento' ? 'text-indigo-700' :
                         osStatus === 'pendente' ? 'text-yellow-700' :
                         osStatus === 'aberto' ? 'text-cyan-700' :
-                        'text-blue-700'
+                        'text-indigo-700'
                     }`} 
                     backgroundColor={`${
-                        osStatus === 'finalizado' ? 'bg-green-100' : 
-                        osStatus === 'andamento' ? 'bg-blue-100' :
+                        osStatus === 'finalizado' ? 'bg-emerald-100' : 
+                        osStatus === 'andamento' ? 'bg-indigo-100' :
                         osStatus === 'pendente' ? 'bg-yellow-100' :
                         osStatus === 'aberto' ? 'bg-cyan-100' :
-                        'bg-blue-100'
+                        'bg-indigo-100'
                     }`}  status={osStatus} />
             </section>
 

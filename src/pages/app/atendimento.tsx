@@ -126,7 +126,7 @@ const Atendimento: NextPage = () => {
           </article>
         </section>
 
-        <section className="flex w-full h-full overflow-hidden border-solid border-4 bg-white border-slate-100 px-1 py-1 rounded-2xl">
+        <section className="flex flex-col w-full h-full overflow-hidden border-solid border-4 bg-white border-slate-100 px-1 py-1 rounded-2xl">
               
           <article className="w-full overflow-auto">
             {

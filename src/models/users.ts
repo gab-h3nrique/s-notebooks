@@ -2,18 +2,25 @@ import prisma from "../../db/prisma"
 
 function model() {
 
+    const createUser = async(user:any) => {
+        const userDb = await prisma.users.create({
+            data: {...user}
+        })
+        return userDb
+    }
+
     const getUserById = async(idParam:number) => {
-        const user = await prisma.users.findFirst({
+        const userDb = await prisma.users.findFirst({
             where: { 
                 id: idParam, 
             }
         })
-        return user
+        return userDb
     }
 
     const getAllUsers = async() => {
-        const user = await prisma.users.findMany({select: {id:true, name:true, email:true, role:true}})
-        return user
+        const userDb = await prisma.users.findMany({select: {id:true, name:true, email:true, role:true}})
+        return userDb
     }
 
     
@@ -28,6 +35,6 @@ function model() {
 
 
     // export all function that is in the return
-    return { getUserById, getAllUsers }
+    return { createUser, getUserById, getAllUsers }
 }
 export const Users = model();

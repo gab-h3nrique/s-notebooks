@@ -22,8 +22,8 @@ const Sidebar = (props:Props) => {
         <aside className={`relative flex flex-col gap-12 duration-700  ${open ? 'w-[15rem]' :'w-[6.1rem]'} px-3 py-8 bg-white rounded-2xl`}>
 
 
-            <div className={`absolute w-fit h-fit duration-700 ${!open ? 'rotate-0' :'rotate-180'} -right-3 top-12 bg-orange-500 border-4 border-solid border-white rounded-full p-[.3rem]`}>
-                <AngleUpIcon transform={'rotate(90)'} width={15} height={15} fill={`white`}/>
+            <div className={`absolute w-fit h-fit duration-700 ${!open ? 'rotate-0' :'rotate-180'} -right-3 top-[46px] bg-orange-500 border-[6px] border-solid border-white rounded-full p-[.18rem]`}>
+                <AngleUpIcon transform={'rotate(90)'} width={20} height={20} fill={`white`}/>
             </div>        
 
             <section className="hover:scale-110 duration-300 ">

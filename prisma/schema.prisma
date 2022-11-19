@@ -11,11 +11,15 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  // provider = "mys"
+  // url      = "file:./dev.db"
+  provider = "mysql"
+  url = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
 }
 
 model Users {

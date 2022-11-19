@@ -21,9 +21,9 @@ const Layout = ({page, children}:Props) => {
 
             <div className="flex flex-col gap-1 w-screen h-screen">
 
-                <NavBar></NavBar>
+                {/* <NavBar></NavBar> */}
 
-                <div className="flex justify-center h-full w-full ">
+                <div className="flex justify-center h-full w-full border-t-[3px] border-orange-600">
 
                     <section className="flex justify-around w-full p-2">
 

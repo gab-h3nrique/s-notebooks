@@ -2,6 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from "../../../db/prisma";
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt'
 
 export default async function handler(req: NextApiRequest,res: NextApiResponse) {
     
@@ -15,16 +16,16 @@ export default async function handler(req: NextApiRequest,res: NextApiResponse) 
     try {
 
         const userDb = await prisma.users.findUnique({
-            where: {
-                email: email
-            }
+            where: { email: email }
         })
         
-        if(!userDb || email !== userDb.email)  return res.status(404).json({ message: 'email or password invalid!' })
+        if(!userDb)  return res.status(404).json({ message: 'email ou senha inválidos!' })
         
-        if(password !== userDb.password)  return res.status(404).json({ message: 'email or password invalid!' })
+        if(!await bcrypt.compare(password, userDb.password)) return res.status(404).json({ message: 'email ou senha inválidos!' }) 
 
-        const userLogin = {id:userDb.id, name:userDb.name, email:userDb.email};
+        // if(password !== userDb.password)  return res.status(404).json({ message: 'email ou senha inválidos!' })
+
+        const userLogin = {id:userDb.id, name:userDb.name, email:userDb.email, role:userDb.role};
 
         const accessToken = jwt.sign(userLogin, process.env.ACCESS_TOKEN as string);
         
