@@ -27,7 +27,7 @@ const Sidebar = (props:Props) => {
             </div>        
 
             <section className="hover:scale-110 duration-300 ">
-                <div onClick={() => setOpen(!open)} className={`flex ${open ? ' justify-start' :' delay-500'} w-full gap-2 items-center cursor-pointer h-16 rounded-2xl px-3 duration-700`}>
+                <div onClick={() => setOpen(!open)} className={`flex ${open ? ' justify-start' :' delay-500'} w-full gap-[.3rem] items-center cursor-pointer h-16 rounded-2xl px-3 duration-700`}>
 
                     <div className={ `flex duration-300 delay-200 ${open && "rotate-[360deg]"} border-2 bg-orange-500 border-white w-fit h-fit rounded-lg p-2`}>
                         <div className={`cursor-pointer duration-300 ${open && "rotate-[-360deg]"} w-full delay-200`}>
@@ -36,7 +36,7 @@ const Sidebar = (props:Props) => {
                     </div>
 
                     <div className="">
-                        <h1 className={`text-orange-500 text-xl font-bold w-0 ${!open ? "w-0 opacity-0 duration-300" : "w-full opacity-1 duration-700 delay-500"}`}>Notebooks</h1>
+                        <h1 className={`text-orange-500 text-[1.2rem] font-bold w-0 ${!open ? "w-0 opacity-0 duration-300" : "w-full opacity-1 duration-700 delay-500"}`}>Notebooks</h1>
                     </div>
 
                 </div>
