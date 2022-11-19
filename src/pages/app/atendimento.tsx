@@ -14,6 +14,7 @@ import OrderList from '../../components/pages/atendimentos/OrdersList'
 import Paginate from '../../components/pages/Paginate'
 import IconMenu from '../../components/barComponent/IconMenu'
 import SearchIcon from '../../components/icons/SearchIcon'
+import SpinnerIcon from '../../components/icons/SpinnerIcon'
 
 /* components */
 
@@ -41,13 +42,17 @@ const Atendimento: NextPage = () => {
 
   const [orderId, setOrderId] = useState<number | null>()
 
+  const [loading, setLoading] = useState<boolean>(false)
+
   const getOrders = async(page:number, limit:number) => {
-   
+
+    setLoading(true)
     const {response} = await Api.get('/api/auth/orders', {page, limit})
 
     setTotal(response.totalPages)
     setPage(response.currentPage)
     setArrayOrder(response.results)
+    setLoading(false)
   } 
 
   const pageHandle = async(paramPage:number) => {
@@ -127,23 +132,31 @@ const Atendimento: NextPage = () => {
         </section>
 
         <section className="flex flex-col w-full h-full overflow-hidden border-solid border-4 bg-white border-slate-100 px-1 py-1 rounded-2xl">
-              
-          <article className="w-full overflow-auto">
-            {
-                  arrayOrder?.map(({id,name, client, status}:any, index)=>{
-                    return  (
-                      <React.Fragment key={index}>
-                        <OrderList 
-                          background={index % 2 === 0 ? true : false} 
-                          onClick={()=>{setOrderId(id),  setNewOrderModal(true)} } 
-                          
-                          osNumber={id}  clientName={client.name}  clientDocument={client.document} deviceName={name ? name : 'não informado'}  osStatus={status ? status : 'aberto'}
-                        />
-                      </React.Fragment>
-                    )
-                  }) 
-              }
-          </article>
+          {
+            loading ? 
+              <article className="w-full h-full flex justify-center items-center">
+                <div className="flex gap-2 animate-ping">
+                  <SpinnerIcon className="h-12 w-12 text-orange-500 fill-white"/>
+                </div>
+              </article>
+            : 
+              <article className="w-full overflow-auto">
+              {
+                    arrayOrder?.map(({id,name, client, status}:any, index)=>{
+                      return  (
+                        <React.Fragment key={index}>
+                          <OrderList 
+                            background={index % 2 === 0 ? true : false} 
+                            onClick={()=>{setOrderId(id),  setNewOrderModal(true)} } 
+                            
+                            osNumber={id}  clientName={client.name}  clientDocument={client.document} deviceName={name ? name : 'não informado'}  osStatus={status ? status : 'aberto'}
+                          />
+                        </React.Fragment>
+                      )
+                    }) 
+                }
+              </article>
+          }  
 
         </section>
         
