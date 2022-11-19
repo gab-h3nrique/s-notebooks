@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import Snotebooks from "./icons/Snotebooks";
+import SpinnerIcon from "./icons/SpinnerIcon";
 
 
 
 const Login = ( props: any ) =>{
-    const {setEmail, setPassword, message, button, login} = props.user;
+    const {setEmail, setPassword, message, button, loading, login} = props.user;
 
     const handleEmail = (e:any) => {
         setEmail(e.target.value)
@@ -12,43 +14,72 @@ const Login = ( props: any ) =>{
         setPassword(e.target.value)
     }
 
+    useEffect(()=>{
+
+    },[loading])
+
     return (
-      <div className="bg-white">
-          <div className="w-96 px-4 mx-auto pt-6">
-              <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-2xl rounded-lg  border-0">
-                  <div className="rounded-t mb-0 px-6 py-6">
-                      <div className="text-center mb-3">
-                          <h6 className="text-gray-500 text-sm font-bold">
-                              Login in with
-                          </h6>
-                      </div>
-                      <div className="btn-wrapper text-center">
-                          {/* github e google */}
-                      </div>
-                      <hr className="mt-6 border-b-1 border-gray-300"/>
-                  </div>
-                  <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
-                      <div className="text-gray-400 text-center mb-3 font-bold">
-                      <small>Login in with credentials</small>
-                      </div>
-                      <form>
-                      <div className="relative w-full mb-3">
-                          <label className="block  text-gray-700 text-xs font-bold mb-2" htmlFor="grid-password">Email</label><input onChange={(e)=>{handleEmail(e)}} type="email" className="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" placeholder="Email" />
-                      </div>
-                      <div className="relative w-full mb-3">
-                          <label className="block  text-gray-700 text-xs font-bold mb-2" htmlFor="grid-password">Password</label><input onChange={(e)=>{handlePassword(e)}} type="password" className="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" placeholder="Password"  />
-                      </div>
-                      <div className="flex justify-center">
-                        { message && <span className="text-red-600/75  text-center font-semibold">{message}</span>}
-                      </div>
-                      <div className="text-center mt-6">
-                          <button disabled={!button} onClick={()=>login()} className="bg-black text-white active:bg-gray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150" type="button"> Login In </button>
-                      </div>
-                      </form>
-                  </div>
-              </div>
-          </div>
-      </div>
+
+    <main className="w-screen h-screen grid grid-cols-2">
+
+        <section className="col-span-2 lg:col-span-1 h-full">
+
+            <article className="flex h-full w-full justify-center items-center">
+
+                <div className="flex flex-col w-full p-5 justify-center items-center gap-5">
+
+                <div className="bg-orange-500 opacity-90 p-6 rounded-2xl shadow-lg shadow-slate-500/50">
+                    <Snotebooks width={80} height={80} fill={'white'} className={'hover:scale-105 duration-200'}/>
+                </div>
+                
+                <p className="text-3xl text-slate-500 font-semibold py-6">Fazer Login no S-notebooks</p>
+
+                <div className="w-full flex flex-col gap-3 max-w-xl py-2">
+                    <label className="text-xl font-medium text-gray-400">Email</label>
+                    <input onChange={(e)=>{handleEmail(e)}} type="email" className="text-xl font-medium text-slate-600 rounded-xl w-full bg-gray-50 p-4 border-2 border-white outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder="Digite seu email" />
+                </div>
+
+                <div className="w-full flex flex-col gap-3 max-w-xl py-2">
+                    <label className="text-xl font-medium text-gray-400">Senha</label>
+                    <input onChange={(e)=>{handlePassword(e)}} type="password" className="text-xl font-medium text-slate-600 rounded-xl w-full bg-gray-50 p-4 border-2 border-white outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder="Digite sua senha" />
+                </div>
+
+                <div className="w-full flex flex-col items-center gap-3 max-w-xl py-2">
+                    { message && <span className="text-red-600/75  text-center font-bold w-fit">{message}</span>}
+                    <button disabled={!button} onClick={()=>login()} className="flex justify-center items-center gap-2 text-xl font-bold text-white rounded-xl w-full bg-orange-500 p-4 opacity-80 hover:opacity-100 hover:scale-105 hover:animate-none duration-150 animate-pulse cursor-pointer">
+
+                        {loading && <SpinnerIcon className="h-5 w-5 text-orange-300 fill-white"/> } 
+                        <p className={`duration-500`}>
+                            {!loading ? 'Entrar' : 'Carregando . . .'}
+                        </p>
+
+
+                    </button>
+                </div>
+
+
+                </div>
+
+            </article>
+
+        </section>
+
+        <section className="hidden bg-orange-500 lg:col-span-1 lg:h-full lg:flex opacity-80 hover:opacity-[.85] hover:scale-[1.01] duration-150 cursor-pointer">
+            <article className="flex h-full w-full justify-center items-center">
+                <h1 className="text-8xl text-white font-bold">
+                    Savassi 
+                    <br></br> 
+                    Notebooks
+                    <br></br>
+                    <a href="https://github.com/gab-h3nrique">
+                    <p className="text-xl font-semibold hover:scale-x-105 duration-200 text-white w-fit">Created and Designed by Gabriel Henrique</p>
+                    </a>
+                </h1>
+            </article>
+        </section>
+
+    </main>
+
     )
   }
   

@@ -6,6 +6,7 @@ import Router from 'next/router';
 
 import LoginForm from '../components/LoginForm';
 import { AuthContext } from '../context/auth';
+import Snotebooks from '../components/icons/Snotebooks';
 
 const Home: NextPage = () => {
  
@@ -14,10 +15,12 @@ const Home: NextPage = () => {
   const [password, setPassword] = useState();
   const [button, setButton] = useState(false);
   const [message, setMessage] = useState();
+  const [loading, setLoading] = useState<boolean>(false)
 
   const { setAuthUserLogin }:any = useContext(AuthContext)
 
   const login = async() => {
+    setLoading(true)
     let data = await Api.auth('/api/login', {name, email, password});
     if(data.accessToken && data.user) {
       await setAuthUserLogin(data.user)
@@ -25,6 +28,7 @@ const Home: NextPage = () => {
     } else {
       setMessage(data.message);
     }
+    setLoading(false)
   }
 
   useEffect(() => {
@@ -37,7 +41,7 @@ const Home: NextPage = () => {
 
 return (
   <>
-      <LoginForm user={ {setName, setEmail, setPassword, message, button, login} } />
+    <LoginForm user={ {setName, setEmail, setPassword, message, button, loading, login} } />
   </>
 )
 }
