@@ -22,8 +22,8 @@ const Sidebar = (props:Props) => {
     const { menu } = props
     const [open, setOpen] = useState<boolean>(false)
 
-    function handleSidebar() {
-        setSidebarStorage(!getSidebarStorage())
+    function handleSidebar(param:boolean) {
+        setSidebarStorage(param)
         setOpen(getSidebarStorage())
     }
     
@@ -35,7 +35,7 @@ const Sidebar = (props:Props) => {
     }
 
     useEffect(()=>{
-        if (typeof window !== "undefined") handleSidebar()
+        if (typeof window !== "undefined") handleSidebar(getSidebarStorage())
     },[])
 
     return (
@@ -47,7 +47,7 @@ const Sidebar = (props:Props) => {
             </div>        
 
             <section className="hover:scale-110 duration-300 ">
-                <div onClick={() => handleSidebar()} className={`flex ${open ? ' justify-start' :' delay-500'} w-full gap-[.3rem] items-center cursor-pointer h-16 rounded-2xl px-3 duration-700`}>
+                <div onClick={() => handleSidebar(!getSidebarStorage())} className={`flex ${open ? ' justify-start' :' delay-500'} w-full gap-[.3rem] items-center cursor-pointer h-16 rounded-2xl px-3 duration-700`}>
 
                     <div className={ `flex duration-300 delay-200 ${open && "rotate-[360deg]"} border-2 bg-orange-500 border-white w-fit h-fit rounded-lg p-2`}>
                         <div className={`cursor-pointer duration-300 ${open && "rotate-[-360deg]"} w-full delay-200`}>
