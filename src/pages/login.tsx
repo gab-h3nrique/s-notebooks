@@ -10,11 +10,11 @@ import Snotebooks from '../components/icons/Snotebooks';
 
 const Home: NextPage = () => {
  
-  const [name, setName] = useState();
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [name, setName] = useState<string>();
+  const [email, setEmail] = useState<string>();
+  const [password, setPassword] = useState<string>();
   const [button, setButton] = useState(false);
-  const [message, setMessage] = useState();
+  const [message, setMessage] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false)
 
   const { setAuthUserLogin }:any = useContext(AuthContext)

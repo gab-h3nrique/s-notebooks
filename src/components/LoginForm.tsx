@@ -46,7 +46,7 @@ const Login = ( props: any ) =>{
 
                 <div className="w-full flex flex-col items-center gap-3 max-w-xl py-2">
                     { message && <span className="text-red-600/75  text-center font-bold w-fit">{message}</span>}
-                    <button disabled={!button} onClick={()=>login()} className="flex justify-center items-center gap-2 text-xl font-bold text-white rounded-xl w-full bg-orange-600 p-4 opacity-80 hover:opacity-100 hover:scale-105 hover:animate-none duration-200 animate-pulse cursor-pointer">
+                    <button disabled={!button} onClick={()=>login()} className="flex justify-center items-center gap-2 text-xl font-bold text-white rounded-xl w-full bg-orange-600 p-4 opacity-80 hover:opacity-100 hover:scale-105 hover:animate-none duration-200 cursor-pointer">
 
                         {loading && <SpinnerIcon className="h-5 w-5 text-orange-300 fill-white"/> } 
                         <p className={`duration-500`}>

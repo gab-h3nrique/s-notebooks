@@ -85,7 +85,7 @@ const Atendimento: NextPage = () => {
             </div>
 
             <div className="flex gap-3">
-              <div onClick={() => !searchOpen && setSearchOpen(true)} className={`flex justify-center items-center bg-orange-500 gap-2 cursor-pointer rounded-2xl p-3 duration-500 hover:scale-110  ${searchOpen ? 'bg-slate-100 border-solid border-[.2rem] border-white' : ''}`}>
+              <div onClick={() => !searchOpen && setSearchOpen(true)} className={`flex justify-center items-center bg-orange-500 gap-2 cursor-pointer rounded-2xl p-3 duration-300 hover:scale-110  ${searchOpen ? 'bg-slate-100 border-solid border-[.2rem] border-white' : ''}`}>
                   <div  onClick={() => searchOpen && handleSearch()} className="w-fit h-fit">
                     <SearchIcon width={20} height={20} fill={`${searchOpen ? '#94a3b8' : 'white'}`}/>
                   </div>

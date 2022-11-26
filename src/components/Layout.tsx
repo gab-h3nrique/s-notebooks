@@ -17,7 +17,7 @@ export interface Props {
 const Layout = ({page, children}:Props) => {
     return (
         <>
-            <Header/>
+            
 
             <div className="flex flex-col gap-1 w-screen h-screen">
 

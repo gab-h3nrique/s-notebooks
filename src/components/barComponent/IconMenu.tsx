@@ -4,8 +4,8 @@ import { useState } from "react"
 const IconMenu = ({children}:any) => {
     const [open, setOpen] = useState<boolean>(true)
     return (
-        <div className={`flex cursor-pointer duration-500 ${open && "rotate-[360deg]"} duration-500 border-white w-fit h-fit rounded-lg p-2 cursor-pointer`}>
-            <div className={`cursor-pointer duration-500 ${open && "rotate-[-360deg]"} duration-500`}>
+        <div className={`flex cursor-pointer ${open && "rotate-[360deg]"} duration-500 border-white w-fit h-fit rounded-lg p-2 cursor-pointer`}>
+            <div className={`cursor-pointer ${open && "rotate-[-360deg]"} duration-500`}>
             {children}
             </div>
         </div>

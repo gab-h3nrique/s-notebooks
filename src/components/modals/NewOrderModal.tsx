@@ -462,7 +462,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                         <SpinnerIcon className="h-5 w-5 text-orange-300 fill-white"/>
                                     } 
                                     <p className={`text-white text-sm font-semibold duration-500`}>
-                                        {!loading ? 'Salvar ordem de serviço' : 'Carregando . . .'}
+                                        {!loading ? 'Salvar ordem de serviço' : 'Salvando . . .'}
                                     </p>
                                 </div>
                             </div>

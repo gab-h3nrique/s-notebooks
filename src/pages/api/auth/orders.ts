@@ -80,8 +80,6 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
                 results: await Orders.getPageOrders(startIndex, limit)
             }
             
-            response.results = await Orders.getPageOrders(startIndex, limit)
-
             return res.status(200).json({response: response})
             
         }

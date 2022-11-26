@@ -1,4 +1,5 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document'
+import Header from '../components/Header'
 
 class MyDocument extends Document {
   static async getInitialProps(ctx:any) {
@@ -22,7 +23,9 @@ class MyDocument extends Document {
   render() {
     return (
       <Html>
-        <Head />
+        <Head>
+          <Header/>
+        </Head>
         <body className="bg-slate-200 h-screen w-screen">
           <Main />
           <NextScript />
