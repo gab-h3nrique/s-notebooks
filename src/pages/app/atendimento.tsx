@@ -75,8 +75,6 @@ const Atendimento: NextPage = () => {
 
   return (
     <Layout page={'atendimento'}>
-      <main className="flex overflow-auto flex-col w-full h-full gap-4 px-4">
-
         <section>
           <article className="flex w-full justify-between py-2">
 
@@ -163,9 +161,6 @@ const Atendimento: NextPage = () => {
         <section>
             <Paginate page={page ? page : 1} pageHandle={pageHandle} total={total ? total : 1} />
         </section>
-
-      </main>
-      
       <NewOrderModal isOpen={newOrderModal} onClose={()=> setNewOrderModal(false)} id={orderId} orderHandle={orderHandle} />
     </Layout>
   )

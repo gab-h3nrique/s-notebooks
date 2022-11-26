@@ -28,8 +28,9 @@ const Layout = ({page, children}:Props) => {
                     <section className="flex justify-around w-full p-2">
 
                         <Sidebar menu={page}/>
-
-                        {children}
+                        <main className="flex overflow-auto flex-col w-full h-full gap-4 px-4">
+                            {children}
+                        </main>
 
                         {/* <Asidebar/> */}
                         

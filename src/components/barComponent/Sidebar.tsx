@@ -13,6 +13,7 @@ import IconMenu from "./IconMenu"
 import Menus from "./Menus"
 
 import Router from 'next/router';
+import GearIcon from "../icons/GearIcon"
 
 interface Props {
     menu: string
@@ -90,7 +91,7 @@ const Sidebar = (props:Props) => {
                 </Menus>
                <Menus  onClick={()=>{Router.push('/app/configuracao')}} className={`${menu === "configuracao" && 'bg-orange-500' }`}>
                     <IconMenu>
-                        <CloudPlus width={30} height={30} fill={`${menu === "configuracao" ? "white" : "#94a3b8"}`}/>
+                        <GearIcon className={`h-8 w-8 text-orange-300 ${menu === "configuracao" ? "fill-white" : "fill-slate-400"}`} fill={`${menu === "configuracao" ? "white" : "#94a3b8"}`}/>
                     </IconMenu>
                     <h1 className={`${menu === "configuracao" ? "text-white" : "text-slate-400" }  text-sm font-semibold duration-500 w-0 ${!open ? "w-0 opacity-0 duration-300" : "w-full opacity-1 duration-700 delay-500"}`}>
                         Configuração
