@@ -104,7 +104,7 @@ const Configuracao: NextPage = () => {
                           </button>
                       </div>
 
-                      <div className={`${!dropdownOrderInfo ? "opacity-0 pointer-events-none" : "opacity-1 pointer-events-auto"} duration-150 fixed left-48 z-10  w-56 origin-top-right rounded-md bg-white shadow-2xl`} >
+                      <div className={`${!dropdownOrderInfo ? "opacity-0 pointer-events-none" : "opacity-1 pointer-events-auto"} duration-150 absolute z-10 w-56 origin-top-right rounded-md bg-white shadow-2xl`} >
                           <div className="py-1" >
                               <>
                                   {
