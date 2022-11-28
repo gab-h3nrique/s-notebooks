@@ -384,8 +384,8 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                         <div className="col-span-4">
                                             <div >
                                                 <label className="block text-sm font-medium text-slate-500">Técnico responsável</label>
-                                                <button type="button" onClick={()=> setDropdownOrderInfo(!dropdownOrderInfo)} className="flex justify-between px-5 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150">
-                                                <label className="block text-sm font-medium text-slate-500">
+                                                <button type="button" onClick={()=> setDropdownOrderInfo(!dropdownOrderInfo)} className="flex justify-between px-5 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 ">
+                                                <label className="block text-sm font-medium text-slate-500 overflow-hidden text-ellipsis whitespace-nowrap">
                                                     {
                                                         userArray ?
                                                             userArray.map(({id, name})=>{return orderInfo.userId === id ? name : null})
