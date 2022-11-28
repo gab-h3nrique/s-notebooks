@@ -14,21 +14,61 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
     const token = <string> cookie?.replace('auth=', 'Bearer ');
 
 
-    const browser = await puppeteer.launch()
-    const page = await browser.newPage()
+    (async () => {
+        const PCR = require("puppeteer-chromium-resolver");
+        const option = {
+            revision: "",
+            detectionPath: "",
+            folderName: ".chromium-browser-snapshots",
+            defaultHosts: ["https://storage.googleapis.com", "https://npm.taobao.org/mirrors"],
+            hosts: [],
+            cacheRevisions: 2,
+            retry: 3,
+            silent: false
+        };
+        const stats = await PCR(option);
+        const browser = await stats.puppeteer.launch({
+            headless: false,
+            args: ["--no-sandbox"],
+            executablePath: stats.executablePath
+        }).catch(function(error:any) {
+            console.log(error);
+        });
+
+
+
+        const page = await browser.newPage();
+        page.setExtraHTTPHeaders({
+            Authorization: token
+        })
+        await page.goto(`http://${host}/orderPdf?id=${id}`, {  waitUntil: 'networkidle0' })
+        const pdf = await page.pdf({
+            printBackground: true,
+            format: 'Letter',
+        })
+        await browser.close();
+
+        return res.setHeader("content-type", "application/pdf").send(pdf)
+
+
+    })();
+
+
+    // const browser = await puppeteer.launch()
+    // const page = await browser.newPage()
     
-    page.setExtraHTTPHeaders({
-        Authorization: token
-    })
+    // page.setExtraHTTPHeaders({
+    //     Authorization: token
+    // })
 
-    await page.goto(`http://${host}/orderPdf?id=${id}`, {  waitUntil: 'networkidle0' })
+    // await page.goto(`http://${host}/orderPdf?id=${id}`, {  waitUntil: 'networkidle0' })
 
-    const pdf = await page.pdf({
-        printBackground: true,
-        format: 'Letter',
-    })
+    // const pdf = await page.pdf({
+    //     printBackground: true,
+    //     format: 'Letter',
+    // })
 
     // await browser.close()
 
-    return res.setHeader("content-type", "application/pdf").send(pdf)
+    // return res.setHeader("content-type", "application/pdf").send(pdf)
 }
