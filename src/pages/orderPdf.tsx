@@ -102,10 +102,7 @@ return (
               </div>
             </div>
 
-
-
-
-            <div className="grid grid-cols-2 rounded-md overflow-hidden bg-gray-500">
+            {/* <div className="grid grid-cols-2 rounded-md overflow-hidden bg-gray-500">
               <header className="col-span-2 text-white text-lg font-semibold px-2 py-1">Equipamento</header>
 
               <div className="px-2 border-4 border-r-2 border-gray-500 bg-white rounded-md">
@@ -125,7 +122,7 @@ return (
                 <p className="text-base text-slate-600 font-bold">N° de Série</p>
                 <p className="text-sm text-slate-600 font-semibold">{order.serialNumber}</p>
               </div>
-            </div>
+            </div> */}
 
             <div className="grid grid-cols-2 rounded-md overflow-hidden bg-gray-500">
               <header className="col-span-2 text-white text-lg font-semibold px-2 py-1">Acessórios</header>
