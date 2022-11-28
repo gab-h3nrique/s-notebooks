@@ -35,7 +35,7 @@ const Home: NextPage<Props> = ({content}) => {
 return (
   order &&
     <>
-        <main className="flex overflow-auto flex-col gap-4 p-4 bg-white w-[210mm] h-[297mm]" >
+        <main className="flex overflow-auto flex-col gap-4 p-4 bg-white w-[230mm] h-[297mm]" >
 
         <div className="w-full h-full">
 
