@@ -11,6 +11,7 @@
     "bcrypt": "^5.1.0",
     "jose": "^4.9.0",
     "jsonwebtoken": "^8.5.1",
+    "locate-chrome": "^0.1.1",
     "next": "latest",
     "puppeteer": "^19.2.2",
     "puppeteer-chromium-resolver": "^19.1.0",

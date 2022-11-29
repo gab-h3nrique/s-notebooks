@@ -26,11 +26,15 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
             retry: 3,
             silent: false
         };
+
+        const locateChrome = require('locate-chrome');
+        const executablePath = await new Promise(resolve => locateChrome((arg: any) => resolve(arg)));
+
         const stats = await PCR(option);
         const browser = await stats.puppeteer.launch({
             headless: false,
             args: ["--no-sandbox"],
-            executablePath: stats.executablePath
+            executablePath: executablePath
         }).catch(function(error:any) {
             console.log(error);
         });
