@@ -27,7 +27,7 @@ export default async function handler(req: NextApiRequest,res: NextApiResponse) 
 
         const userLogin = {id:userDb.id, name:userDb.name, email:userDb.email, role:userDb.role};
 
-        const accessToken = jwt.sign(userLogin, process.env.ACCESS_TOKEN as string);
+        const accessToken = jwt.sign(userLogin, `${process.env.ACCESS_TOKEN}` as string);
         
         return res.status(200).json({ accessToken: accessToken, user: userLogin });
 
