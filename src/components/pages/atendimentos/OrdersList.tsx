@@ -62,7 +62,7 @@ export default function OrderList(props :Props) {
                 </section>
 
                 <section className="flex w-36 justify-end items-center gap-2">
-                    <div  onClick={()=>{window.open(`/api/auth/pdf?id=${osNumber}`)}} className="flex justify-center items-center hover:scale-105 hover:bg-slate-200 p-2 rounded-lg">
+                    <div  onClick={()=>{window.open(`/orderPdf?id=${osNumber}`)}} className="flex justify-center items-center hover:scale-105 hover:bg-slate-200 p-2 rounded-lg">
                         <FileDownIcon className={`h-6 w-8 fill-slate-400`} />
                     </div>
                         {/* <div className="flex justify-center items-center">
