@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import puppeteer from 'puppeteer'
+// import puppeteer from 'puppeteer'
 
 // import chromium from "chrome-aws-lambda";
 // import playwright from "playwright-core";
@@ -9,13 +9,13 @@ import puppeteer from 'puppeteer'
 // https://vercel.com/blog/introducing-vercel-og-image-generation-fast-dynamic-social-card-images
 export default async function handler( req: NextApiRequest,res: NextApiResponse<any>) {
     
-    const { host } = req.headers
-    const {id} = req.query
+    // const { host } = req.headers
+    // const {id} = req.query
 
-    if(!id) return res.status(500).send('esperando parametro id')
+    // if(!id) return res.status(500).send('esperando parametro id')
 
-    const cookie = req.headers.cookie
-    const token = <string> cookie?.replace('auth=', 'Bearer ');
+    // const cookie = req.headers.cookie
+    // const token = <string> cookie?.replace('auth=', 'Bearer ');
 
 
     // const browser = await puppeteer.launch()
