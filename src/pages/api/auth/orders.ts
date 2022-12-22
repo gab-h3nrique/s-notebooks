@@ -65,7 +65,7 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
             const limit = Number(req.query.limit)
 
             let orders;
-
+            console.log('id', id)
             if(id) orders = await Orders.getOrderById(Number(id))
             if(!id) orders = await Orders.getAllOrders()
             

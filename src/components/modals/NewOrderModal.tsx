@@ -4,6 +4,7 @@
 import { Key, ReactElement, ReactNode, useEffect, useState } from "react";
 import ReactDom from "react-dom";
 import Api from "../../../lib/api";
+import { ServiceOrderType, ServiceType } from "../../types/service";
 import CheckDouble from "../icons/CheckDouble";
 import CheckIcon from "../icons/CheckIcon";
 import CircleCheckIcon from "../icons/CircleCheckIcon";
@@ -12,6 +13,7 @@ import CloseIcon from "../icons/CloseIcon";
 import DescktopIcon from "../icons/DescktopIcon";
 import IconComponent from "../icons/IconComponent";
 import PasteIcon from "../icons/PasteIcon";
+import PlusIcon from "../icons/PlusIcon";
 import SpinnerIcon from "../icons/SpinnerIcon";
 import UserPenIcon from "../icons/UserPenIcon";
 import ModalComponent from "./ModalComponent";
@@ -62,22 +64,28 @@ interface User {
     name: string;
     email: string;
     role: number
-} 
-
-
+}
 
 const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
     const [portal, setPortal] = useState<HTMLElement>()
+
+    const [userArray, setUserArray] = useState<User[]>()
+    const [serviceArray, setServiceArray] = useState<ServiceType[]>()
 
     const [client, setClient] = useState<Client>({name: "", document: "", email: "", number: "", cep: "", info: ""})
     const [equipament, setEquipament] = useState<Equipment>({name: "", serialNumber: "", brand: "", model: ""})
     const [accessories, setAccessories] = useState<Accessories>({charger: false, battery: false, energyCable: false, bag: false, others: ""})
     const [orderInfo, setOrderInfo] = useState<OrderInfo>({backup: false, backupDescription: "", defectDescription: "", technicalReport: "", generalDescription: "", deliveryConfirmation: false, userId: null, status: ""})
-    const [userArray, setUserArray] = useState<User[]>()
     
+    const [searchService, setSearchService] = useState<string>("")
+    const [addedServicesOrder, setAddedServicesOrder] = useState<ServiceOrderType[]>([{id: null, name: "", status: "", orderId: null, value: 0}])
+
     const [dropdownEquipament, setDropdownEquipament] = useState<boolean>(false)
     const [dropdownOrderInfo, setDropdownOrderInfo] = useState<boolean>(false)
     const [dropdownStatus, setDropdownStatus] = useState<boolean>(false)
+    
+    const [dropdownService, setDropdownService] = useState<boolean>(false)
+    const [dropdownStatusService, setDropdownStatusService] = useState<boolean>(false)
 
 
     const [loading, setLoading] = useState<boolean>(false)
@@ -102,6 +110,14 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
         return user
     }
 
+    const getServices = async() => {
+        const {response:services} = await Api.get('/api/auth/services')
+        console.log('services', services)
+        return services
+    }
+
+
+
     const saveOrder = async() => {
         setLoading(true)
         const { response } = await Api.post('/api/auth/orders', {client, equipament, accessories, orderInfo})
@@ -117,6 +133,11 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
         if(response.id) setClient({...client, ...response})
     }
 
+    const addServiceOrder = () => {
+        setAddedServicesOrder( addedServicesOrder => [...addedServicesOrder, {id: null, name: "", status: "", orderId: null, value: 0}])
+        console.log(addedServicesOrder)
+    }
+
     
     useEffect(()=>{
         if (typeof window !== "undefined") {
@@ -130,6 +151,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
             (async()=>{
                 setUserArray(await getUsers())
+                setServiceArray(await getServices())
                 getOrderById(id)
             })()
 
@@ -159,7 +181,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                 setDropdownOrderInfo(false)
                                 setDropdownEquipament(false)
                             }
-                       })} className="flex flex-col bg-slate-100 w-[36rem] h-fit scale-[.93] rounded-2xl py-4 gap-4">
+                       })} className="flex flex-col bg-slate-100 w-[36rem] h-[56rem] scale-[.93] rounded-2xl py-4 gap-4 overflow-hidden">
                         <header className="px-4">
                             <section className="flex w-full justify-between">
                                 <div className="flex justify-center items-center">
@@ -172,6 +194,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                 </div>
                             </section>
                         </header>
+
                         <div className="flex flex-col bg-white px-4 py-2 gap-2 overflow-auto ">
 
                             <section className="flex flex-col gap-1">
@@ -372,14 +395,90 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                             <textarea onChange={(x)=> setOrderInfo({...orderInfo, technicalReport: x.target.value})} value={orderInfo.technicalReport} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" />
                                         </div> 
 
-                                        <div className="col-span-2">
-                                            <label className="block text-sm font-medium text-slate-500">Serviços</label>
-                                            <textarea onChange={(x)=> setOrderInfo({...orderInfo, generalDescription: x.target.value})} value={orderInfo.generalDescription} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" />
+    
+
+                                    </article>
+
+                                    <article>
+                                        <div className="flex flex-col gap-2">
+                                            <div className="flex gap-2 justify-start items-center">
+                                                <div onClick={()=> addServiceOrder()} className={`flex bg-orange-500 w-fit h-fit rounded-lg p-1 cursor-pointer hover:scale-105`}>
+                                                    <PlusIcon width={15} height={15} fill={`white`}/>
+                                                </div>
+                                                <label className="block text-sm font-medium text-slate-500">Serviços</label>
+                                            </div>
+
+                                            {
+                                                addedServicesOrder?.map(({},i)=>{
+                                                    return (
+                                                        <div key={i} className="grid grid-cols-12 gap-2">
+
+                                                            <div className="col-span-5 relative" onClick={()=> setDropdownStatusService(!dropdownStatusService)}>
+                                                                <div className="flex gap-1 col-span-4 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 px-3 py-1 border-2 border-gray-300 outline-none hover:border-transparent hover:ring hover:ring-orange-400 hover:scale-y-105 duration-150">
+                                                                    <input onChange={(event)=>{setSearchService(event.target.value)}} type="text" className={`h-full w-full outline-0`}  value={searchService}/>
+                                                                    <svg className={`-mr-1 ml-2 h-5 w-6 ${dropdownStatusService ? "rotate-[-180deg]" : "rotate-[0deg]"} duration-150`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" >
+                                                                        <path  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" />
+                                                                    </svg>
+                                                                </div>
+
+                                                            </div>
+
+                                                            <div className="col-span-4 relative" onClick={()=> setDropdownService(!dropdownService)}>
+                                                                <div className="flex gap-1 col-span-4 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 px-3 py-1 border-2 border-gray-300 outline-none hover:border-transparent hover:ring hover:ring-orange-400 hover:scale-y-105 duration-150">
+                                                                    <input onChange={(event)=>{setSearchService(event.target.value)}} type="text" className={`h-full w-full outline-0`}  value={searchService}/>
+                                                                    <svg className={`-mr-1 ml-2 h-5 w-6 ${dropdownService ? "rotate-[-180deg]" : "rotate-[0deg]"} duration-150`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" >
+                                                                        <path  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" />
+                                                                    </svg>
+                                                                </div>
+
+                                                            </div>
+
+                                                            <input type="number" onChange={(x)=> setOrderInfo({...orderInfo, backupDescription: x.target.value})} value={orderInfo.backupDescription} className="col-span-2 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder="Valor"/>
+                                                            
+                                                            <div onClick={onClose} className="flex items-center justify-center  duration-300 hover:scale-110 cursor-pointer">
+                                                                <div className={`flex bg-orange-500 w-fit h-fit rounded-lg p-1.5`}>
+                                                                    <CloseIcon width={20} height={20} fill={`white`}/>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                        </div>
+                                                    )
+                                                })
+                                            }
+                                            
+                                            <div className={`${!dropdownStatusService ? "opacity-0 pointer-events-none" : "opacity-1 pointer-events-auto"} duration-150 fixed top-[49%] left-2/4 translate-x-[-50%] translate-y-[-50%] z-10 w-60 h-48 origin-center rounded-md bg-white shadow-2xl overflow-auto cursor-pointer`} >
+                                                <div className="py-1" >
+
+                                                    {
+                                                        serviceArray?.filter(({name})=>{
+                                                            if(searchService == "") return name;
+                                                                else if(name.toLowerCase().includes(searchService?.toLocaleLowerCase())) return name;
+                                                        }).map(({name}, j)=>{
+                                                            return <a onClick={()=>{setDropdownStatusService(!dropdownStatusService); setSearchService(name)}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointe rounded-md" >{name}</a>
+                                                        })
+                                                    }
+
+                                                </div>
+                                            </div>
+
+                                            <div className={`${!dropdownService ? "opacity-0 pointer-events-none" : "opacity-1 pointer-events-auto"} duration-150 fixed top-[49%] left-2/4 translate-x-[-50%] translate-y-[-50%] z-10 w-32  origin-center rounded-md bg-white shadow-2xl cursor-pointer`} >
+                                                <div className="py-1" >
+
+                                                    <a onClick={()=>{setDropdownStatus(!dropdownStatus); setOrderInfo({...orderInfo, status: "aberto"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointe rounded-md" >aberto</a>
+                                                    <a onClick={()=>{setDropdownStatus(!dropdownStatus); setOrderInfo({...orderInfo, status: "andamento"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >andamento</a>
+                                                    <a onClick={()=>{setDropdownStatus(!dropdownStatus); setOrderInfo({...orderInfo, status: "pendente"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >pendente</a>
+                                                    <a onClick={()=>{setDropdownStatus(!dropdownStatus); setOrderInfo({...orderInfo, status: "finalizado"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >finalizado</a>
+
+                                                </div>
+                                            </div>
+
+                                            <hr></hr>
+
                                         </div>
 
                                     </article>
 
-                                    <article className="grid grid-cols-12 gap-x-2">
+                                    <article className="grid grid-cols-12 gap-x-2 py-1">
                                     
                                         <div className="col-span-4">
                                             <div >
@@ -454,6 +553,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
                             </section>
                         </div>
+
                         <footer className="flex justify-center items-center">
                             <div onClick={saveOrder} className="flex w-full px-6">
                                 <div className={`flex justify-center items-center bg-orange-500 gap-2 cursor-pointer w-full rounded-2xl py-3 px-3 duration-150 hover:scale-y-110`}>
