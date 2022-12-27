@@ -1,11 +1,11 @@
 import prisma from "../../db/prisma"
-import { Order } from "../types/orderType"
+import { OrderType } from "../types/orderType"
 
 
 function model() {
 
-    const createOrUpdateOrder = async(order:Order) => {
-        const orderDb = <Order> await prisma.orders.upsert({
+    const createOrUpdateOrder = async(order:OrderType) => {
+        const orderDb = <OrderType> await prisma.orders.upsert({
             where: { id: order.id ? order.id : -1 },
             update: {...order},
             create: { ...order},
@@ -15,14 +15,14 @@ function model() {
     }
 
     const getAllOrders = async() => {
-        const orderDb = <Order[]> await prisma.orders.findMany({
+        const orderDb = <OrderType[]> await prisma.orders.findMany({
             include:{client:true, services:true}
         })
         return orderDb
     }
 
     const getOrderById = async(id:number) => {
-        const orderDb = <Order> await prisma.orders.findUnique({
+        const orderDb = <OrderType> await prisma.orders.findUnique({
             where:{id:id},
             include:{client:true, services:true}
         })
@@ -30,7 +30,7 @@ function model() {
     }
     
     const getPageOrders = async(index: number, limit: number) => {
-        const orderDb = <Order[]> await prisma.orders.findMany({
+        const orderDb = <OrderType[]> await prisma.orders.findMany({
             skip: index,
             take: limit,
             include:{client:true, services:true},
@@ -48,7 +48,7 @@ function model() {
     }
 
     const searchOrders = async(content:string | number) => {
-        const clientFound = <Order[]> await prisma.orders.findMany({
+        const clientFound = <OrderType[]> await prisma.orders.findMany({
             where: {
                 OR: [
                     { id: Number(content) },
@@ -66,7 +66,7 @@ function model() {
         return clientFound
     }
     const searchByClient = async(clientId:number) => {
-        const clientFound = <Order[]> await prisma.orders.findMany({
+        const clientFound = <OrderType[]> await prisma.orders.findMany({
             where: { clientId: clientId},
             include:{client:true, services:true}
         })
