@@ -1,20 +1,20 @@
 
 
 import prisma from "../../db/prisma"
-import { Client } from "../types/clientType"
+import { ClientType } from "../types/clientType"
 
 
 
 function model() {
 
-    const createClient = async(client:Client) => {
+    const createClient = async(client:ClientType) => {
         const createdClient = await prisma.clients.create({
             data: {...client}
         })
         return createdClient
     }
 
-    const createOrUpdateClient = async(client:Client) => {
+    const createOrUpdateClient = async(client:ClientType) => {
         const createdClient = await prisma.clients.upsert({
             where: {email: client.email},
             create:{...client},
