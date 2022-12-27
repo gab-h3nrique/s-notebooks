@@ -1,8 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { Clients } from '../../../models/clients'
 import { Orders } from '../../../models/orders'
+import { ServicesOrder } from '../../../models/servicesOrder'
 import { Shelfs } from '../../../models/shelf'
-import { Order } from '../../../types/order'
+import { OrderType } from '../../../types/orderType'
 
 export default async function handler( req: NextApiRequest,res: NextApiResponse<Object>) {
     
@@ -12,7 +13,7 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
         if(method === 'POST') {
 
-            const {client, orderInfo, equipament, accessories} =  req.body
+            const {client, orderInfo, equipament, accessories, services} =  req.body
 
             if(!client.email ||  !client.name || !client.document || !client.info) return res.status(500).json( { message: 'informações ausentes do cliente'} )
             if(!orderInfo.userId) return res.status(500).json( { message: 'informações ausentes do equipamento'} )
@@ -25,7 +26,7 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
             const shelfEmpty = await Shelfs.getFirstShelfEmpty(orderInfo.userId)
             
 
-            const order:Order = {
+            const order:OrderType = {
                 id: orderInfo.id ? orderInfo.id : undefined,
                 status: orderInfo.status ? orderInfo.status : 'aberto',
                 clientId: createdClient.id,
@@ -52,6 +53,8 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
             }
 
             const createdOrder = await Orders.createOrUpdateOrder(order)
+
+            await ServicesOrder.createOrUpdate(services, Number(createdOrder.id))
 
             return res.status(201).json( { response: createdOrder } )
 

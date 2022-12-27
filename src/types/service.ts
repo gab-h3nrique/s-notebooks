@@ -3,7 +3,7 @@ export interface ServiceType {
   name: string;
 }
 export interface ServiceOrderType {
-  id: number | null;
+  id: number | undefined;
   name: string;
   status: string;
   orderId: number | null;

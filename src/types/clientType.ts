@@ -1,4 +1,4 @@
-export interface Client {
+export interface ClientType {
     name: string;
     document: string;
     email: string;

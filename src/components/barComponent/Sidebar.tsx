@@ -81,14 +81,14 @@ const Sidebar = (props:Props) => {
                         Atendimento
                     </h1>
                 </Menus>
-               <Menus onClick={()=>{Router.push('/app/servicos')}} className={`${menu === "servicos" && 'bg-orange-500' }`}>
+               {/* <Menus onClick={()=>{Router.push('/app/ordemServico')}} className={`${menu === "ordemServico" && 'bg-orange-500' }`}>
                     <IconMenu>
-                        <CloudPlus width={30} height={30} fill={`${menu === "servicos" ? "white" : "#94a3b8"}`}/>
+                        <CloudPlus width={30} height={30} fill={`${menu === "ordemServico" ? "white" : "#94a3b8"}`}/>
                     </IconMenu>
-                    <h1 className={`${menu === "servicos" ? "text-white" : "text-slate-400" }  text-sm font-semibold duration-500 w-0 ${!open ? "w-0 opacity-0 duration-300" : "w-full opacity-1 duration-700 delay-500"}`}>
-                        Serviços
+                    <h1 className={`${menu === "ordemServico" ? "text-white" : "text-slate-400" }  text-sm font-semibold duration-500 w-0 ${!open ? "w-0 opacity-0 duration-300" : "w-full opacity-1 duration-700 delay-500"}`}>
+                        Os
                     </h1>
-                </Menus>
+                </Menus> */}
                <Menus  onClick={()=>{Router.push('/app/configuracao')}} className={`${menu === "configuracao" && 'bg-orange-500' }`}>
                     <IconMenu>
                         <GearIcon className={`h-8 w-8 text-orange-300 ${menu === "configuracao" ? "fill-white" : "fill-slate-400"}`} fill={`${menu === "configuracao" ? "white" : "#94a3b8"}`}/>

@@ -1,5 +1,5 @@
 import prisma from "../../db/prisma"
-import { Order } from "../types/order"
+import { Order } from "../types/orderType"
 
 
 function model() {
@@ -9,13 +9,14 @@ function model() {
             where: { id: order.id ? order.id : -1 },
             update: {...order},
             create: { ...order},
+            include:{client:true, services:true}
         })
         return orderDb
     }
 
     const getAllOrders = async() => {
         const orderDb = <Order[]> await prisma.orders.findMany({
-            include:{client:true}
+            include:{client:true, services:true}
         })
         return orderDb
     }
@@ -23,7 +24,7 @@ function model() {
     const getOrderById = async(id:number) => {
         const orderDb = <Order> await prisma.orders.findUnique({
             where:{id:id},
-            include:{client:true},
+            include:{client:true, services:true}
         })
         return orderDb
     }
@@ -32,7 +33,7 @@ function model() {
         const orderDb = <Order[]> await prisma.orders.findMany({
             skip: index,
             take: limit,
-            include:{ client:true },
+            include:{client:true, services:true},
             orderBy: { id: 'desc'}
         })
         return orderDb
@@ -60,14 +61,14 @@ function model() {
                     { serialNumber: {contains:String(content)} },
                 ]
             },
-            include:{ client:true }
+            include:{client:true, services:true}
         })
         return clientFound
     }
     const searchByClient = async(clientId:number) => {
         const clientFound = <Order[]> await prisma.orders.findMany({
             where: { clientId: clientId},
-            include:{ client:true }
+            include:{client:true, services:true}
         })
         return clientFound
     }

@@ -1,7 +1,7 @@
 
 
 import prisma from "../../db/prisma"
-import { Client } from "../types/client"
+import { Client } from "../types/clientType"
 import { Shelf } from "../types/shelf"
 
 

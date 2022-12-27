@@ -4,7 +4,10 @@
 import { Key, ReactElement, ReactNode, useEffect, useState } from "react";
 import ReactDom from "react-dom";
 import Api from "../../../lib/api";
+import { ClientType } from "../../types/clientType";
+import { AccessoriesType, EquipmentType, OrderInfoType } from "../../types/orderType";
 import { ServiceOrderType, ServiceType } from "../../types/service";
+import { UserType } from "../../types/userType";
 import CheckDouble from "../icons/CheckDouble";
 import CheckIcon from "../icons/CheckIcon";
 import CircleCheckIcon from "../icons/CircleCheckIcon";
@@ -27,64 +30,25 @@ export interface Props {
     orderHandle:any;
 }
 
-interface Client {
-    name: string;
-    document: string;
-    email: string;
-    number: string;
-    cep: string;
-    info: string;
-}
-interface Equipment {
-    name: string;
-    serialNumber?: string;
-    brand: string;
-    model: string;
-}
-interface Accessories {
-    charger: boolean;
-    battery: boolean;
-    energyCable: boolean;
-    bag: boolean;
-    others: string;
-}
-interface OrderInfo {
-    id?: number | null;
-    backup: boolean;
-    backupDescription?: string;
-    defectDescription?: string;
-    technicalReport?: string;
-    generalDescription?: string;
-    deliveryConfirmation: boolean;
-    userId?: number | null;
-    status: string;
-}
-interface User {
-    id: number;
-    name: string;
-    email: string;
-    role: number
-}
-
 const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
     const [portal, setPortal] = useState<HTMLElement>()
 
-    const [userArray, setUserArray] = useState<User[]>()
+    const [userArray, setUserArray] = useState<UserType[]>()
     const [serviceArray, setServiceArray] = useState<ServiceType[]>()
 
-    const [client, setClient] = useState<Client>({name: "", document: "", email: "", number: "", cep: "", info: ""})
-    const [equipament, setEquipament] = useState<Equipment>({name: "", serialNumber: "", brand: "", model: ""})
-    const [accessories, setAccessories] = useState<Accessories>({charger: false, battery: false, energyCable: false, bag: false, others: ""})
-    const [orderInfo, setOrderInfo] = useState<OrderInfo>({backup: false, backupDescription: "", defectDescription: "", technicalReport: "", generalDescription: "", deliveryConfirmation: false, userId: null, status: ""})
-    
-    const [searchService, setSearchService] = useState<string>("")
-    const [addedServicesOrder, setAddedServicesOrder] = useState<ServiceOrderType[]>([{id: null, name: "", status: "", orderId: null, value: 0}])
+    const [client, setClient] = useState<ClientType>({name: "", document: "", email: "", number: "", cep: "", info: ""})
+    const [equipament, setEquipament] = useState<EquipmentType>({name: "", serialNumber: "", brand: "", model: ""})
+    const [accessories, setAccessories] = useState<AccessoriesType>({charger: false, battery: false, energyCable: false, bag: false, others: ""})
+    const [orderInfo, setOrderInfo] = useState<OrderInfoType>({backup: false, backupDescription: "", defectDescription: "", technicalReport: "", generalDescription: "", deliveryConfirmation: false, userId: null, status: "", equipamentPassword: ""})
+
+    const [newService, setNewService] = useState<ServiceOrderType>({id: undefined, name:"", status: "", orderId: null, value: 0})
+    const [services, setArrayservices] = useState<ServiceOrderType[]>([])
 
     const [dropdownEquipament, setDropdownEquipament] = useState<boolean>(false)
     const [dropdownOrderInfo, setDropdownOrderInfo] = useState<boolean>(false)
     const [dropdownStatus, setDropdownStatus] = useState<boolean>(false)
     
-    const [dropdownService, setDropdownService] = useState<boolean>(false)
+    const [dropdownNameService, setDropdownNameService] = useState<boolean>(false)
     const [dropdownStatusService, setDropdownStatusService] = useState<boolean>(false)
 
 
@@ -97,11 +61,12 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
         const {response} = await Api.get('/api/auth/orders', {id:id})
         
         if(!response.id) return;
-        
+
         setClient({...client, ...response.client})
-        setEquipament({name: response.name, serialNumber: response.serialNumber, brand: response.brand, model: response.model})
-        setAccessories({charger: response.charger, battery: response.battery, energyCable: response.energyCable, bag: response.bag, others: response.others})
-        setOrderInfo({id: response.id, backup: response.backup, backupDescription: response.backupDescription, defectDescription: response.defectDescription, technicalReport: response.technicalReport, generalDescription: response.generalDescription, deliveryConfirmation: response.deliveryConfirmation, userId: response.userId, status: response.status})
+        setEquipament({...response})
+        setAccessories({...response})
+        setOrderInfo({...response})
+        setArrayservices(response.services)
     }
 
     const getUsers = async() => {
@@ -112,7 +77,6 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
     const getServices = async() => {
         const {response:services} = await Api.get('/api/auth/services')
-        console.log('services', services)
         return services
     }
 
@@ -120,7 +84,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
     const saveOrder = async() => {
         setLoading(true)
-        const { response } = await Api.post('/api/auth/orders', {client, equipament, accessories, orderInfo})
+        const { response } = await Api.post('/api/auth/orders', {client, equipament, accessories, orderInfo, services})
         
         if(response) {
             await orderHandle()
@@ -134,10 +98,13 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
     }
 
     const addServiceOrder = () => {
-        setAddedServicesOrder( addedServicesOrder => [...addedServicesOrder, {id: null, name: "", status: "", orderId: null, value: 0}])
-        console.log(addedServicesOrder)
+        if(!newService.name || !newService.status) return;
+        setArrayservices( services => [...services, newService])
+        setNewService({id: undefined, name:"", status: "", orderId: null, value: 0})
     }
-
+    const removeServiceorder = (service:ServiceOrderType) => {
+        setArrayservices( services.filter((item)=>item !== service ))
+    }
     
     useEffect(()=>{
         if (typeof window !== "undefined") {
@@ -168,7 +135,9 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
         setClient({name: "", document: "", email: "", number: "", cep: "", info: ""})
         setEquipament({name: "", serialNumber: "", brand: "", model: ""})
         setAccessories({charger: false, battery: false, energyCable: false, bag: false, others: ""})
-        setOrderInfo({id: null, backup: false, backupDescription: "", defectDescription: "", technicalReport: "", generalDescription: "", deliveryConfirmation: false, userId: null, status: ""})
+        setOrderInfo({id: null, backup: false, backupDescription: "", defectDescription: "", technicalReport: "", generalDescription: "", deliveryConfirmation: false, userId: null, status: "", equipamentPassword: ""})
+        setArrayservices([])
+        setNewService({id: undefined, name:"", status: "", orderId: null, value: 0})
     }
 
     return (
@@ -177,9 +146,11 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                 <ModalComponent close={onClose} open={isOpen} className={``}>
                     {/* <div className="flex flex-col bg-gray-200 w-[32rem] h-[50rem] rounded-2xl p-4 gap-4"> */}
                     <div onClick={(()=>{
-                            if(dropdownEquipament || dropdownOrderInfo) {
+                            if(dropdownEquipament || dropdownOrderInfo || dropdownNameService || dropdownStatusService) {
                                 setDropdownOrderInfo(false)
                                 setDropdownEquipament(false)
+                                setDropdownNameService(false)
+                                setDropdownStatusService(false)
                             }
                        })} className="flex flex-col bg-slate-100 w-[36rem] h-[56rem] scale-[.93] rounded-2xl py-4 gap-4 overflow-hidden">
                         <header className="px-4">
@@ -388,86 +359,94 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                         <div>
                                             <label className="block text-sm font-medium text-slate-500">Relatório do cliente</label>
                                             <textarea onChange={(x)=> setOrderInfo({...orderInfo, defectDescription: x.target.value})} value={orderInfo.defectDescription} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" />
-                                        </div> 
+                                        </div>
 
                                         <div >
                                             <label className="block text-sm font-medium text-slate-500">Laudo técnico</label>
                                             <textarea onChange={(x)=> setOrderInfo({...orderInfo, technicalReport: x.target.value})} value={orderInfo.technicalReport} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" />
                                         </div> 
 
-    
+                                        <div className="col-span-2">
+                                            <label className="block text-sm font-medium text-slate-500">Senha do equipamento</label>
+                                            <input type="text" onChange={(x)=> setEquipament({...equipament, serialNumber: x.target.value})} value={equipament.serialNumber} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder=""/>
+                                        </div> 
 
                                     </article>
 
                                     <article>
                                         <div className="flex flex-col gap-2">
-                                            <div className="flex gap-2 justify-start items-center">
-                                                <div onClick={()=> addServiceOrder()} className={`flex bg-orange-500 w-fit h-fit rounded-lg p-1 cursor-pointer hover:scale-105`}>
-                                                    <PlusIcon width={15} height={15} fill={`white`}/>
-                                                </div>
-                                                <label className="block text-sm font-medium text-slate-500">Serviços</label>
-                                            </div>
 
+                                            <label onClick={()=>console.log('servicos', services)} className="block text-sm font-medium text-slate-500">Serviços</label>
+
+                                            <div className="grid grid-cols-12 gap-2">
+
+                                                <div className="col-span-5 relative" onClick={()=> setDropdownNameService(!dropdownNameService)}>
+                                                    <div className="flex gap-1 col-span-4 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 px-3 py-1 border-2 border-gray-300 outline-none hover:border-transparent hover:ring hover:ring-orange-400 hover:scale-y-105 duration-150">
+                                                        <input onChange={(event)=> setNewService({...newService, name: event.target.value}) } type="text" className={`h-full w-full outline-0 overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer`}  value={newService.name}/>
+                                                        <svg className={`-mr-1 ml-2 h-5 w-6 ${dropdownNameService ? "rotate-[-180deg]" : "rotate-[0deg]"} duration-150`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" >
+                                                            <path  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+
+                                                <div className="col-span-4 relative" onClick={()=> setDropdownStatusService(!dropdownStatusService)}>
+                                                    <div className="flex gap-1 col-span-4 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 px-3 py-1 border-2 border-gray-300 outline-none hover:border-transparent hover:ring hover:ring-orange-400 hover:scale-y-105 duration-150">
+                                                        <input onChange={(event)=>{setNewService({...newService, status: event.target.value})}} type="text" className={`h-full w-full outline-0 overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer`}  value={newService.status}/>
+                                                        <svg className={`-mr-1 ml-2 h-5 w-6 ${dropdownStatusService ? "rotate-[-180deg]" : "rotate-[0deg]"} duration-150`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" >
+                                                            <path  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+
+                                                <input type="number" onChange={(event)=>{setNewService({...newService, value: Number(event.target.value)})}} value={newService.value ? newService.value : ''} className="col-span-2 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder="Valor"/>
+
+                                                <div onClick={()=>addServiceOrder()} className="flex items-center justify-center  duration-300 hover:scale-110 cursor-pointer">
+                                                    <div className={`flex bg-orange-500 w-fit h-fit rounded-lg p-1.5`}>
+                                                        <PlusIcon width={20} height={20} fill={`white`}/>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <hr></hr>
                                             {
-                                                addedServicesOrder?.map(({},i)=>{
+                                                services.length > 0 && services?.map((item,i)=>{
                                                     return (
                                                         <div key={i} className="grid grid-cols-12 gap-2">
-
-                                                            <div className="col-span-5 relative" onClick={()=> setDropdownStatusService(!dropdownStatusService)}>
-                                                                <div className="flex gap-1 col-span-4 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 px-3 py-1 border-2 border-gray-300 outline-none hover:border-transparent hover:ring hover:ring-orange-400 hover:scale-y-105 duration-150">
-                                                                    <input onChange={(event)=>{setSearchService(event.target.value)}} type="text" className={`h-full w-full outline-0`}  value={searchService}/>
-                                                                    <svg className={`-mr-1 ml-2 h-5 w-6 ${dropdownStatusService ? "rotate-[-180deg]" : "rotate-[0deg]"} duration-150`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" >
-                                                                        <path  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" />
-                                                                    </svg>
-                                                                </div>
-
-                                                            </div>
-
-                                                            <div className="col-span-4 relative" onClick={()=> setDropdownService(!dropdownService)}>
-                                                                <div className="flex gap-1 col-span-4 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 px-3 py-1 border-2 border-gray-300 outline-none hover:border-transparent hover:ring hover:ring-orange-400 hover:scale-y-105 duration-150">
-                                                                    <input onChange={(event)=>{setSearchService(event.target.value)}} type="text" className={`h-full w-full outline-0`}  value={searchService}/>
-                                                                    <svg className={`-mr-1 ml-2 h-5 w-6 ${dropdownService ? "rotate-[-180deg]" : "rotate-[0deg]"} duration-150`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" >
-                                                                        <path  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" />
-                                                                    </svg>
-                                                                </div>
-
-                                                            </div>
-
-                                                            <input type="number" onChange={(x)=> setOrderInfo({...orderInfo, backupDescription: x.target.value})} value={orderInfo.backupDescription} className="col-span-2 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder="Valor"/>
-                                                            
-                                                            <div onClick={onClose} className="flex items-center justify-center  duration-300 hover:scale-110 cursor-pointer">
+                                                            <input disabled value={item.name} className="col-span-5 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 opacity-80" />
+                                                            <input disabled value={item.status} className="col-span-4 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 opacity-80" />
+                                                            <input disabled value={item.value} className="col-span-2 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 opacity-80" />
+                                                            <div onClick={()=>removeServiceorder(item)} className="flex items-center justify-center  duration-300 hover:scale-110 cursor-pointer">
                                                                 <div className={`flex bg-orange-500 w-fit h-fit rounded-lg p-1.5`}>
                                                                     <CloseIcon width={20} height={20} fill={`white`}/>
                                                                 </div>
                                                             </div>
-                                                            
                                                         </div>
                                                     )
                                                 })
                                             }
                                             
-                                            <div className={`${!dropdownStatusService ? "opacity-0 pointer-events-none" : "opacity-1 pointer-events-auto"} duration-150 fixed top-[49%] left-2/4 translate-x-[-50%] translate-y-[-50%] z-10 w-60 h-48 origin-center rounded-md bg-white shadow-2xl overflow-auto cursor-pointer`} >
+                                            <div className={`${!dropdownNameService ? "opacity-0 pointer-events-none" : "opacity-1 pointer-events-auto"} duration-150 fixed top-[49%] left-2/4 translate-x-[-50%] translate-y-[-50%] z-10 w-60 h-48 origin-center rounded-md bg-white shadow-2xl overflow-auto cursor-pointer`} >
                                                 <div className="py-1" >
 
                                                     {
                                                         serviceArray?.filter(({name})=>{
-                                                            if(searchService == "") return name;
-                                                                else if(name.toLowerCase().includes(searchService?.toLocaleLowerCase())) return name;
+                                                            if(newService.name == "") return name;
+                                                                else if(name.toLowerCase().includes(newService.name?.toLocaleLowerCase())) return name;
                                                         }).map(({name}, j)=>{
-                                                            return <a onClick={()=>{setDropdownStatusService(!dropdownStatusService); setSearchService(name)}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointe rounded-md" >{name}</a>
+                                                            return <a key={j} onClick={()=>{setDropdownNameService(!dropdownNameService); setNewService({...newService, name: name})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointe rounded-md" >{name}</a>
                                                         })
                                                     }
 
                                                 </div>
                                             </div>
 
-                                            <div className={`${!dropdownService ? "opacity-0 pointer-events-none" : "opacity-1 pointer-events-auto"} duration-150 fixed top-[49%] left-2/4 translate-x-[-50%] translate-y-[-50%] z-10 w-32  origin-center rounded-md bg-white shadow-2xl cursor-pointer`} >
+                                            <div className={`${!dropdownStatusService ? "opacity-0 pointer-events-none" : "opacity-1 pointer-events-auto"} duration-150 fixed top-[49%] left-2/4 translate-x-[-50%] translate-y-[-50%] z-10 w-32  origin-center rounded-md bg-white shadow-2xl cursor-pointer`} >
                                                 <div className="py-1" >
 
-                                                    <a onClick={()=>{setDropdownStatus(!dropdownStatus); setOrderInfo({...orderInfo, status: "aberto"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointe rounded-md" >aberto</a>
-                                                    <a onClick={()=>{setDropdownStatus(!dropdownStatus); setOrderInfo({...orderInfo, status: "andamento"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >andamento</a>
-                                                    <a onClick={()=>{setDropdownStatus(!dropdownStatus); setOrderInfo({...orderInfo, status: "pendente"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >pendente</a>
-                                                    <a onClick={()=>{setDropdownStatus(!dropdownStatus); setOrderInfo({...orderInfo, status: "finalizado"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >finalizado</a>
+                                                    <a onClick={()=>{setDropdownStatusService(!dropdownStatusService); setNewService({...newService, status: "aberto"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointe rounded-md" >aberto</a>
+                                                    <a onClick={()=>{setDropdownStatusService(!dropdownStatusService); setNewService({...newService, status: "andamento"})}}className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >andamento</a>
+                                                    <a onClick={()=>{setDropdownStatusService(!dropdownStatusService); setNewService({...newService, status: "pendente"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >pendente</a>
+                                                    <a onClick={()=>{setDropdownStatusService(!dropdownStatusService); setNewService({...newService, status: "finalizado"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >finalizado</a>
 
                                                 </div>
                                             </div>

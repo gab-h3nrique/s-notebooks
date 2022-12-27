@@ -62,13 +62,8 @@ export default function OrderList(props :Props) {
                 </section>
 
                 <section className="flex w-36 justify-end items-center gap-2">
-                    <div  onClick={()=>{window.open(`/orderPdf?id=${osNumber}`)}} className="flex justify-center items-center hover:scale-105 hover:bg-slate-200 p-2 rounded-lg">
-                        <FileDownIcon className={`h-6 w-8 fill-slate-400`} />
-                    </div>
-                        {/* <div className="flex justify-center items-center">
-                            <p className="text-sm text-slate-600 font-semibold">há 5 horas</p>
-                        </div> */}
-                    <StatusInfo 
+                    
+                    <StatusInfo
                     textColor={`${
                             osStatus === 'finalizado' ? 'text-emerald-700' : 
                             osStatus === 'andamento' ? 'text-indigo-700' :
@@ -82,7 +77,12 @@ export default function OrderList(props :Props) {
                             osStatus === 'pendente' ? 'bg-yellow-100' :
                             osStatus === 'aberto' ? 'bg-cyan-100' :
                             'bg-indigo-100'
-                        }`}  status={osStatus} />
+                        }`}  status={osStatus} 
+                    />
+
+                    <div  onClick={()=>{window.open(`/orderPdf?id=${osNumber}`)}} className="flex justify-center items-center hover:scale-105 hover:bg-slate-200 p-2 rounded-lg">
+                        <FileDownIcon className={`h-6 w-8 fill-slate-400`} />
+                    </div>
                 </section>
 
                 

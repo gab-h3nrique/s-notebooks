@@ -16,6 +16,10 @@
     background: transparent;
   }
 
+input:focus {outline:none;}
+::-moz-focus-inner {border:0;}
+
+
 @tailwind components;
 @tailwind utilities;
 
@@ -54,4 +58,3 @@
 .neumorphism-1-inset:hover {
     box-shadow: inset 2px 2px 3px #c8c8d3, inset -2px -2px 3px #ffffff;
 }
-
