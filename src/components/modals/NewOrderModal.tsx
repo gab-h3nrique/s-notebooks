@@ -1,12 +1,12 @@
 
 /* components */
 
-import { Key, ReactElement, ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ReactDom from "react-dom";
 import Api from "../../../lib/api";
 import { ClientType } from "../../types/clientType";
-import { AccessoriesType, EquipmentType, OrderInfoType } from "../../types/orderType";
-import { ServiceOrderType, ServiceType } from "../../types/service";
+import { OrderType } from "../../types/orderType";
+import { ServiceOrderType, ServiceType } from "../../types/serviceType";
 import { UserType } from "../../types/userType";
 import CheckDouble from "../icons/CheckDouble";
 import CheckIcon from "../icons/CheckIcon";
@@ -37,9 +37,8 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
     const [serviceArray, setServiceArray] = useState<ServiceType[]>()
 
     const [client, setClient] = useState<ClientType>({name: "", document: "", email: "", number: "", cep: "", info: ""})
-    const [equipament, setEquipament] = useState<EquipmentType>({name: "", serialNumber: "", brand: "", model: ""})
-    const [accessories, setAccessories] = useState<AccessoriesType>({charger: false, battery: false, energyCable: false, bag: false, others: ""})
-    const [orderInfo, setOrderInfo] = useState<OrderInfoType>({backup: false, backupDescription: "", defectDescription: "", technicalReport: "", generalDescription: "", deliveryConfirmation: false, userId: null, status: "", equipamentPassword: ""})
+
+    const [order, setOrder] = useState<OrderType | null>()
 
     const [newService, setNewService] = useState<ServiceOrderType>({id: undefined, name:"", status: "", orderId: null, value: 0})
     const [services, setArrayservices] = useState<ServiceOrderType[]>([])
@@ -51,22 +50,21 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
     const [dropdownNameService, setDropdownNameService] = useState<boolean>(false)
     const [dropdownStatusService, setDropdownStatusService] = useState<boolean>(false)
 
-
     const [loading, setLoading] = useState<boolean>(false)
 
 
     const getOrderById = async(id:number | null | undefined) => {
         if(!id) return;
 
-        const {response} = await Api.get('/api/auth/orders', {id:id})
-        
+        const { response } = await Api.get('/api/auth/orders', {id:id})
+        console.log(response)
         if(!response.id) return;
+        
+        const {user, client, services, ...allOrder} = response
 
-        setClient({...client, ...response.client})
-        setEquipament({...response})
-        setAccessories({...response})
-        setOrderInfo({...response})
-        setArrayservices(response.services)
+        setOrder(allOrder)
+        setClient(client)
+        setArrayservices(services)
     }
 
     const getUsers = async() => {
@@ -84,7 +82,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
     const saveOrder = async() => {
         setLoading(true)
-        const { response } = await Api.post('/api/auth/orders', {client, equipament, accessories, orderInfo, services})
+        const { response } = await Api.post('/api/auth/orders', {order, client, services})
         
         if(response) {
             await orderHandle()
@@ -131,11 +129,34 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
     function clearModal() {
         console.log('limpou')
+        setOrder({
+            id: undefined,
+            status: "",
+            clientId: undefined,
+            userId: undefined,
+            shelfId: undefined,            
+            model: "",
+            brand:"",
+            name:"",
+            serialNumber:"",
+            charger:false,
+            battery:false,
+            energyCable:false,
+            bag:false,
+            others:"",
+            warranty:false,
+            warrantyDescription:"",
+            backup:false,
+            backupDescription:"",
+            defectDescription:"",
+            technicalReport:"",
+            equipamentPassword:"",
+            generalDescription:"",
+            deliveryConfirmation:false,
+            value:0,
+        })
         setLoading(false)
         setClient({name: "", document: "", email: "", number: "", cep: "", info: ""})
-        setEquipament({name: "", serialNumber: "", brand: "", model: ""})
-        setAccessories({charger: false, battery: false, energyCable: false, bag: false, others: ""})
-        setOrderInfo({id: null, backup: false, backupDescription: "", defectDescription: "", technicalReport: "", generalDescription: "", deliveryConfirmation: false, userId: null, status: "", equipamentPassword: ""})
         setArrayservices([])
         setNewService({id: undefined, name:"", status: "", orderId: null, value: 0})
     }
@@ -155,7 +176,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                        })} className="flex flex-col bg-slate-100 w-[36rem] h-[56rem] scale-[.93] rounded-2xl py-4 gap-4 overflow-hidden">
                         <header className="px-4">
                             <section className="flex w-full justify-between">
-                                <div className="flex justify-center items-center">
+                                <div onClick={()=>console.log(order)} className="flex justify-center items-center">
                                     <p className="text-2xl text-slate-500 font-semibold">Ordem de serviço</p>
                                 </div>
                                 <div onClick={onClose} className="flex items-center justify-center  duration-300 hover:scale-110 cursor-pointer">
@@ -236,7 +257,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
                                 <header  className="flex justify-start items-center gap-2">
                                     <DescktopIcon width={20} height={20} fill={`#94a3b8`}/>
-                                    <p onClick={() => console.log('equipament', equipament )} className="text-lg text-slate-500 font-semibold">Equipamento</p>
+                                    <p className="text-lg text-slate-500 font-semibold">Equipamento</p>
                                 </header>
                                 
                                 <div className="grid gap-2 grid-cols-2">
@@ -245,7 +266,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                         <div onClick={()=> setDropdownEquipament(!dropdownEquipament)}>
                                             <label className="block text-sm font-medium text-slate-500">Tipo de equipamento</label>
                                             <button type="button" className="flex justify-between px-5 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150">
-                                            <label className="block text-sm font-medium text-slate-500">{equipament.name ? equipament.name : ""}</label>
+                                            <label className="block text-sm font-medium text-slate-500">{order?.name ? order.name : ""}</label>
                                             
                                             <svg className={`-mr-1 ml-2 h-5 w-5 ${dropdownEquipament ? "rotate-[-180deg]" : "rotate-[0deg]"} duration-150`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" >
                                                 <path  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" />
@@ -256,9 +277,9 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                         <div className={`${!dropdownEquipament ? "opacity-0 pointer-events-none" : "opacity-1 pointer-events-auto"} duration-150 absolute  left-10 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg`} >
                                             <div className="py-1" >
 
-                                                <a onClick={()=>{setDropdownEquipament(!dropdownEquipament); setEquipament({...equipament, name: 'Notebook'})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer" >Notebook</a>
-                                                <a onClick={()=>{setDropdownEquipament(!dropdownEquipament); setEquipament({...equipament, name: 'Desktop'})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer" >Desktop</a>
-                                                <a onClick={()=>{setDropdownEquipament(!dropdownEquipament); setEquipament({...equipament, name: 'Outros'})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer" >Outros</a>
+                                                <a onClick={()=>{setDropdownEquipament(!dropdownEquipament); order && setOrder({...order, name: 'Notebook'})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer" >Notebook</a>
+                                                <a onClick={()=>{setDropdownEquipament(!dropdownEquipament); order && setOrder({...order, name: 'Desktop'})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer" >Desktop</a>
+                                                <a onClick={()=>{setDropdownEquipament(!dropdownEquipament); order && setOrder({...order, name: 'Outros'})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer" >Outros</a>
 
                                             </div>
                                         </div>
@@ -266,17 +287,17 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                     
                                     <div >
                                             <label className="block text-sm font-medium text-slate-500">Número de série</label>
-                                            <input type="text" onChange={(x)=> setEquipament({...equipament, serialNumber: x.target.value})} value={equipament.serialNumber} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder=""/>
+                                            <input type="text" onChange={(x)=> order && setOrder({...order, serialNumber: x.target.value})} value={order?.serialNumber} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder=""/>
                                     </div> 
 
                                     <div >
                                             <label className="block text-sm font-medium text-slate-500">Fabricante</label>
-                                            <input type="text" onChange={(x)=> setEquipament({...equipament, brand: x.target.value})} value={equipament.brand} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder=""/>
+                                            <input type="text" onChange={(x)=> order && setOrder({...order, brand: x.target.value})} value={order?.brand} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder=""/>
                                     </div> 
 
                                     <div >
                                             <label className="block text-sm font-medium text-slate-500">Modelo</label>
-                                            <input type="text" onChange={(x)=> setEquipament({...equipament, model: x.target.value})} value={equipament.model} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder=""/>
+                                            <input type="text" onChange={(x)=> order && setOrder({...order, model: x.target.value})} value={order?.model} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder=""/>
                                     </div> 
             
                                 </div>
@@ -285,40 +306,40 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
                                     <header  className="flex justify-start items-center gap-2">
                                         <CheckDouble width={18} height={18} fill={`#94a3b8`}/>
-                                        <p onClick={() => console.log('accessories', accessories )} className="text-base text-slate-500 font-semibold">Acessórios</p>
+                                        <p className="text-base text-slate-500 font-semibold">Acessórios</p>
                                     </header>
                                     
                                     <div className="flex flex-col gap-2 ">
             
                                         <article className="flex justify-between gap-2">
 
-                                            <div onClick={()=>setAccessories({...accessories, charger: !accessories.charger})} className={`flex items-center ${accessories.charger ? 'bg-orange-100' : 'bg-slate-100' } gap-1 px-1 py-2  rounded-lg w-full hover:scale-110 duration-100 cursor-pointer `}>
-                                                {accessories.charger ? <CircleCheckIcon  width={20} height={20} fill={`#F06531`} />
+                                            <div onClick={()=>order && setOrder({...order, charger: !order.charger})} className={`flex items-center ${order?.charger ? 'bg-orange-100' : 'bg-slate-100' } gap-1 px-1 py-2  rounded-lg w-full hover:scale-110 duration-100 cursor-pointer `}>
+                                                {order?.charger ? <CircleCheckIcon  width={20} height={20} fill={`#F06531`} />
                                                         : <CircleIcon  width={20} height={20} fill={`#94a3b8`} />}
-                                                <label  className={`text-sm text-slate-500  ${accessories.charger ? 'text-orange-500' : 'text-slate-500' } font-semibold cursor-pointer`}>Carregador</label>
+                                                <label  className={`text-sm text-slate-500  ${order?.charger ? 'text-orange-500' : 'text-slate-500' } font-semibold cursor-pointer`}>Carregador</label>
                                             </div>
 
-                                            <div onClick={()=>setAccessories({...accessories, battery: !accessories.battery})} className={`flex items-center ${accessories.battery ? 'bg-orange-100' : 'bg-slate-100' } gap-1 px-1 py-2  rounded-lg w-full hover:scale-110 duration-100 cursor-pointer `}>
-                                                {accessories.battery ? <CircleCheckIcon  width={20} height={20} fill={`#F06531`} />
+                                            <div onClick={()=>order && setOrder({...order, battery: !order.battery})} className={`flex items-center ${order?.battery ? 'bg-orange-100' : 'bg-slate-100' } gap-1 px-1 py-2  rounded-lg w-full hover:scale-110 duration-100 cursor-pointer `}>
+                                                {order?.battery ? <CircleCheckIcon  width={20} height={20} fill={`#F06531`} />
                                                         : <CircleIcon  width={20} height={20} fill={`#94a3b8`} />}
-                                                <label  className={`text-sm text-slate-500  ${accessories.battery ? 'text-orange-500' : 'text-slate-500' } font-semibold cursor-pointer`}>Bateria</label>
+                                                <label  className={`text-sm text-slate-500  ${order?.battery ? 'text-orange-500' : 'text-slate-500' } font-semibold cursor-pointer`}>Bateria</label>
                                             </div>
-                                            <div onClick={()=>setAccessories({...accessories, energyCable: !accessories.energyCable})} className={`flex items-center ${accessories.energyCable ? 'bg-orange-100' : 'bg-slate-100' } gap-1 px-1 py-2  rounded-lg w-full hover:scale-110 duration-100 cursor-pointer `}>
-                                                {accessories.energyCable ? <CircleCheckIcon  width={20} height={20} fill={`#F06531`} />
+                                            <div onClick={()=>order && setOrder({...order, energyCable: !order.energyCable})} className={`flex items-center ${order?.energyCable ? 'bg-orange-100' : 'bg-slate-100' } gap-1 px-1 py-2  rounded-lg w-full hover:scale-110 duration-100 cursor-pointer `}>
+                                                {order?.energyCable ? <CircleCheckIcon  width={20} height={20} fill={`#F06531`} />
                                                         : <CircleIcon  width={20} height={20} fill={`#94a3b8`} />}
-                                                <label  className={`text-sm text-slate-500  ${accessories.energyCable ? 'text-orange-500' : 'text-slate-500' } font-semibold cursor-pointer`}>Corda de força</label>
+                                                <label  className={`text-sm text-slate-500  ${order?.energyCable ? 'text-orange-500' : 'text-slate-500' } font-semibold cursor-pointer`}>Corda de força</label>
                                             </div>
-                                            <div onClick={()=>setAccessories({...accessories, bag: !accessories.bag})} className={`flex items-center ${accessories.bag ? 'bg-orange-100' : 'bg-slate-100' } gap-1 px-1 py-2  rounded-lg w-full hover:scale-110 duration-100 cursor-pointer `}>
-                                                {accessories.bag ? <CircleCheckIcon  width={20} height={20} fill={`#F06531`} />
+                                            <div onClick={()=>order && setOrder({...order, bag: !order.bag})} className={`flex items-center ${order?.bag ? 'bg-orange-100' : 'bg-slate-100' } gap-1 px-1 py-2  rounded-lg w-full hover:scale-110 duration-100 cursor-pointer `}>
+                                                {order?.bag ? <CircleCheckIcon  width={20} height={20} fill={`#F06531`} />
                                                         : <CircleIcon  width={20} height={20} fill={`#94a3b8`} />}
-                                                <label  className={`text-sm text-slate-500  ${accessories.bag ? 'text-orange-500' : 'text-slate-500' } font-semibold cursor-pointer`}>Bolsa</label>
+                                                <label  className={`text-sm text-slate-500  ${order?.bag ? 'text-orange-500' : 'text-slate-500' } font-semibold cursor-pointer`}>Bolsa</label>
                                             </div>
 
                                         </article>
                                     
                                         <div >
                                             <label className="block text-sm font-medium text-slate-500">Outros</label>
-                                            <input type="text" onChange={(x)=> setAccessories({...accessories, others: x.target.value})} value={accessories.others} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder=""/>
+                                            <input type="text" onChange={(x)=> order && setOrder({...order, others: x.target.value})} value={order?.others} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder=""/>
                                         </div>
                 
                                     </div>
@@ -331,7 +352,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
                                 <header  className="flex justify-start items-center gap-2">
                                     <PasteIcon width={20} height={20} fill={`#94a3b8`}/>
-                                    <p onClick={() => console.log('orderInfo', orderInfo )} className="text-lg text-slate-500 font-semibold">Informações</p>
+                                    <p className="text-lg text-slate-500 font-semibold">Informações</p>
                                 </header>
                                 
                                 <div className="flex flex-col">
@@ -340,15 +361,15 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
                                         <div className="col-span-2 flex flex-col gap-1">
                                             <label className="block text-sm font-medium text-slate-500"></label>
-                                            <div onClick={()=>setOrderInfo({...orderInfo, backup: !orderInfo.backup})} className={`flex items-center ${orderInfo.backup ? 'bg-orange-100' : 'bg-slate-100' } gap-1 px-1 py-2  rounded-lg w-full hover:scale-110 duration-100 cursor-pointer `}>
-                                                {orderInfo.backup ? <CircleCheckIcon  width={20} height={20} fill={`#F06531`} />
+                                            <div onClick={()=>order && setOrder({...order, backup: !order.backup})} className={`flex items-center ${order?.backup ? 'bg-orange-100' : 'bg-slate-100' } gap-1 px-1 py-2  rounded-lg w-full hover:scale-110 duration-100 cursor-pointer `}>
+                                                {order?.backup ? <CircleCheckIcon  width={20} height={20} fill={`#F06531`} />
                                                         : <CircleIcon  width={20} height={20} fill={`#94a3b8`} />}
-                                                <label  className={`text-sm text-slate-500  ${orderInfo.backup ? 'text-orange-500' : 'text-slate-500' } font-semibold cursor-pointer`}>Fazer backup</label>
+                                                <label  className={`text-sm text-slate-500  ${order?.backup ? 'text-orange-500' : 'text-slate-500' } font-semibold cursor-pointer`}>Fazer backup</label>
                                             </div>
                                         </div>
                                         <div className="col-span-6 flex items-end py-[2.1px]">
                                             {/* <label className="block text-sm font-medium text-slate-500">&nbsp;</label> */}
-                                            <input type="text" onChange={(x)=> setOrderInfo({...orderInfo, backupDescription: x.target.value})} value={orderInfo.backupDescription} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder="Descrição do backup"/>
+                                            <input type="text" onChange={(x)=> order && setOrder({...order, backupDescription: x.target.value})} value={order?.backupDescription} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder="Descrição do backup"/>
                                         </div>
 
                                         
@@ -358,17 +379,17 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
                                         <div>
                                             <label className="block text-sm font-medium text-slate-500">Relatório do cliente</label>
-                                            <textarea onChange={(x)=> setOrderInfo({...orderInfo, defectDescription: x.target.value})} value={orderInfo.defectDescription} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" />
+                                            <textarea onChange={(x)=> order && setOrder({...order, defectDescription: x.target.value})} value={order?.defectDescription} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" />
                                         </div>
 
                                         <div >
                                             <label className="block text-sm font-medium text-slate-500">Laudo técnico</label>
-                                            <textarea onChange={(x)=> setOrderInfo({...orderInfo, technicalReport: x.target.value})} value={orderInfo.technicalReport} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" />
+                                            <textarea onChange={(x)=> order && setOrder({...order, technicalReport: x.target.value})} value={order?.technicalReport} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" />
                                         </div> 
 
                                         <div className="col-span-2">
                                             <label className="block text-sm font-medium text-slate-500">Senha do equipamento</label>
-                                            <input type="text" onChange={(x)=> setEquipament({...equipament, serialNumber: x.target.value})} value={equipament.serialNumber} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder=""/>
+                                            <input type="text" onChange={(x)=> order && setOrder({...order, equipamentPassword: x.target.value})} value={order?.equipamentPassword} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder=""/>
                                         </div> 
 
                                     </article>
@@ -461,12 +482,12 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                     
                                         <div className="col-span-4">
                                             <div >
-                                                <label className="block text-sm font-medium text-slate-500">Técnico responsável</label>
+                                                <label onClick={()=>console.log(order?.userId)} className="block text-sm font-medium text-slate-500">Técnico responsável</label>
                                                 <button type="button" onClick={()=> setDropdownOrderInfo(!dropdownOrderInfo)} className="flex justify-between px-5 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 ">
                                                 <label className="block text-sm font-medium text-slate-500 overflow-hidden text-ellipsis whitespace-nowrap">
                                                     {
                                                         userArray ?
-                                                            userArray.map(({id, name})=>{return orderInfo.userId === id ? name : null})
+                                                            userArray.map(({id, name})=>{return order?.userId === id ? name : null})
                                                             : null
                                                     }
                                                 </label>
@@ -483,7 +504,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                         {
                                                             userArray ? 
                                                                 userArray.map(({id, name})=>{
-                                                                    return <a key={id} onClick={()=>{setDropdownOrderInfo(!dropdownOrderInfo); setOrderInfo({...orderInfo, userId: id}) ; console.log(id, name)}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-lg" >{name}</a>
+                                                                    return <a key={id} onClick={()=>{setDropdownOrderInfo(!dropdownOrderInfo); order && setOrder({...order, userId: id}) ; console.log(id, name)}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-lg" >{name}</a>
                                                                 })
                                                                 : null
                                                         }
@@ -496,7 +517,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                             <div onClick={()=> setDropdownStatus(!dropdownStatus)}>
                                                 <label className="block text-sm font-medium text-slate-500">Status</label>
                                                 <button type="button" className="flex justify-between px-5 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150">
-                                                <label className="block text-sm font-medium text-slate-500">{orderInfo.status ? orderInfo.status : ""}</label>
+                                                <label className="block text-sm font-medium text-slate-500">{order?.status ? order.status : ""}</label>
                                                 
                                                 <svg className={`-mr-1 ml-2 h-5 w-5 ${dropdownStatus ? "rotate-[-180deg]" : "rotate-[0deg]"} duration-150`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" >
                                                     <path  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" />
@@ -507,20 +528,20 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                             <div className={`${!dropdownStatus ? "opacity-0 pointer-events-none" : "opacity-1 pointer-events-auto"} duration-150 absolute  right-3 bottom-5 z-10  w-56 origin-top-right rounded-md bg-white shadow-2xl`} >
                                                 <div className="py-1" >
 
-                                                    <a onClick={()=>{setDropdownStatus(!dropdownStatus); setOrderInfo({...orderInfo, status: "aberto"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointe rounded-md" >aberto</a>
-                                                    <a onClick={()=>{setDropdownStatus(!dropdownStatus); setOrderInfo({...orderInfo, status: "andamento"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >andamento</a>
-                                                    <a onClick={()=>{setDropdownStatus(!dropdownStatus); setOrderInfo({...orderInfo, status: "pendente"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >pendente</a>
-                                                    <a onClick={()=>{setDropdownStatus(!dropdownStatus); setOrderInfo({...orderInfo, status: "finalizado"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >finalizado</a>
+                                                    <a onClick={()=>{setDropdownStatus(!dropdownStatus); order && setOrder({...order, status: "aberto"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointe rounded-md" >aberto</a>
+                                                    <a onClick={()=>{setDropdownStatus(!dropdownStatus); order && setOrder({...order, status: "andamento"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >andamento</a>
+                                                    <a onClick={()=>{setDropdownStatus(!dropdownStatus); order && setOrder({...order, status: "pendente"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >pendente</a>
+                                                    <a onClick={()=>{setDropdownStatus(!dropdownStatus); order && setOrder({...order, status: "finalizado"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >finalizado</a>
 
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div className="col-span-5 flex items-end py-[2.1px]">
-                                            <div onClick={()=>setOrderInfo({...orderInfo, deliveryConfirmation: !orderInfo.deliveryConfirmation})} className={`flex items-center ${orderInfo.deliveryConfirmation ? 'bg-orange-100' : 'bg-slate-100' } gap-1 px-1 py-2  rounded-lg w-full hover:scale-105 duration-150 cursor-pointer `}>
-                                                {orderInfo.deliveryConfirmation ? <CircleCheckIcon  width={20} height={20} fill={`#F06531`} />
+                                            <div onClick={()=>order && setOrder({...order, deliveryConfirmation: !order.deliveryConfirmation})} className={`flex items-center ${order?.deliveryConfirmation ? 'bg-orange-100' : 'bg-slate-100' } gap-1 px-1 py-2  rounded-lg w-full hover:scale-105 duration-150 cursor-pointer `}>
+                                                {order?.deliveryConfirmation ? <CircleCheckIcon  width={20} height={20} fill={`#F06531`} />
                                                         : <CircleIcon  width={20} height={20} fill={`#94a3b8`} />}
-                                                <label  className={`text-sm text-slate-500  ${orderInfo.deliveryConfirmation ? 'text-orange-500' : 'text-slate-500' } font-semibold cursor-pointer`}>Confirmação de entrega</label>
+                                                <label  className={`text-sm text-slate-500  ${order?.deliveryConfirmation ? 'text-orange-500' : 'text-slate-500' } font-semibold cursor-pointer`}>Confirmação de entrega</label>
                                             </div>
                                         </div>
 

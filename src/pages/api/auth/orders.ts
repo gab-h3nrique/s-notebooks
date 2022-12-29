@@ -4,6 +4,8 @@ import { Orders } from '../../../models/orders'
 import { ServicesOrder } from '../../../models/servicesOrder'
 import { Shelfs } from '../../../models/shelf'
 import { OrderType } from '../../../types/orderType'
+import { ClientType } from '../../../types/clientType'
+import { ServiceType } from '../../../types/serviceType'
 
 export default async function handler( req: NextApiRequest,res: NextApiResponse<Object>) {
     
@@ -13,51 +15,28 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
         if(method === 'POST') {
 
-            const {client, orderInfo, equipament, accessories, services} =  req.body
+            const {order, client, services} =  req.body
+
+            delete client.cep; delete order.createdAt;  delete order.updatedAt;
 
             if(!client.email ||  !client.name || !client.document || !client.info) return res.status(500).json( { message: 'informações ausentes do cliente'} )
-            if(!orderInfo.userId) return res.status(500).json( { message: 'informações ausentes do equipamento'} )
-            
-            delete client.cep
+            if(!order.userId) return res.status(500).json( { message: 'informações ausentes do equipamento'} )
+
             const createdClient = await Clients.createOrUpdateClient(client)
 
             if(!createdClient) return res.status(500).json( { message: "error saving client"})
 
-            const shelfEmpty = await Shelfs.getFirstShelfEmpty(orderInfo.userId)
-            
+            const shelfEmpty = await Shelfs.getFirstShelfEmpty(order.userId)
+            console.log('plateleira',shelfEmpty)
 
-            const order:OrderType = {
-                id: orderInfo.id ? orderInfo.id : undefined,
-                status: orderInfo.status ? orderInfo.status : 'aberto',
-                clientId: createdClient.id,
-                userId: orderInfo.userId,
-                shelfId: shelfEmpty?  shelfEmpty.id : undefined,
-                model: equipament.model,
-                brand: equipament.brand,
-                name: equipament.name,
-                serialNumber: equipament.serialNumber,
-                charger: accessories.charger,
-                battery: accessories.battery,
-                energyCable: accessories.energyCable,
-                bag: accessories.bag,
-                others: accessories.others,
-                warranty: false,
-                warrantyDescription: "",
-                backup: orderInfo.backup,
-                backupDescription: orderInfo.backupDescription,
-                defectDescription: orderInfo.defectDescription,
-                technicalReport: orderInfo.technicalReport,
-                generalDescription: orderInfo.generalDescription,
-                deliveryConfirmation: orderInfo.deliveryConfirmation,
-                value: 0,
-            }
+            const allOrder = { ...order, shelfId: shelfEmpty?.id, clientId: createdClient.id }
 
-            const createdOrder = await Orders.createOrUpdateOrder(order)
+            console.log(allOrder)
+            const createdOrder = await Orders.createOrUpdateOrder(allOrder)
 
             await ServicesOrder.createOrUpdate(services, Number(createdOrder.id))
 
             return res.status(201).json( { response: createdOrder } )
-
         }
 
         if(method === 'GET') {
@@ -68,7 +47,7 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
             const limit = Number(req.query.limit)
 
             let orders;
-            console.log('id', id)
+
             if(id) orders = await Orders.getOrderById(Number(id))
             if(!id) orders = await Orders.getAllOrders()
             

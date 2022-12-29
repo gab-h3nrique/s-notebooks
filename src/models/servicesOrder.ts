@@ -1,5 +1,5 @@
 import prisma from "../../db/prisma"
-import { ServiceOrderType } from "../types/service"
+import { ServiceOrderType } from "../types/serviceType"
 
 function model() {
 

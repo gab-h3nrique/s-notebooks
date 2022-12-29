@@ -48,6 +48,7 @@ const Atendimento: NextPage = () => {
 
     setLoading(true)
     const {response} = await Api.get('/api/auth/orders', {page, limit})
+    console.log(response)
     setTotal(response.totalPages)
     setPage(response.currentPage)
     setArrayOrder(response.results)
@@ -146,7 +147,7 @@ const Atendimento: NextPage = () => {
                             background={index % 2 === 0 ? true : false} 
                             onClick={()=>{setOrderId(id),  setNewOrderModal(true)} } 
                             
-                            osNumber={id}  clientName={client.name}  clientDocument={client.document} deviceName={name ? name : 'não informado'}  osStatus={status ? status : 'aberto'}
+                            osNumber={id} clientName={client.name}  clientDocument={client.document} deviceName={name ? name : 'não informado'}  osStatus={status ? status : 'aberto'}
                           />
                         </React.Fragment>
                       )

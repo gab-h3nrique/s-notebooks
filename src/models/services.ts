@@ -1,7 +1,7 @@
 
 
 import prisma from "../../db/prisma"
-import { ServiceType } from "../types/service"
+import { ServiceType } from "../types/serviceType"
 
 
 function model() {
