@@ -144,10 +144,15 @@ const Atendimento: NextPage = () => {
                       return  (
                         <React.Fragment key={index}>
                           <OrderList 
+
+                            onClick={()=>{setOrderId(id); setNewOrderModal(true)} }
                             background={index % 2 === 0 ? true : false} 
-                            onClick={()=>{setOrderId(id),  setNewOrderModal(true)} } 
-                            
-                            osNumber={id} clientName={client.name}  clientDocument={client.document} deviceName={name ? name : 'não informado'}  osStatus={status ? status : 'aberto'}
+                            osNumber={id}
+                            clientName={client.name}  
+                            clientDocument={client.document} 
+                            deviceName={name ? name : 'não informado'}  
+                            osStatus={status ? status : 'aberto'}
+
                           />
                         </React.Fragment>
                       )

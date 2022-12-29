@@ -9,7 +9,7 @@ import StatusInfo from "./StatusInfo";
 
 /* components */
 
-export interface Props {
+export interface OrderListProps {
     onClick: any;
     osNumber: number;
     clientName: string;
@@ -20,19 +20,20 @@ export interface Props {
 }
 
 
-export default function OrderList(props :Props) {
+export default function OrderList(props :OrderListProps) {
     const { osNumber, clientName, clientDocument, deviceName, osStatus, onClick, background } = props;
 
     return (
         <>
-            <div className={`flex items-center justify-between gap-2 ${background ? 'bg-white': 'bg-slate-100'}  w-full h-fit p-2 rounded-2xl cursor-pointer  opacity-75 hover:opacity-100 hover:scale-x-95 duration-300`}>
+            {/* <div className={`flex items-center justify-between gap-2 ${background ? 'bg-white': 'bg-slate-100'}  w-full h-fit p-2 rounded-2xl cursor-pointer  opacity-75 hover:opacity-100 hover:scale-x-95 duration-300`}> */}
+            <div className={`flex items-center justify-between gap-2 ${background ? 'bg-white': 'bg-slate-100'}  w-full h-fit p-2 rounded-2xl cursor-pointer  opacity-75 hover:opacity-100 duration-300`}>
                 
-                <section onClick={onClick} className="flex w-36 rounded-lg justify-start p-1 items-center gap-2">
+                <section onClick={onClick} className="flex w-36 rounded-lg justify-start px-1 items-center gap-2">
                     <div className={`flex bg-orange-500 w-fit h-fit rounded-lg p-1.5`}>
-                        <TagIcon width={22} height={22} fill={`white`}/>
+                        <TagIcon width={18} height={18} fill={`white`}/>
                     </div>
                     <div className="flex justify-center items-center">
-                        <p className="text-xl text-orange-500 font-bold">{osNumber}</p>
+                        <p className="text-lg text-orange-500 font-bold">{osNumber}</p>
                     </div>
                 </section>
 
@@ -41,27 +42,27 @@ export default function OrderList(props :Props) {
 
                     <article className="flex justify-start items-center gap-2 col-span-2">
                         <div className={`flex bg-slate-400 w-fit h-fit rounded-lg p-1.5`}>
-                            <DescktopIcon width={18} height={18} fill={`white`}/>
+                            <DescktopIcon width={16} height={16} fill={`white`}/>
                         </div>
                         <div className="flex justify-center items-center">
-                            <p className="text-lg text-slate-600 font-semibold">{deviceName}</p>
+                            <p className="text-base text-slate-600 font-semibold">{deviceName}</p>
                         </div>
                     </article>
 
                     <article className="flex justify-start items-center gap-2 col-span-4">
                         <div className={`flex bg-slate-400 w-fit h-fit rounded-lg p-1.5`}>
-                            <UserIcon width={18} height={18} fill={`white`}/>
+                            <UserIcon width={16} height={16} fill={`white`}/>
                         </div>
 
                         <div className="flex flex-col justify-center items-center">
-                            <p className="text-lg text-slate-600 font-semibold">{clientName}</p>
+                            <p className="text-sm text-slate-600 font-semibold">{clientName}</p>
                             <p className="text-xs text-slate-500 font-semibold">cpf: {clientDocument}</p>
                         </div>
                     </article>
 
                 </section>
 
-                <section className="flex w-36 justify-end items-center gap-2">
+                <section className="flex w-40 justify-end items-center gap-2">
                     
                     <StatusInfo
                     textColor={`${
