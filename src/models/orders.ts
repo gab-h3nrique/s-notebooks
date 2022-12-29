@@ -4,10 +4,10 @@ import { OrderType } from "../types/orderType"
 
 function model() {
 
-    const createOrUpdateOrder = async(props:OrderType) => {
-        const { id, userId, clientId, ...order } = props
+    const createOrUpdateOrder = async(order:OrderType) => {
+        // const { id, userId, clientId, ...order } = props
         const orderDb = <OrderType> await prisma.orders.upsert({
-            where: { id: id ? id : -1 },
+            where: { id: order.id ? order.id : -1 },
             update: {...order},
             create: {...order},
             include:{client:true, services:true, user:true}
