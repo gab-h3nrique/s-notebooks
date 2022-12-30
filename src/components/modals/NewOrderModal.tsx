@@ -123,6 +123,18 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
     const removeServiceorder = (service:ServiceOrderType) => {
         setArrayservices( services.filter((item)=>item !== service ))
     }
+
+
+
+  const handleDocument = (e:any) => {
+
+    setClient({...client, document: cpfMask(e.target.value)})
+
+    // this.setState({ documentId: cpfMask(e.target.value) })
+  }
+
+
+
     
     useEffect(()=>{
         if (typeof window !== "undefined") {
@@ -237,7 +249,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                             <div className="col-span-3">
                                                 <label className="block text-sm font-medium text-slate-500">Documento</label>
                                                 <div className="flex justify-center items-center gap-1">
-                                                    <input type="text" onChange={(x)=> setClient({...client, document: x.target.value})} value={client.document} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder="000-000-000-00"/>
+                                                    <input type="text" onChange={handleDocument} value={client.document} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder="000-000-000-00"/>
                                                     <div onClick={()=> client.document && handleSearchClient(client.document)} className={`flex bg-orange-500 w-fit h-fit rounded-lg p-1.5 duration-300 hover:scale-110 cursor-pointer`}>
                                                         <IconComponent width={20} height={19} fill={`white`}>
                                                             <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/>
@@ -608,3 +620,14 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
     )
 }
 export default NewOrderModal;
+
+
+
+function cpfMask(value:string) {
+    return value
+      .replace(/\D/g, '') // substitui qualquer caracter que nao seja numero por nada
+      .replace(/(\d{3})(\d)/, '$1.$2') // captura 2 grupos de numero o primeiro de 3 e o segundo de 1, apos capturar o primeiro grupo ele adiciona um ponto antes do segundo grupo de numero
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d{1,2})/, '$1-$2')
+      .replace(/(-\d{2})\d+?$/, '$1') // captura 2 numeros seguidos de um traço e não deixa ser digitado mais nada
+}
