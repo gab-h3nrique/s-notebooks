@@ -74,35 +74,47 @@ export default function OrderList({order, onClick, background} :ListProps) {
                     
                     <StatusInfo
                     textColor={`${
-                            days >= 4 ? 'text-red-700' : 
-                            days <= 3 && order.status === 'aprovado' ? 'text-emerald-700' :
-                            days <= 3 && order.status === 'agurdando' ? 'text-blue-700' :
-                            days <= 3 && order.status !== 'agurdando' && order.status !== 'aprovado' ? 'text-yellow-700' :
-                            'text-black-700'
+
+                        order.status === 'finalizado' ? 'text-slate-700' :
+                        order.status === 'arquivado' ? 'text-slate-700' :
+
+                        days >= 4 && order.status !== 'finalizado' && order.status !== 'arquivado' ? 'text-red-700' :
+                        days == 3 && order.status !== 'finalizado' && order.status !== 'arquivado' ? 'text-yellow-700' :
+
+                        days < 3 && order.status === 'aprovado' ? 'text-emerald-700' :
+                        days < 3 && order.status === 'aguardando' ? 'text-sky-700' :
+
+                        'text-indigo-700'
                         }`} 
                         backgroundColor={`${
-                            days >= 4 ? 'bg-red-100' : 
-                            days <= 3 && order.status === 'aprovado' ? 'bg-emerald-100' :
-                            days <= 3 && order.status === 'agurdando' ? 'bg-blue-100' :
-                            days <= 3 && order.status !== 'agurdando' && order.status !== 'aprovado' ? 'bg-yellow-100' :
-                            'bg-black-100'
+
+                            order.status === 'finalizado' ? 'bg-slate-100' :
+                            order.status === 'arquivado' ? 'bg-slate-100' :
+
+                            days >= 4 && order.status !== 'finalizado' && order.status !== 'arquivado' ? 'bg-red-100' :
+                            days == 3 && order.status !== 'finalizado' && order.status !== 'arquivado' ? 'bg-yellow-100' :
+
+                            days < 3 && order.status === 'aprovado' ? 'bg-emerald-100' :
+                            days < 3 && order.status === 'aguardando' ? 'bg-sky-100' :
+
+                            'bg-indigo-100'
                         }`}  status={creationTime(order.createdAt)} 
                     />
 
                     <StatusInfo
                         textColor={`${
-                            order.status === 'finalizado' ? 'text-emerald-700' : 
-                            order.status === 'andamento' ? 'text-indigo-700' :
-                            order.status === 'pendente' ? 'text-yellow-700' :
-                            order.status === 'aberto' ? 'text-cyan-700' :
-                            'text-indigo-700'
+                            order.status === 'aguardando' ? 'text-cyan-700' :
+                            order.status === 'aprovado' ? 'text-indigo-700' :
+                            order.status === 'reprovado' ? 'text-yellow-700' :
+                            order.status === 'finalizado' ? 'text-emerald-700' :
+                            'text-gray-700'
                         }`} 
                         backgroundColor={`${
+                            order.status === 'aguardando' ? 'bg-cyan-100' :
+                            order.status === 'aprovado' ? 'bg-indigo-100' :
+                            order.status === 'reprovado' ? 'bg-yellow-100' :
                             order.status === 'finalizado' ? 'bg-emerald-100' : 
-                            order.status === 'andamento' ? 'bg-indigo-100' :
-                            order.status === 'pendente' ? 'bg-yellow-100' :
-                            order.status === 'aberto' ? 'bg-cyan-100' :
-                            'bg-indigo-100'
+                            'bg-gray-100'
                         }`}  status={order.status} 
                     />
 
