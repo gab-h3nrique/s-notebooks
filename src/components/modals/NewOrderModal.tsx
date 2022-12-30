@@ -60,6 +60,9 @@ const emptyOrder :OrderType = {
 const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
     const [portal, setPortal] = useState<HTMLElement>()
 
+    const [tryedToSave, setTryedToSave] = useState<boolean>(false)
+    const [message, setMessage] = useState<string>("")
+
     const [userArray, setUserArray] = useState<UserType[]>()
     const [serviceArray, setServiceArray] = useState<ServiceType[]>()
 
@@ -78,13 +81,14 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
     const [dropdownStatusService, setDropdownStatusService] = useState<boolean>(false)
 
     const [loading, setLoading] = useState<boolean>(false)
+    const [contentLoading, setContentLoading] = useState<boolean>(true)
 
 
     const getOrderById = async(id:number | null | undefined) => {
-        if(!id) return;
-        setLoading(true)
+        if(!id) return setContentLoading(false);
+        setContentLoading(true)
         const { response } = await Api.get('/api/auth/orders', {id:id})
-        console.log(response)
+        
         if(!response.id) return;
         
         const {user, client, services, ...allOrder} = response
@@ -92,7 +96,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
         setOrder(allOrder)
         setClient(client)
         setArrayservices(services)
-        setLoading(false)
+        setContentLoading(false)
     }
 
     const getUsers = async() => {
@@ -104,18 +108,6 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
     const getServices = async() => {
         const {response:services} = await Api.get('/api/auth/services')
         return services
-    }
-
-
-
-    const saveOrder = async() => {
-        setLoading(true)
-        const { response } = await Api.post('/api/auth/orders', {order, client, services})
-        
-        if(response) {
-            await orderHandle()
-            setLoading(false)
-        }
     }
 
     const handleSearchClient = async(param:string) => {
@@ -155,10 +147,39 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
     },[isOpen])
 
+    function isEmptyRequiredField():Boolean {
+
+        if(!client.name || !client.email || !order.userId) return false;
+        if(!order.status || !order.model || !order.brand) return false;
+
+        return false;
+    }
+
+    const saveOrder = async() => {
+
+        setTryedToSave(true)
+        if(isEmptyRequiredField()) return; 
+
+        setLoading(true)
+
+        const { response, ...error } = await Api.post('/api/auth/orders', {order, client, services})
+        
+        if(!response) {
+            setMessage(error?.message)
+            setLoading(false)
+            return;
+        } 
+        
+        await orderHandle()
+        setLoading(false)
+    }
+
     function clearModal() {
-        console.log('limpou')
         setOrder(emptyOrder)
         setLoading(false)
+        setTryedToSave(false)
+        setMessage("")
+        setContentLoading(true)
         setClient({name: "", document: "", email: "", number: "", cep: "", info: ""})
         setArrayservices([])
         setNewService({id: undefined, name:"", status: "", orderId: null, value: 0})
@@ -179,7 +200,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                        })} className="flex flex-col bg-slate-100 w-[36rem] h-[56rem] scale-[.93] rounded-2xl py-4 gap-4 overflow-hidden">
                         <header className="px-4">
                             <section className="flex w-full justify-between">
-                                <div onClick={()=>console.log(order)} className="flex justify-center items-center border-4 border-solid border-">
+                                <div onClick={()=>console.log(order)} className="flex justify-center items-center">
                                     <p className="text-2xl text-slate-500 font-semibold">Ordem de serviço</p>
                                 </div>
                                 <div onClick={onClose} className="flex items-center justify-center  duration-300 hover:scale-110 cursor-pointer">
@@ -190,7 +211,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                             </section>
                         </header>
                         {
-                            loading ?
+                            contentLoading ?
                                 <main className="w-full h-[50rem] flex justify-center items-center">
                                     <div className="flex gap-2 animate-ping">
                                         <SpinnerIcon className="h-12 w-12 text-orange-500 fill-white"/>
@@ -210,7 +231,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
                                             <div className="col-span-5">
                                                     <label className="block text-sm font-medium text-slate-500">Nome do cliente</label>
-                                                    <input type="text" onChange={(x)=> setClient({...client, name: x.target.value})} value={client.name} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder="Nome" />
+                                                    <input type="text" onChange={(x)=> setClient({...client, name: x.target.value})} value={client.name} className={`text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150  ${tryedToSave ? !client.name ? 'ring-2 ring-red-400' : 'ring-2 ring-green-200' : null}`} placeholder="Nome" />
                                             </div> 
 
                                             <div className="col-span-3">
@@ -230,7 +251,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
                                             <div className="col-span-5">
                                                     <label className="block text-sm font-medium text-slate-500">Email</label>
-                                                    <input type="email" onChange={(x)=> setClient({...client, email: x.target.value})} value={client.email} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder="email@exemplo.com"/>
+                                                    <input type="email" onChange={(x)=> setClient({...client, email: x.target.value})} value={client.email} className={`text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 ${tryedToSave ? !client.email ? 'ring-2 ring-red-400' : 'ring-2 ring-green-200' : null}`} placeholder="email@exemplo.com"/>
                                             </div>
                                             <div className="col-span-3">
                                                     <label  className="block text-sm font-medium text-slate-500">Número telefone</label>
@@ -302,12 +323,12 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
                                             <div >
                                                     <label className="block text-sm font-medium text-slate-500">Fabricante</label>
-                                                    <input type="text" onChange={(x)=>  setOrder({...order, brand: x.target.value})} value={order.brand} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder=""/>
+                                                    <input type="text" onChange={(x)=>  setOrder({...order, brand: x.target.value})} value={order.brand} className={`text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 ${tryedToSave ? !order.brand ? 'ring-2 ring-red-400' : 'ring-2 ring-green-200' : null}`} placeholder=""/>
                                             </div> 
 
                                             <div >
                                                     <label className="block text-sm font-medium text-slate-500">Modelo</label>
-                                                    <input type="text" onChange={(x)=>  setOrder({...order, model: x.target.value})} value={order.model} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder=""/>
+                                                    <input type="text" onChange={(x)=>  setOrder({...order, model: x.target.value})} value={order.model} className={`text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 ${tryedToSave ? !order.model ? 'ring-2 ring-red-400' : 'ring-2 ring-green-200' : null}`} placeholder=""/>
                                             </div> 
                     
                                         </div>
@@ -421,7 +442,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                         </div>
 
                                                         <div className="col-span-4 relative" onClick={()=> setDropdownStatusService(!dropdownStatusService)}>
-                                                            <div className="flex gap-1 col-span-4 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 px-3 py-1 border-2 border-gray-300 outline-none hover:border-transparent hover:ring hover:ring-orange-400 hover:scale-y-105 duration-150">
+                                                            <div className={`flex gap-1 col-span-4 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 px-3 py-1 border-2 border-gray-300 outline-none hover:border-transparent hover:ring hover:ring-orange-400 hover:scale-y-105 duration-150`}>
                                                                 <input onChange={(event)=>{setNewService({...newService, status: event.target.value})}} type="text" className={`h-full w-full outline-0 overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer`}  value={newService.status}/>
                                                                 <svg className={`-mr-1 ml-2 h-5 w-6 ${dropdownStatusService ? "rotate-[-180deg]" : "rotate-[0deg]"} duration-150`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" >
                                                                     <path  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" />
@@ -493,8 +514,8 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                 <div className="col-span-4">
                                                     <div >
                                                         <label onClick={()=>console.log(order.userId)} className="block text-sm font-medium text-slate-500">Técnico responsável</label>
-                                                        <button type="button" onClick={()=> setDropdownOrderInfo(!dropdownOrderInfo)} className="flex justify-between px-5 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 ">
-                                                        <label className="block text-sm font-medium text-slate-500 overflow-hidden text-ellipsis whitespace-nowrap">
+                                                        <button type="button" onClick={()=> setDropdownOrderInfo(!dropdownOrderInfo)} className={`flex justify-between px-5 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 ${tryedToSave ? !order.userId ? 'ring-2 ring-red-400' : 'ring-2 ring-green-200' : null}`}>
+                                                        <label className="block text-sm font-medium text-slate-500 overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer">
                                                             {
                                                                 userArray ?
                                                                     userArray.map(({id, name})=>{return order.userId === id ? name : null})
@@ -524,21 +545,21 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                 </div>
                                                 
                                                 <div className="col-span-3">
-                                                    <div onClick={()=> setDropdownStatus(!dropdownStatus)}>
-                                                        <label className="block text-sm font-medium text-slate-500">Status</label>
-                                                        <button type="button" className="flex justify-between px-5 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150">
-                                                        <label className="block text-sm font-medium text-slate-500">{order.status ? order.status : ""}</label>
-                                                        
-                                                        <svg className={`-mr-1 ml-2 h-5 w-5 ${dropdownStatus ? "rotate-[-180deg]" : "rotate-[0deg]"} duration-150`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" >
-                                                            <path  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" />
-                                                        </svg>
+                                                    <div className="cursor-pointer" onClick={()=> setDropdownStatus(!dropdownStatus)}>
+                                                        <label className="block text-sm font-medium text-slate-500 ">Status</label>
+                                                        <button type="button" className={`flex justify-between px-5 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 ${tryedToSave ? !order.status ? 'ring-2 ring-red-400' : 'ring-2 ring-green-200' : null}`}>
+                                                            <label className="block text-sm font-medium text-slate-500 overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer">{order.status ? order.status : ""}</label>
+                                                            
+                                                            <svg className={`-mr-1 ml-2 h-5 w-5 ${dropdownStatus ? "rotate-[-180deg]" : "rotate-[0deg]"} duration-150`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" >
+                                                                <path  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" />
+                                                            </svg>
                                                         </button>
                                                     </div>
 
                                                     <div className={`${!dropdownStatus ? "opacity-0 pointer-events-none" : "opacity-1 pointer-events-auto"} duration-150 absolute  right-3 bottom-5 z-10  w-56 origin-top-right rounded-md bg-white shadow-2xl`} >
                                                         <div className="py-1" >
 
-                                                            <a onClick={()=>{setDropdownStatus(!dropdownStatus); setOrder({...order, status: "aberto"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointe rounded-md" >aberto</a>
+                                                            <a onClick={()=>{setDropdownStatus(!dropdownStatus); setOrder({...order, status: "aberto"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >aberto</a>
                                                             <a onClick={()=>{setDropdownStatus(!dropdownStatus); setOrder({...order, status: "andamento"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >andamento</a>
                                                             <a onClick={()=>{setDropdownStatus(!dropdownStatus); setOrder({...order, status: "pendente"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >pendente</a>
                                                             <a onClick={()=>{setDropdownStatus(!dropdownStatus); setOrder({...order, status: "finalizado"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >finalizado</a>
@@ -564,7 +585,8 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                     </section>
                                 </main>
                         }
-                        <footer className="flex justify-center items-center">
+                        <footer className="flex flex-col justify-center items-center">
+                                { message ? <span className="text-red-600/75  text-center font-bold w-fit">{message}</span> : null}
                             <div onClick={saveOrder} className="flex w-full px-6">
                                 <div className={`flex justify-center items-center bg-orange-500 gap-2 cursor-pointer w-full rounded-2xl py-3 px-3 duration-150 hover:scale-y-110`}>
                                     {!loading ? 

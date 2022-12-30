@@ -19,20 +19,19 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
             delete client.cep; delete order.createdAt;  delete order.updatedAt;
 
-            if(!client.email ||  !client.name || !client.document || !client.info) return res.status(500).json( { message: 'informações ausentes do cliente'} )
-            if(!order.userId) return res.status(500).json( { message: 'informações ausentes do equipamento'} )
+            if(!client.name || !client.email || !order.userId || !order.brand || !order.model || !order.status) return res.status(500).json( { message: 'Por favor, verifique os campos obrigatórios!'} )
 
             const createdClient = await Clients.createOrUpdateClient(client)
 
-            if(!createdClient) return res.status(500).json( { message: "error saving client"})
+            if(!createdClient) return res.status(500).json( { message: "error ao salvar o cliente!"})
 
             const shelfEmpty = await Shelfs.getFirstShelfEmpty(order.userId)
-            console.log('plateleira',shelfEmpty)
 
             const allOrder = { ...order, shelfId: shelfEmpty?.id, clientId: createdClient.id }
 
-            console.log(allOrder)
             const createdOrder = await Orders.createOrUpdateOrder(allOrder)
+
+            if(!createdOrder) return res.status(500).json( { message: "error ao salvar ordem de serviço!"})
 
             await ServicesOrder.createOrUpdate(services, Number(createdOrder.id))
 

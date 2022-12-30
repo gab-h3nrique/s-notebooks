@@ -25,8 +25,8 @@ export default function OrderList(props :OrderListProps) {
 
     return (
         <>
-            {/* <div className={`flex items-center justify-between gap-2 ${background ? 'bg-white': 'bg-slate-100'}  w-full h-fit p-2 rounded-2xl cursor-pointer  opacity-75 hover:opacity-100 hover:scale-x-95 duration-300`}> */}
-            <div className={`flex items-center justify-between gap-2 ${background ? 'bg-white': 'bg-slate-100'}  w-full h-fit p-2 rounded-2xl cursor-pointer  opacity-75 hover:opacity-100 duration-300`}>
+            <div className={`flex items-center justify-between gap-2 ${background ? 'bg-white': 'bg-slate-100'}  w-full h-fit p-2 rounded-2xl cursor-pointer  opacity-75 hover:opacity-100 hover:scale-x-[.98] duration-300`}>
+            {/* <div className={`flex items-center justify-between gap-2 ${background ? 'bg-white': 'bg-slate-100'}  w-full h-fit p-2 rounded-2xl cursor-pointer  opacity-75 hover:opacity-100 duration-300`}> */}
                 
                 <section onClick={onClick} className="flex w-36 rounded-lg justify-start px-1 items-center gap-2">
                     <div className={`flex bg-orange-500 w-fit h-fit rounded-lg p-1.5`}>
