@@ -36,9 +36,6 @@ const Atendimento: NextPage = () => {
   const [total, setTotal] = useState<number>()
   const [page, setPage] = useState<number>()
 
-  // const [currentPage, setCurrentPage] = useState(1)
-
-  const [searchOpen, setSearchOpen] = useState<boolean>(false)
   const [search, setSearch] = useState<string>("")
 
   const [orderId, setOrderId] = useState<number | null>()
@@ -83,15 +80,15 @@ const Atendimento: NextPage = () => {
             </div>
 
             <div className="flex gap-3">
-              <div onClick={() => !searchOpen && setSearchOpen(true)} className={`flex justify-center items-center bg-orange-500 gap-2 cursor-pointer rounded-2xl p-3 duration-300 hover:scale-110  ${searchOpen ? 'bg-slate-100 border-solid border-[.2rem] border-white' : ''}`}>
-                  <div  onClick={() => searchOpen && handleSearch()} className="w-fit h-fit">
-                    <SearchIcon width={20} height={20} fill={`${searchOpen ? '#94a3b8' : 'white'}`}/>
+              <div className={`flex justify-center items-center gap-2 cursor-pointer rounded-2xl p-3 duration-300 hover:scale-110 bg-slate-100 border-solid border-[.2rem] border-white`}>
+                  <div  onClick={() => handleSearch()} className="w-fit h-fit">
+                    <SearchIcon width={20} height={20} fill={`#94a3b8`}/>
                   </div>
                   
                   <input 
                     onKeyPress={(e) => e.key === 'Enter' && handleSearch()} 
                     onChange={(x)=> setSearch(x.target.value)} value={search}
-                    type="text" className={`text-slate-500 bg-slate-100 outline-0 text-sm font-semibold duration-500 ${searchOpen ? 'w-full' : 'hidden'}`}/>
+                    type="text" className={`text-slate-500 bg-slate-100 outline-0 text-sm font-semibold duration-500 w-full`}/>
 
               </div>
 

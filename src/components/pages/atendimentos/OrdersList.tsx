@@ -52,21 +52,30 @@ export default function OrderList({order, onClick, background} :ListProps) {
                         <div className={`flex bg-slate-400 w-fit h-fit rounded-lg p-1.5`}>
                             <DescktopIcon width={16} height={16} fill={`white`}/>
                         </div>
-                        <div className="flex justify-center items-center">
-                            <p className="text-base text-slate-600 font-semibold">{order.name}</p>
+                        <div className="flex justify-center items-center overflow-hidden">
+                            <p className="text-base text-slate-600 font-semibold overflow-hidden text-ellipsis whitespace-nowrap">{order.name}</p>
                         </div>
                     </article>
 
-                    <article className="flex justify-start items-center gap-2 col-span-4">
+                    <article className="flex justify-start items-center gap-2 col-span-2">
+                        <div className={`flex bg-slate-400 w-fit h-fit rounded-lg p-1.5`}>
+                            <UserIcon width={16} height={16} fill={`white`}/>
+                        </div>
+                        <div className="flex justify-center items-center overflow-hidden">
+                            <p className="text-base text-slate-600 font-semibold overflow-hidden text-ellipsis whitespace-nowrap">{order.client.name}</p>
+                        </div>
+                    </article>
+
+                    {/* <article className="flex justify-start items-center gap-2 col-span-4">
                         <div className={`flex bg-slate-400 w-fit h-fit rounded-lg p-1.5`}>
                             <UserIcon width={16} height={16} fill={`white`}/>
                         </div>
 
-                        <div className="flex flex-col justify-center items-center">
-                            <p className="text-sm text-slate-600 font-semibold">{order.client.name}</p>
-                            <p className="text-xs text-slate-500 font-semibold">cpf: {order.client.document}</p>
+                        <div className="flex flex-col justify-center items-center overflow-hidden">
+                            <p className="text-sm text-slate-600 font-semibold overflow-hidden text-ellipsis whitespace-nowrap">{order.client.name}</p>
+                            <p className="text-xs text-slate-500 font-semibold overflow-hidden text-ellipsis whitespace-nowrap">cpf: {order.client.document}</p>
                         </div>
-                    </article>
+                    </article> */}
 
                 </section>
 
@@ -98,7 +107,7 @@ export default function OrderList({order, onClick, background} :ListProps) {
                             days < 3 && order.status === 'aguardando' ? 'bg-sky-100' :
 
                             'bg-indigo-100'
-                        }`}  status={creationTime(order.createdAt)} 
+                        }`}  status={creationTime(order.createdAt)}
                     />
 
                     <StatusInfo
