@@ -1,6 +1,7 @@
 /* components */
 
 import Api from "../../../../lib/api";
+import { timeDifference } from "../../../../lib/timeDifference";
 import { ClientType } from "../../../types/clientType";
 import { OrderType } from "../../../types/orderType";
 import DescktopIcon from "../../icons/DescktopIcon";
@@ -29,9 +30,11 @@ export interface ListProps {
 
 export default function OrderList({order, onClick, background} :ListProps) {
 
+    const { days } = timeDifference(order.createdAt)
+
     return (
         <>
-            <div className={`flex items-center justify-between gap-2 ${background ? 'bg-white': 'bg-slate-100'}  w-full h-fit p-2 rounded-2xl cursor-pointer  opacity-75 hover:opacity-100 duration-300`}>
+            <div className={`flex items-center justify-between gap-2 ${background ? 'bg-white': 'bg-slate-100'} w-full h-fit p-2 rounded-2xl cursor-pointer opacity-75 hover:opacity-100 hover:scale-x-95 duration-300`}>
                 
                 <section onClick={onClick} className="flex w-36 rounded-lg justify-start px-1 items-center gap-2">
                     <div className={`flex bg-orange-500 w-fit h-fit rounded-lg p-1.5`}>
@@ -71,19 +74,19 @@ export default function OrderList({order, onClick, background} :ListProps) {
                     
                     <StatusInfo
                     textColor={`${
-                            order.status === 'finalizado' ? 'text-emerald-700' : 
-                            order.status === 'andamento' ? 'text-indigo-700' :
-                            order.status === 'pendente' ? 'text-yellow-700' :
-                            order.status === 'aberto' ? 'text-cyan-700' :
-                            'text-indigo-700'
+                            days >= 4 ? 'text-red-700' : 
+                            days <= 3 && order.status === 'aprovado' ? 'text-emerald-700' :
+                            days <= 3 && order.status === 'agurdando' ? 'text-blue-700' :
+                            days <= 3 && order.status !== 'agurdando' && order.status !== 'aprovado' ? 'text-yellow-700' :
+                            'text-black-700'
                         }`} 
                         backgroundColor={`${
-                            order.status === 'finalizado' ? 'bg-emerald-100' : 
-                            order.status === 'andamento' ? 'bg-indigo-100' :
-                            order.status === 'pendente' ? 'bg-yellow-100' :
-                            order.status === 'aberto' ? 'bg-cyan-100' :
-                            'bg-indigo-100'
-                        }`}  status={'há 5 dias'} 
+                            days >= 4 ? 'bg-red-100' : 
+                            days <= 3 && order.status === 'aprovado' ? 'bg-emerald-100' :
+                            days <= 3 && order.status === 'agurdando' ? 'bg-blue-100' :
+                            days <= 3 && order.status !== 'agurdando' && order.status !== 'aprovado' ? 'bg-yellow-100' :
+                            'bg-black-100'
+                        }`}  status={creationTime(order.createdAt)} 
                     />
 
                     <StatusInfo
@@ -114,4 +117,32 @@ export default function OrderList({order, onClick, background} :ListProps) {
         </>
         // <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
     )
+}
+
+function creationTime(startParam:string | number, endParam?:string | number) {
+
+    const start = new Date(startParam);
+    const end = endParam ? new Date(endParam) : null;
+
+    const time1 = start.getTime();
+    const time2 = end ? end.getTime() : Date.now();
+
+    const diff = time2 - time1;
+
+    const months = Math.floor(diff / (1000 * 60 * 60 * 24 * 30));
+    const days = Math.floor((diff % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+    const years = Math.floor(months / 12);
+
+    if(years > 0) return `há ${years} ano${years > 1 ? "s" : ""}`;
+    if(years == 0 && months > 0) return `há ${months} mese${months > 1 ? "s" : ""}`;
+    if(months == 0 && days > 0) return `há ${days} dia${days > 1 ? "s" : ""}`;
+    if(days == 0 && hours > 0) return `há ${hours} hora${hours > 1 ? "s" : ""}`;
+    if(hours == 0 && minutes > 0) return `há ${minutes} minuto${minutes > 1 ? "s" : ""}`;
+    if(minutes == 0) return `há ${seconds} segundos`;
+
+    return 'não estimado';
+
 }

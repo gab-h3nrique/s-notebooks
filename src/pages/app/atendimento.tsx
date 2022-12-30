@@ -49,7 +49,6 @@ const Atendimento: NextPage = () => {
 
     setLoading(true)
     const {response} = await Api.get('/api/auth/orders', {page, limit})
-    console.log(response)
     setTotal(response.totalPages)
     setPage(response.currentPage)
     setArrayOrder(response.results)
