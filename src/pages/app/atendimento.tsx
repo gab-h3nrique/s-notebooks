@@ -15,6 +15,7 @@ import Paginate from '../../components/pages/Paginate'
 import IconMenu from '../../components/barComponent/IconMenu'
 import SearchIcon from '../../components/icons/SearchIcon'
 import SpinnerIcon from '../../components/icons/SpinnerIcon'
+import { OrderType } from '../../types/orderType'
 
 /* components */
 
@@ -140,18 +141,14 @@ const Atendimento: NextPage = () => {
             : 
               <article className="w-full overflow-auto">
               {
-                    arrayOrder?.map(({id,name, client, status}:any, index)=>{
+                    arrayOrder?.map((order:OrderType, index)=>{
                       return  (
                         <React.Fragment key={index}>
                           <OrderList 
 
-                            onClick={()=>{setOrderId(id); setNewOrderModal(true)} }
+                            onClick={()=>{setOrderId(order.id); setNewOrderModal(true)} }
                             background={index % 2 === 0 ? true : false} 
-                            osNumber={id}
-                            clientName={client.name}  
-                            clientDocument={client.document} 
-                            deviceName={name ? name : 'não informado'}  
-                            osStatus={status ? status : 'aberto'}
+                            order={order}
 
                           />
                         </React.Fragment>

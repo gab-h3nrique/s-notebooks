@@ -1,3 +1,5 @@
+import { ClientType } from "./clientType";
+
 export interface OrderType {
     id?:number
     status: string;

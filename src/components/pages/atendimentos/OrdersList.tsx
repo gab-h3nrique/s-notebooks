@@ -1,6 +1,8 @@
 /* components */
 
 import Api from "../../../../lib/api";
+import { ClientType } from "../../../types/clientType";
+import { OrderType } from "../../../types/orderType";
 import DescktopIcon from "../../icons/DescktopIcon";
 import FileDownIcon from "../../icons/FileDownIcon";
 import TagIcon from "../../icons/TagIcon";
@@ -19,13 +21,16 @@ export interface OrderListProps {
     background: boolean;
 }
 
+export interface ListProps {
+    order: any;
+    onClick: any;
+    background: boolean;
+}
 
-export default function OrderList(props :OrderListProps) {
-    const { osNumber, clientName, clientDocument, deviceName, osStatus, onClick, background } = props;
+export default function OrderList({order, onClick, background} :ListProps) {
 
     return (
         <>
-            {/* <div className={`flex items-center justify-between gap-2 ${background ? 'bg-white': 'bg-slate-100'}  w-full h-fit p-2 rounded-2xl cursor-pointer  opacity-75 hover:opacity-100 hover:scale-x-95 duration-300`}> */}
             <div className={`flex items-center justify-between gap-2 ${background ? 'bg-white': 'bg-slate-100'}  w-full h-fit p-2 rounded-2xl cursor-pointer  opacity-75 hover:opacity-100 duration-300`}>
                 
                 <section onClick={onClick} className="flex w-36 rounded-lg justify-start px-1 items-center gap-2">
@@ -33,7 +38,7 @@ export default function OrderList(props :OrderListProps) {
                         <TagIcon width={18} height={18} fill={`white`}/>
                     </div>
                     <div className="flex justify-center items-center">
-                        <p className="text-lg text-orange-500 font-bold">{osNumber}</p>
+                        <p className="text-lg text-orange-500 font-bold">{order.id}</p>
                     </div>
                 </section>
 
@@ -45,7 +50,7 @@ export default function OrderList(props :OrderListProps) {
                             <DescktopIcon width={16} height={16} fill={`white`}/>
                         </div>
                         <div className="flex justify-center items-center">
-                            <p className="text-base text-slate-600 font-semibold">{deviceName}</p>
+                            <p className="text-base text-slate-600 font-semibold">{order.name}</p>
                         </div>
                     </article>
 
@@ -55,33 +60,50 @@ export default function OrderList(props :OrderListProps) {
                         </div>
 
                         <div className="flex flex-col justify-center items-center">
-                            <p className="text-sm text-slate-600 font-semibold">{clientName}</p>
-                            <p className="text-xs text-slate-500 font-semibold">cpf: {clientDocument}</p>
+                            <p className="text-sm text-slate-600 font-semibold">{order.client.name}</p>
+                            <p className="text-xs text-slate-500 font-semibold">cpf: {order.client.document}</p>
                         </div>
                     </article>
 
                 </section>
 
-                <section className="flex w-40 justify-end items-center gap-2">
+                <section className="flex w-48 justify-end items-center gap-2">
                     
                     <StatusInfo
                     textColor={`${
-                            osStatus === 'finalizado' ? 'text-emerald-700' : 
-                            osStatus === 'andamento' ? 'text-indigo-700' :
-                            osStatus === 'pendente' ? 'text-yellow-700' :
-                            osStatus === 'aberto' ? 'text-cyan-700' :
+                            order.status === 'finalizado' ? 'text-emerald-700' : 
+                            order.status === 'andamento' ? 'text-indigo-700' :
+                            order.status === 'pendente' ? 'text-yellow-700' :
+                            order.status === 'aberto' ? 'text-cyan-700' :
                             'text-indigo-700'
                         }`} 
                         backgroundColor={`${
-                            osStatus === 'finalizado' ? 'bg-emerald-100' : 
-                            osStatus === 'andamento' ? 'bg-indigo-100' :
-                            osStatus === 'pendente' ? 'bg-yellow-100' :
-                            osStatus === 'aberto' ? 'bg-cyan-100' :
+                            order.status === 'finalizado' ? 'bg-emerald-100' : 
+                            order.status === 'andamento' ? 'bg-indigo-100' :
+                            order.status === 'pendente' ? 'bg-yellow-100' :
+                            order.status === 'aberto' ? 'bg-cyan-100' :
                             'bg-indigo-100'
-                        }`}  status={osStatus} 
+                        }`}  status={'há 5 dias'} 
                     />
 
-                    <div  onClick={()=>{window.open(`/orderPdf?id=${osNumber}`)}} className="flex justify-center items-center hover:scale-105 hover:bg-slate-200 p-2 rounded-lg">
+                    <StatusInfo
+                        textColor={`${
+                            order.status === 'finalizado' ? 'text-emerald-700' : 
+                            order.status === 'andamento' ? 'text-indigo-700' :
+                            order.status === 'pendente' ? 'text-yellow-700' :
+                            order.status === 'aberto' ? 'text-cyan-700' :
+                            'text-indigo-700'
+                        }`} 
+                        backgroundColor={`${
+                            order.status === 'finalizado' ? 'bg-emerald-100' : 
+                            order.status === 'andamento' ? 'bg-indigo-100' :
+                            order.status === 'pendente' ? 'bg-yellow-100' :
+                            order.status === 'aberto' ? 'bg-cyan-100' :
+                            'bg-indigo-100'
+                        }`}  status={order.status} 
+                    />
+
+                    <div  onClick={()=>{window.open(`/orderPdf?id=${order.id}`)}} className="flex justify-center items-center hover:scale-105 hover:bg-slate-200 p-2 rounded-lg">
                         <FileDownIcon className={`h-6 w-8 fill-slate-400`} />
                     </div>
                 </section>
