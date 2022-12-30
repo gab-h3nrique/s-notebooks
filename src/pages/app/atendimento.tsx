@@ -29,6 +29,8 @@ interface PagConfig {
 
 const Atendimento: NextPage = () => {
 
+  const maxLimit:number = 25
+
   const [newOrderModal, setNewOrderModal] = useState<boolean>(false)
 
   const [arrayOrder, setArrayOrder] = useState<any[]>()
@@ -53,10 +55,10 @@ const Atendimento: NextPage = () => {
   } 
 
   const pageHandle = async(paramPage:number) => {
-    await getOrders(paramPage, 10)
+    await getOrders(paramPage, maxLimit)
   }
   const orderHandle = async() => {
-    await getOrders(page ? page : 1, 10).then(()=>setNewOrderModal(false))
+    await getOrders(page ? page : 1, maxLimit).then(()=>setNewOrderModal(false))
   }
 
   const handleSearch = async() => {
@@ -66,7 +68,7 @@ const Atendimento: NextPage = () => {
 
   useEffect(()=>{
     (async () => {
-      await getOrders(1, 10)
+      await getOrders(1, maxLimit)
     })()
   },[])
 
