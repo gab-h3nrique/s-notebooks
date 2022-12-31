@@ -72,7 +72,7 @@ model Orders {
   shelf        Shelf? @relation("shelfOrder", fields: [shelfId], references: [id])
   shelfId      Int? @unique
 
-  services       ServicesOrder[] @relation("ServicesOrder")
+  services     ServicesOrder[] @relation("ServicesOrder")
 
   model        String
   brand        String
@@ -126,7 +126,7 @@ model ServicesOrder {
   name        String?
   status      String @default("aguardando")
 
-  order       Orders @relation("ServicesOrder", fields: [orderId], references: [id])
+  order       Orders @relation("ServicesOrder", fields: [orderId], references: [id], onDelete: Cascade)
   orderId     Int
   
   value       Float? @default(0.00)

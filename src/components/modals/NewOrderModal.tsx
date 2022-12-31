@@ -215,9 +215,9 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                 <div onClick={()=>console.log(order)} className="flex justify-center items-center">
                                     <p className="text-2xl text-slate-500 font-semibold">Ordem de serviço</p>
                                 </div>
-                                <div onClick={onClose} className="flex items-center justify-center  duration-300 hover:scale-110 cursor-pointer">
+                                <div onClick={onClose} className="flex items-center justify-center duration-300 hover:scale-110 cursor-pointer">
                                     <div className={`flex bg-orange-500 w-fit h-fit rounded-lg p-1.5`}>
-                                        <CloseIcon width={22} height={22} fill={`white`}/>
+                                        <CloseIcon  className="h-[22px] w-[22px] fill-white"/>
                                     </div>
                                 </div>
                             </section>
