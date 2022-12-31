@@ -481,7 +481,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                                     <input disabled value={item.value} className="col-span-2 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 opacity-80" />
                                                                     <div onClick={()=>removeServiceorder(item)} className="flex items-center justify-center  duration-300 hover:scale-110 cursor-pointer">
                                                                         <div className={`flex bg-orange-500 w-fit h-fit rounded-lg p-1.5`}>
-                                                                            <CloseIcon width={20} height={20} fill={`white`}/>
+                                                                            <CloseIcon className="h-[20px] w-[20px] fill-white"/>
                                                                         </div>
                                                                     </div>
                                                                 </div>

@@ -55,7 +55,7 @@ function fetchApi():ApiType {
 
     // }
     
-    const deleteMethod: Http = async <JSON = any>(url: string, object?: any): Promise<JSON> => {
+    const deleteMethod: Http = async <JSON = any>(url: string, object?: any): Promise<any> => {
             
         const response = await fetch(url + `${ object ? `?${new URLSearchParams(object)}` : ''}`, {
             method: 'DELETE',
@@ -66,7 +66,7 @@ function fetchApi():ApiType {
                 'Authorization': `Bearer ${await getCookie('auth')}`,
             },
         })
-        return await response.json()
+        return response.status === 204 ? response : await response.json()
     }
 
     async function authMethod<JSON = any>(url: string, object: any,): Promise<JSON> {

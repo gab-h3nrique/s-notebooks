@@ -132,7 +132,6 @@ model ServicesOrder {
   value       Float? @default(0.00)
 
   @@index([orderId])
-
   @@map("servicesOrder")
 }
 

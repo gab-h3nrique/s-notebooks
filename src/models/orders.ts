@@ -3,7 +3,7 @@ import { OrderType } from "../types/orderType"
 
 
 function model() {
-    try{
+    // try{
         const createOrUpdateOrder = async(order:OrderType) => {
             // const { id, userId, clientId, ...order } = props
             const orderDb = <OrderType> await prisma.orders.upsert({
@@ -75,6 +75,9 @@ function model() {
         }
 
         const deletetOrderById = async(orderId:number) => {
+            await prisma.servicesOrder.deleteMany({
+                where: { orderId: orderId}
+            })
             const deletedOrder = <OrderType> await prisma.orders.delete({
                 where: { id: orderId}
             })
@@ -84,9 +87,9 @@ function model() {
         // export all function that is in the return
         return { createOrUpdateOrder, getAllOrders, getPageOrders, getTotalOrders, searchOrders, searchByClient, getOrderById, deletetOrderById }
 
-    } catch (error:any) {
-        return error.message
-    }
+    // } catch (error:any) {
+    //     return error.message
+    // }
 }
 
 export const Orders = model();

@@ -64,7 +64,17 @@ const Atendimento: NextPage = () => {
   const handleSearch = async() => {
     const {response} = await Api.get('/api/auth/search/orders',{content: search})
     setArrayOrder(response)
-  } 
+  }
+
+  const deleteOrder = async(orderId?:number) => {
+    if(!orderId) return;
+
+    const { response, ...error } = await Api.delete('/api/auth/orders', { id: orderId })
+
+    if(!response.id) return console.log(error.message)
+
+    await orderHandle()
+  }
 
   useEffect(()=>{
     (async () => {
@@ -145,6 +155,7 @@ const Atendimento: NextPage = () => {
                           <OrderList 
 
                             onClick={()=>{setOrderId(order.id); setNewOrderModal(true)} }
+                            onDelete={()=>deleteOrder(order.id)}
                             background={index % 2 === 0 ? true : false} 
                             order={order}
 

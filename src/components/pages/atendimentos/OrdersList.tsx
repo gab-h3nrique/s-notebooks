@@ -24,18 +24,13 @@ export interface OrderListProps {
 export interface ListProps {
     order: any;
     onClick: any;
+    onDelete: any;
     background: boolean;
 }
 
-export default function OrderList({order, onClick, background} :ListProps) {
+export default function OrderList({order, onClick, onDelete, background} :ListProps) {
 
     const { days } = timeDifference(order.createdAt)
-
-    async function deleteOrder() {
-        const { response, ...error } = await Api.delete('/api/auth/orders', { id: order.id })
-
-        console.log('retorno', response || error)
-    }
 
     return (
         <>
@@ -135,7 +130,7 @@ export default function OrderList({order, onClick, background} :ListProps) {
                         {/* <FileDownIcon className={`h-6 w-8 fill-slate-400`} /> */}
                         <div 
                         // onClick={()=>{window.open(`/orderPdf?id=${order.id}`)}}
-                        onClick={deleteOrder}
+                        onClick={onDelete}
                         className={`flex bg-slate-400 w-fit h-fit rounded-lg p-[.3rem] opacity-70 hover:bg-red-500 hover:opacity-90 hover:scale-110`}>
 
                             <CloseIcon className="h-[15px] w-[15px] fill-white"/>
