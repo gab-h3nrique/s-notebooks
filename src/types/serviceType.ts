@@ -3,9 +3,9 @@ export interface ServiceType {
   name: string;
 }
 export interface ServiceOrderType {
-  id: number | undefined;
+  id?: number;
   name: string;
   status: string;
-  orderId: number | null;
+  orderId?: number;
   value: number;
 }

@@ -13,7 +13,10 @@ import CheckIcon from "../icons/CheckIcon";
 import CircleCheckIcon from "../icons/CircleCheckIcon";
 import CircleIcon from "../icons/CircleIcon";
 import CloseIcon from "../icons/CloseIcon";
+import CloudDownload from "../icons/CloudDownload";
+import ClouldSetting from "../icons/ClouldSetting";
 import DescktopIcon from "../icons/DescktopIcon";
+import FileDownIcon from "../icons/FileDownIcon";
 import IconComponent from "../icons/IconComponent";
 import PasteIcon from "../icons/PasteIcon";
 import PlusIcon from "../icons/PlusIcon";
@@ -70,7 +73,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
     const [order, setOrder] = useState<OrderType>(emptyOrder)
 
-    const [newService, setNewService] = useState<ServiceOrderType>({id: undefined, name:"", status: "", orderId: null, value: 0})
+    const [newService, setNewService] = useState<ServiceOrderType>({id: undefined, name:"", status: "", orderId: undefined, value: 0})
     const [services, setArrayservices] = useState<ServiceOrderType[]>([])
 
     const [dropdownEquipament, setDropdownEquipament] = useState<boolean>(false)
@@ -115,12 +118,21 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
         if(response.id) setClient({...client, ...response})
     }
 
-    const addServiceOrder = () => {
+    const addServiceOrder = async() => {
+
+        console.log('id order: ', order.id)
+
         if(!newService.name || !newService.status) return;
+
+        if(order.id) await Api.post('/api/auth/servicesOrder', { serviceOrder: {...newService, orderId: order.id}  })
+
         setArrayservices( services => [...services, newService])
-        setNewService({id: undefined, name:"", status: "", orderId: null, value: 0})
+        setNewService({id: undefined, name:"", status: "", orderId: undefined, value: 0})
     }
-    const removeServiceorder = (service:ServiceOrderType) => {
+    const removeServiceorder = async(service:ServiceOrderType) => {
+
+        if(order.id && service.id) await Api.delete('/api/auth/servicesOrder', { id: service.id })
+
         setArrayservices( services.filter((item)=>item !== service ))
     }
 
@@ -128,9 +140,9 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
   const handleDocument = (e:any) => {
 
-    setClient({...client, document: cpfMask(e.target.value)})
+    setClient({...client, document: cpfAndCnpjMask(e.target.value)})
 
-    // this.setState({ documentId: cpfMask(e.target.value) })
+    // this.setState({ documentId: cpfAndCnpjMask(e.target.value) })
   }
 
 
@@ -194,7 +206,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
         setContentLoading(true)
         setClient({name: "", document: "", email: "", number: "", cep: "", info: ""})
         setArrayservices([])
-        setNewService({id: undefined, name:"", status: "", orderId: null, value: 0})
+        setNewService({id: undefined, name:"", status: "", orderId: undefined, value: 0})
     }
 
     return (
@@ -215,10 +227,24 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                 <div onClick={()=>console.log(order)} className="flex justify-center items-center">
                                     <p className="text-2xl text-slate-500 font-semibold">Ordem de serviço</p>
                                 </div>
-                                <div onClick={onClose} className="flex items-center justify-center duration-300 hover:scale-110 cursor-pointer">
-                                    <div className={`flex bg-orange-500 w-fit h-fit rounded-lg p-1.5`}>
-                                        <CloseIcon  className="h-[22px] w-[22px] fill-white"/>
+                                <div className="flex justify-center items-center gap-2">
+
+                                    <div onClick={()=>{window.open(`/orderPdf?id=${order.id}`)}} className="flex items-center justify-center duration-300 hover:scale-110 cursor-pointer">
+                                        <div className={`flex bg-slate-400 w-fit h-fit rounded-lg p-[4px]`}>
+                                            <FileDownIcon className="h-[24px] w-[24px] fill-white"/>
+                                        </div>
                                     </div>
+                                    <div onClick={()=>{window.open(`/orderPdf?id=${order.id}`)}} className="flex items-center justify-center duration-300 hover:scale-110 cursor-pointer">
+                                        <div className={`flex bg-slate-400 w-fit h-fit rounded-lg p-[3px]`}>
+                                            <ClouldSetting  className="h-[25px] w-[25px] fill-white"/>
+                                        </div>
+                                    </div>
+                                    <div onClick={onClose} className="flex items-center justify-center duration-300 hover:scale-110 cursor-pointer">
+                                        <div className={`flex bg-orange-500 w-fit h-fit rounded-lg p-1.5`}>
+                                            <CloseIcon  className="h-[22px] w-[22px] fill-white"/>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </section>
                         </header>
@@ -249,7 +275,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                             <div className="col-span-3">
                                                 <label className="block text-sm font-medium text-slate-500">Documento</label>
                                                 <div className="flex justify-center items-center gap-1">
-                                                    <input type="text" onChange={handleDocument} value={client.document} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder="000-000-000-00"/>
+                                                    <input type="text" maxLength={18} onChange={handleDocument} value={client.document} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder="000-000-000-00"/>
                                                     <div onClick={()=> client.document && handleSearchClient(client.document)} className={`flex bg-orange-500 w-fit h-fit rounded-lg p-1.5 duration-300 hover:scale-110 cursor-pointer`}>
                                                         <IconComponent width={20} height={19} fill={`white`}>
                                                             <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/>
@@ -464,7 +490,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
                                                         <input type="number" onChange={(event)=>{setNewService({...newService, value: Number(event.target.value)})}} value={newService.value ? newService.value : ''} className="col-span-2 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder="Valor"/>
 
-                                                        <div onClick={()=>addServiceOrder()} className="flex items-center justify-center  duration-300 hover:scale-110 cursor-pointer">
+                                                        <div onClick={()=>addServiceOrder()} className="flex items-center justify-center duration-300 hover:scale-110 cursor-pointer">
                                                             <div className={`flex bg-orange-500 w-fit h-fit rounded-lg p-1.5`}>
                                                                 <PlusIcon width={20} height={20} fill={`white`}/>
                                                             </div>
@@ -480,8 +506,8 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                                     <input disabled value={item.status} className="col-span-4 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 opacity-80" />
                                                                     <input disabled value={item.value} className="col-span-2 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 opacity-80" />
                                                                     <div onClick={()=>removeServiceorder(item)} className="flex items-center justify-center  duration-300 hover:scale-110 cursor-pointer">
-                                                                        <div className={`flex bg-orange-500 w-fit h-fit rounded-lg p-1.5`}>
-                                                                            <CloseIcon className="h-[20px] w-[20px] fill-white"/>
+                                                                        <div className={`flex bg-slate-400 w-fit h-fit rounded-lg p-1.5 hover:bg-red-500 hover:opacity-90`}>
+                                                                            <CloseIcon className="h-[16px] w-[16px] fill-white"/>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -621,13 +647,19 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 }
 export default NewOrderModal;
 
-
-
-function cpfMask(value:string) {
-    return value
-      .replace(/\D/g, '') // substitui qualquer caracter que nao seja numero por nada
-      .replace(/(\d{3})(\d)/, '$1.$2') // captura 2 grupos de numero o primeiro de 3 e o segundo de 1, apos capturar o primeiro grupo ele adiciona um ponto antes do segundo grupo de numero
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d{1,2})/, '$1-$2')
-      .replace(/(-\d{2})\d+?$/, '$1') // captura 2 numeros seguidos de um traço e não deixa ser digitado mais nada
-}
+function cpfAndCnpjMask(v: string) {
+    v = v.replace(/\D/g, "")
+  
+    if (v.length <= 11) {
+      v = v.replace(/(\d{3})(\d)/, "$1.$2")
+      v = v.replace(/(\d{3})(\d)/, "$1.$2")
+      v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2")
+    } else {
+      v = v.replace(/^(\d{2})(\d)/, "$1.$2")
+      v = v.replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3")
+      v = v.replace(/\.(\d{3})(\d)/, ".$1/$2")
+      v = v.replace(/(\d{4})(\d)/, "$1-$2")
+    }
+  
+    return v
+  }
