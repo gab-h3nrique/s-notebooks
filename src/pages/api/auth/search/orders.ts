@@ -41,7 +41,7 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
             if(foundClient) foundOrders = await Orders.searchByClient(foundClient.id)
 
-            if(!foundClient) foundOrders = await Orders.searchOrders(content? content : '')
+            // if(!foundClient) foundOrders = await Orders.searchOrders(content? content : '')
 
             return res.status(200).json({response: foundOrders})
             

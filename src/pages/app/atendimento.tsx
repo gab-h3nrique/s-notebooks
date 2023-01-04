@@ -119,7 +119,7 @@ const Atendimento: NextPage = () => {
         
         <section className="">
           
-          <article className="flex w-full gap-4">
+          {/* <article className="flex w-full gap-4">
               <InfoCard title="Serviços" total={1.987} porcent={12.5}>
                 <IconMenu>
                     <PasteIcon width={22} height={22} fill={`#94a3b8`}/>
@@ -135,7 +135,8 @@ const Atendimento: NextPage = () => {
                     <PasteIcon width={22} height={22} fill={`#94a3b8`}/>
                 </IconMenu>
               </InfoCard>
-          </article>
+          </article> */}
+
         </section>
 
         <section className="flex flex-col w-full h-full overflow-hidden border-solid border-4 bg-white border-slate-100 px-1 py-1 rounded-2xl">

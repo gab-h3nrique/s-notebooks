@@ -40,10 +40,10 @@ function model() {
         const clientFound = await prisma.clients.findFirst({
             where: {
                 OR: [
-                    { email: String(content) },
                     { name: String(content) },
-                    { document: String(content) },
-                    { number: String(content) }
+                    { email: String(content) },
+                    // { document: String(content) },
+                    // { number: String(content) }
                 ]
             }
         })
