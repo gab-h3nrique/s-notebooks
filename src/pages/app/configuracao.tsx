@@ -67,7 +67,7 @@ const Configuracao: NextPage = () => {
               <div className="flex flex-col justify-start bg-white w-full p-4 gap-4 rounded-2xl">
                   <section className="flex items-center gap-1">
                     {/* icone */}
-                      <p className="text-xl text-slate-400 font-semibold ">Plateleira</p>
+                      <p className="text-xl text-slate-400 font-semibold ">Prateleira</p>
                   </section>
 
                   <section className="flex items-center justify-center gap-1">

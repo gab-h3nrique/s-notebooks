@@ -3,193 +3,210 @@ import { useContext, useEffect, useState } from 'react';
 import Api from '../../lib/api';
 
 import Image from 'next/image'
+import { OrderType } from '../types/orderType';
+import internal from 'stream';
 
 interface Props {
-  content: string;
+  order: any
+  isInternal: boolean;
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { id } = context.query
+
+  const { id, internal } = context.query
   const { host:baseUrl } = context.req.headers
 
-  const {response} = await Api.get(`http://${baseUrl}/api/orderPdf`, {id:id})
+  const { response } = await Api.get(`http://${baseUrl}/api/orderPdf`, {id:id})
 
   return { 
-    props: { content: response }
+    props: { order: response, isInternal: Boolean(internal) },
   }
   
 }
 
-const Home: NextPage<Props> = ({content}) => {
+const Home: NextPage<Props> = ({order, isInternal}) => {
 
-  const [order, setOrder] = useState<any>();
 
-  useEffect(()=>{
-    (async () => {
-      setOrder(content)
-      console.log(content)
-      console.log(order?.shelfId ? order.shelfId : 'nada')
-    })()
-  },[])
-
-  // useEffect(()=>{
-  //   if (typeof window !== "undefined") setTimeout(()=>{window.print()},1000)
-  // },[order])
-
-  // if (typeof window !== "undefined") setTimeout(()=>{window.print()},1000)
 
   return (
     order &&
       <>
           <main onClick={()=>window.print()} className="flex overflow-auto flex-col m-auto mt-5 gap-4 p-4 bg-white w-[230mm] h-[297mm] cursor-pointer" >
 
-          <div className="w-full h-full">
+          <div className="w-full h-full pointer-events-none">
 
-            <section className="px-5 py-2 flex justify-between">
+            <section className="px-5 py-1 flex justify-between">
             <Image src="/savassi.png" alt="Logo" width={150} height={50}/>
             <div className="">
-              <p className="text-2xl text-slate-600 font-semibold flex justify-center"> Ordem de serviço - {order.id}</p>
-              <p className="text-sm text-slate-600 font-semibold flex justify-center"> Prateleira - {order.shelfId}</p>
+              <p className="text-2xl text-slate-600 font-bold flex justify-center"> Ordem de serviço -<b className="text-orange-500 font-bold">{order.id}</b></p>
+              <p className="text-xl text-slate-600 font-bold flex justify-center"> Prateleira - <b className="text-orange-500 font-bold">{order.shelfId ? order.shelfId : 'sem endereço'}</b></p>
               </div>
-            <Image src="/savassi.png" alt="Logo" width={150} height={50}/>
+              {!isInternal ?
+                <div className="w-[180px] h-[50px] text-[.6rem] text-slate-600 font-bold">
+                  <p>É indispensável a apresentação deste número, ao solicitar posicionamento dos serviços.</p>
+                  <hr></hr>
+                  <p>Rua Paraíba, 1317, Loja 10, Savassi - Belo Horizonte/MG</p>
+                  <p>contato@savassinotebooks.com</p>
+                </div>
+                :
+                <Image src="/savassi.png" alt="Logo" width={150} height={50}/>
+              }
+            
             </section>
 
-            <section className="py-2 gap-2 flex flex-col">
+            <section className="py-2 gap-1 flex flex-col">
 
-              <div className="grid grid-cols-2 rounded-md overflow-hidden bg-gray-500">
-                <header className="col-span-2 text-white text-lg font-semibold px-2 py-1">Cliente</header>
+              <div className="grid grid-cols-2 rounded-md overflow-hidden gap-1">
+                <header className="col-span-2 text-slate-600 text-lg font-bold px-2 py-1">Cliente</header>
 
-                <div className="px-2 border-4 border-r-2 border-gray-500 bg-white rounded-md">
+                <div className="px-2 border-2 border-gray-500 bg-slate rounded-md">
                   <p className="text-base text-slate-600 font-bold">Nome</p>
-                  <p className="text-sm text-slate-600 font-semibold">{order.client.name}</p>
+                  <p className="text-sm text-slate-600 font-semibold">{order.client.name ? order.client.name : 'não informado'}</p>
+
                 </div>
-                <div className="px-2 border-4 border-l-2 border-gray-500 bg-white rounded-md">
+                <div className="px-2 border-2 border-gray-500 bg-white rounded-md">
                   <p className="text-base text-slate-600 font-bold">Email</p>
-                  <p className="text-sm text-slate-600 font-semibold">{order.client.email}</p>
+                  <p className="text-sm text-slate-600 font-semibold">{order.client.email ? order.client.email : 'não informado'}</p>
                 </div>
 
-                <div className="px-2 border-4 border-r-2 border-t-0 border-gray-500 bg-white rounded-md">
+                <div className="px-2 border-2 border-gray-500 bg-white rounded-md">
                   <p className="text-base text-slate-600 font-bold">Documento</p>
-                  <p className="text-sm text-slate-600 font-semibold">{order.client.document}</p>
+                  <p className="text-sm text-slate-600 font-semibold">{order.client.document ? order.client.document : 'não informado'}</p>
                 </div>
-                <div className="px-2 border-4 border-l-2 border-gray-500 border-t-0 bg-white rounded-md">
+                <div className="px-2 border-2 border-gray-500 bg-white rounded-md">
                   <p className="text-base text-slate-600 font-bold">Telefone</p>
-                  <p className="text-sm text-slate-600 font-semibold">{order.client.number}</p>
+                  <p className="text-sm text-slate-600 font-semibold">{order.client.number ? order.client.number : 'não informado'}</p>
                 </div>
 
-                <div className="col-span-2 px-2 border-4 border-t-0 border-gray-500 bg-white rounded-md">
+                <div className="col-span-2 px-2 border-2 border-gray-500 bg-white rounded-md">
                   <p className="text-base text-slate-600 font-bold">Endereço</p>
-                  <p className="text-sm text-slate-600 font-semibold">{order.client.info}</p>
+                  <p className="text-sm text-slate-600 font-semibold">{order.client.info ? order.client.info : 'não informado'}</p>
                 </div>
               </div>
 
+              <div className="grid grid-cols-2 rounded-md overflow-hidden gap-1">
+                <header className="col-span-2 text-slate-600 text-lg font-bold px-2 py-1">Equipamento</header>
 
-
-
-              <div className="grid grid-cols-2 rounded-md overflow-hidden bg-gray-500">
-                <header className="col-span-2 text-white text-lg font-semibold px-2 py-1">Equipamento</header>
-
-                <div className="px-2 border-4 border-r-2 border-gray-500 bg-white rounded-md">
+                <div className="px-2 border-2 border-gray-500 bg-white rounded-md">
                   <p className="text-base text-slate-600 font-bold">Descrição</p>
-                  <p className="text-sm text-slate-600 font-semibold">{order.name}</p>
+                  <p className="text-sm text-slate-600 font-semibold">{order.name ? order.name : 'não informado'}</p>
                 </div>
-                <div className="px-2 border-4 border-l-2 border-gray-500 bg-white rounded-md">
+                <div className="px-2 border-2 border-gray-500 bg-white rounded-md">
                   <p className="text-base text-slate-600 font-bold">Modelo</p>
-                  <p className="text-sm text-slate-600 font-semibold">{order.model}</p>
+                  <p className="text-sm text-slate-600 font-semibold">{order.model ? order.model : 'não informado'}</p>
                 </div>
 
-                <div className="px-2 border-4 border-r-2 border-t-0 border-gray-500 bg-white rounded-md">
+                <div className="px-2 border-2 border-gray-500 bg-white rounded-md">
                   <p className="text-base text-slate-600 font-bold">Fabricante</p>
-                  <p className="text-sm text-slate-600 font-semibold">{order.brand}</p>
+                  <p className="text-sm text-slate-600 font-semibold">{order.brand ? order.brand : 'não informado'}</p>
                 </div>
-                <div className="px-2 border-4 border-l-2 border-gray-500 border-t-0 bg-white rounded-md">
+                <div className="px-2 border-2 border-gray-500 bg-white rounded-md">
                   <p className="text-base text-slate-600 font-bold">N° de Série</p>
-                  <p className="text-sm text-slate-600 font-semibold">{order.serialNumber}</p>
+                  <p className="text-sm text-slate-600 font-semibold">{order.serialNumber ? order.serialNumber : 'não informado'}</p>
                 </div>
               </div>
 
-              {/* <div className="grid grid-cols-2 rounded-md overflow-hidden bg-gray-500">
-                <header className="col-span-2 text-white text-lg font-semibold px-2 py-1">Equipamento</header>
+              <div className="grid grid-cols-2 rounded-md overflow-hidden gap-1 ">
+                <header className="col-span-2 text-slate-600 text-lg font-bold px-2 py-1">Acessórios</header>
 
-                <div className="px-2 border-4 border-r-2 border-gray-500 bg-white rounded-md">
-                  <p className="text-base text-slate-600 font-bold">Descrição</p>
-                  <p className="text-sm text-slate-600 font-semibold">{order.name}</p>
-                </div>
-                <div className="px-2 border-4 border-l-2 border-gray-500 bg-white rounded-md">
-                  <p className="text-base text-slate-600 font-bold">Modelo</p>
-                  <p className="text-sm text-slate-600 font-semibold">{order.model}</p>
-                </div>
-
-                <div className="px-2 border-4 border-r-2 border-t-0 border-gray-500 bg-white rounded-md">
-                  <p className="text-base text-slate-600 font-bold">Fabricante</p>
-                  <p className="text-sm text-slate-600 font-semibold">{order.brand}</p>
-                </div>
-                <div className="px-2 border-4 border-l-2 border-gray-500 border-t-0 bg-white rounded-md">
-                  <p className="text-base text-slate-600 font-bold">N° de Série</p>
-                  <p className="text-sm text-slate-600 font-semibold">{order.serialNumber}</p>
-                </div>
-              </div> */}
-
-              <div className="grid grid-cols-2 rounded-md overflow-hidden bg-gray-500">
-                <header className="col-span-2 text-white text-lg font-semibold px-2 py-1">Acessórios</header>
-
-                <div className="py-1 px-12 border-4 border-r-2 border-gray-500 bg-white rounded-md flex items-center justify-start  gap-2">
+                <div className="py-1 px-12 border-2 border-gray-500 bg-white rounded-md flex items-center justify-start  gap-2">
                   <input id="default-checkbox" type="checkbox" defaultChecked={order.charger}  className="w-5 h-5 text-blue-600"/>
                   <p className="text-sm text-slate-600 font-bold w-fit h-fit">Carregador</p>
                 </div>
-                <div className="py-1 px-12 border-4 border-l-2 border-gray-500 bg-white rounded-md flex items-center justify-start  gap-2">
+                <div className="py-1 px-12 border-2 border-gray-500 bg-white rounded-md flex items-center justify-start  gap-2">
                   <input id="default-checkbox" type="checkbox" defaultChecked={order.battery}  className="w-5 h-5 text-blue-600"/>
                   <p className="text-sm text-slate-600 font-bold w-fit h-fit">Bateria</p>
                 </div>
 
-                <div className="py-1 px-12 border-4 border-r-2 border-t-0 border-gray-500 bg-white rounded-md flex items-center justify-start  gap-2">
+                <div className="py-1 px-12 border-2 border-gray-500 bg-white rounded-md flex items-center justify-start  gap-2">
                   <input id="default-checkbox" type="checkbox" defaultChecked={order.energyCable}  className="w-5 h-5 text-blue-600"/>
                   <p className="text-sm text-slate-600 font-bold w-fit h-fit">Cabo de energia</p>
                 </div>
-                <div className="py-1 px-12 border-4 border-l-2 border-gray-500 border-t-0 bg-white rounded-md flex items-center justify-start  gap-2">
+                <div className="py-1 px-12 border-2 border-gray-500 bg-white rounded-md flex items-center justify-start  gap-2">
                   <input id="default-checkbox" type="checkbox"  defaultChecked={order.bag}  className="w-5 h-5 text-blue-600"/>
                   <p className="text-sm text-slate-600 font-bold w-fit h-fit">Bolsa</p>
                 </div>
 
-                <div className="col-span-2 py-1 px-2 border-4 border-gray-500 border-t-0 bg-white rounded-md flex items-center justify-start gap-2">
+                <div className="col-span-2 py-1 px-2 border-2 border-gray-500 bg-white rounded-md flex items-center justify-start gap-2">
                   <p className="text-sm text-slate-600 font-bold w-fit h-fit">Outros:</p>
                   <p className="text-sm text-slate-600 font-semibold">{order.others ? order.others : "_______________________________________________"}</p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 rounded-md overflow-hidden bg-gray-500">
-                <header className="col-span-2 text-white text-lg font-semibold px-2 py-1">Informações</header>
+              <div className="grid grid-cols-2 rounded-md overflow-hidden gap-1">
+                <header className="col-span-2 text-slate-600 text-lg font-bold px-2 py-1">Informações</header>
 
-                <div className="col-span-2 py-1 px-2 border-4 border-gray-500 border-t-0 bg-white rounded-md flex items-center justify-start gap-2">
+                <div className="col-span-2 py-1 px-2 border-2 border-gray-500 bg-white rounded-md flex items-center justify-start gap-2">
                   <p className="text-sm text-slate-600 font-bold w-fit h-fit">Backup</p>
                   <p className="text-sm text-slate-600 font-semibold">{order.backup ? `Sim, ${order.backupDescription}` : "Não"}</p>
                 </div>
 
-                <div className="col-span-2 py-1 px-2 border-4 border-gray-500 border-t-0 bg-white rounded-md flex items-center justify-start gap-2">
+                <div className="col-span-2 py-1 px-2 border-2 border-gray-500 bg-white rounded-md flex items-center justify-start gap-2">
                   <p className="text-sm text-slate-600 font-bold w-fit h-fit">Relatório do cliente:</p>
-                  <p className="text-sm text-slate-600 font-semibold">{order.defectDescription ? order.defectDescription : "não informado!"}</p>
+                  <p className="text-sm text-slate-600 font-semibold">{order.defectDescription ? order.defectDescription : "não informado"}</p>
                 </div>
 
-                <div className="col-span-2 py-1 px-2 border-4 border-gray-500 border-t-0 bg-white rounded-md flex items-center justify-start gap-2">
+                <div className="col-span-2 py-1 px-2 border-2 border-gray-500 bg-white rounded-md flex items-center justify-start gap-2">
                   <p className="text-sm text-slate-600 font-bold w-fit h-fit">Laudo técnico:</p>
-                  <p className="text-sm text-slate-600 font-semibold">{order.technicalReport ? order.technicalReport : "não informado!"}</p>
+                  <p className="text-sm text-slate-600 font-semibold">{order.technicalReport ? order.technicalReport : "não informado"}</p>
                 </div>
 
-                <div className="col-span-2 py-1 px-2 border-4 border-gray-500 border-t-0 bg-white rounded-md flex items-center justify-start gap-2">
+                <div className="col-span-2 py-1 px-2 border-2 border-gray-500 bg-white rounded-md flex items-center justify-start gap-2">
                   <p className="text-sm text-slate-600 font-bold w-fit h-fit">Serviço:</p>
-                  <p className="text-sm text-slate-600 font-semibold">{order.generalDescription ? order.generalDescription : "não informado!"}</p>
+                  <p className="text-sm text-slate-600 font-semibold">{order.generalDescription ? order.generalDescription : "não informado"}</p>
                 </div>
               </div>
 
+              <div className="grid grid-cols-10 gap-2">
+
+                
+                <div className={`flex ${isInternal ? 'col-span-3' : 'col-span-10'} ${order.services.length === 0 && !isInternal && 'h-16'} flex-col rounded-md overflow-hidden`}>
+                  <header className="w-full text-slate-600  text-sm font-bold px-2 py-[.1rem]">Serviços</header>
 
 
+                  <div className="w-full h-full py-1 px-2 border-2 border-gray-500 bg-white rounded-md flex items-center justify-start gap-2">
+
+                    <div className="flex flex-col w-full">
+
+                      {
+                        order?.services.map(({name, value}:any, key:any)=>{
+                          return (
+                            <p key={key} className="text-sm text-slate-600 font-semibold">
+                              {name} {value ? `RS%${value}` : ''}
+                            </p>
+                          )
+                        })
+                      }
+
+                    </div>
+                  </div>
+                  
+                </div>
+
+              
+                {isInternal ? 
+
+                  <div className="flex col-span-7 flex-col rounded-md overflow-hidden">
+                    <header className="w-full text-slate-600 text-sm font-bold px-2 py-[.1rem]">Observação técnica</header>
+
+                    <div className="w-full h-full py-1 px-2 border-2 border-gray-500 bg-white rounded-md flex items-center justify-start gap-2">
+                      <div className="h-20"></div>
+                    </div>
+                    
+                  </div>
+
+                : null}
+
+
+              </div>
+             
             </section>
 
             <section className="flex flex-col gap-2">
-              <div className="grid grid-cols-2 rounded-md overflow-hidden bg-gray-500">
-                <header className="col-span-2 text-white text-sm font-semibold px-2 py-[.1rem]">Termo de responsabilidade de garantia</header>
+              <div className="grid grid-cols-2 rounded-md overflow-hidden ">
+                <header className="col-span-2 text-slate-600 text-sm font-bold px-2 py-[.1rem]">Termo de responsabilidade de garantia</header>
 
-                <div className="col-span-2 py-1 px-2 border-4 border-gray-500 border-t-0 bg-white rounded-md flex items-center justify-start gap-2">
+                <div className="col-span-2 py-1 px-2 border-2 border-gray-500 bg-white rounded-md flex items-center justify-start gap-2">
                   <p className="text-[.6rem] text-slate-600 font-semibold">
 
                     Prazo previsto para retorno de 10 dias úteis, se necessário e previamente comunicado ao cliente este prazo poderá ser estendido.
@@ -214,9 +231,6 @@ const Home: NextPage<Props> = ({content}) => {
 
             </section>
 
-            
-
-            
           </div>
 
           </main>

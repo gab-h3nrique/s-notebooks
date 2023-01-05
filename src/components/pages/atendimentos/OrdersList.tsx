@@ -4,10 +4,12 @@ import Api from "../../../../lib/api";
 import { timeDifference } from "../../../../lib/timeDifference";
 import CloseIcon from "../../icons/CloseIcon";
 import DescktopIcon from "../../icons/DescktopIcon";
-import FileDownIcon from "../../icons/FileDownIcon";
+import ShelfIcon from "../../icons/ShelfIcon";
 import TagIcon from "../../icons/TagIcon";
 import UserIcon from "../../icons/UserIcon";
 import StatusInfo from "./StatusInfo";
+import WrenchIcon from "../../icons/WrenchIcon";
+import CalendarIcon from "../../icons/CalendarIcon";
 
 /* components */
 
@@ -43,9 +45,20 @@ export default function OrderList({order, onClick, onDelete, background} :ListPr
                     <div className="flex justify-center items-center">
                         <p className="text-lg text-orange-500 font-bold">{order.id}</p>
                     </div>
+
                 </section>
 
-                <section onClick={onClick} className="grid gap-2 grid-cols-6 w-full">
+                <section onClick={onClick} className="flex w-32 rounded-lg justify-start px-1 items-center gap-2">
+
+                    <div className={`flex bg-slate-400 w-fit h-fit rounded-lg p-[6px]`}>
+                        <ShelfIcon className="h-3 w-3 fill-white"/>
+                    </div>
+                    <div className="flex justify-center items-center">
+                        <p className="text-base text-slate-400 font-bold">{order.shelfId ? order.shelfId :'●'}</p>
+                    </div>
+                </section>
+
+                <section onClick={onClick} className="grid gap-2 grid-cols-8 w-full">
                 
 
                     <article className="flex justify-start items-center gap-2 col-span-2">
@@ -53,7 +66,7 @@ export default function OrderList({order, onClick, onDelete, background} :ListPr
                             <DescktopIcon width={16} height={16} fill={`white`}/>
                         </div>
                         <div className="flex justify-center items-center overflow-hidden">
-                            <p className="text-base text-slate-600 font-semibold overflow-hidden text-ellipsis whitespace-nowrap">{order.name}</p>
+                            <p className="text-base text-slate-500 font-bold overflow-hidden text-ellipsis whitespace-nowrap">{order.model ? order.model : 'Outros'}</p>
                         </div>
                     </article>
 
@@ -62,20 +75,25 @@ export default function OrderList({order, onClick, onDelete, background} :ListPr
                             <UserIcon width={16} height={16} fill={`white`}/>
                         </div>
                         <div className="flex justify-center items-center overflow-hidden">
-                            <p className="text-base text-slate-600 font-semibold overflow-hidden text-ellipsis whitespace-nowrap">{order.client.name}</p>
+                            <p className="text-base text-slate-500 font-bold overflow-hidden text-ellipsis whitespace-nowrap">{order.client.name}</p>
                         </div>
                     </article>
 
-                    {/* <article className="flex justify-start items-center gap-2 col-span-4">
-                        <div className={`flex bg-slate-400 w-fit h-fit rounded-lg p-1.5`}>
-                            <UserIcon width={16} height={16} fill={`white`}/>
+                    <article className="flex justify-start items-center gap-2 col-span-2">
+                        <div className={`flex bg-slate-400 w-fit h-fit rounded-lg p-[6px]`}>
+                            <WrenchIcon className="h-3 w-3 fill-white"/>
                         </div>
+                        <div className="flex justify-center items-center overflow-hidden">
+                            <p className="text-sm text-slate-500 font-bold overflow-hidden text-ellipsis whitespace-nowrap">{order.user.name}</p>
+                        </div>
+                    </article>
 
-                        <div className="flex flex-col justify-center items-center overflow-hidden">
-                            <p className="text-sm text-slate-600 font-semibold overflow-hidden text-ellipsis whitespace-nowrap">{order.client.name}</p>
-                            <p className="text-xs text-slate-500 font-semibold overflow-hidden text-ellipsis whitespace-nowrap">cpf: {order.client.document}</p>
+                    <article className="flex justify-start items-center gap-2 col-span-2">
+                        <CalendarIcon className="h-[14px] w-[14px] fill-slate-400"/>
+                        <div className="flex justify-center items-center overflow-hidden">
+                            <p className="text-xs text-slate-500 font-bold overflow-hidden text-ellipsis whitespace-nowrap">{ brDate(order.createdAt) }</p>
                         </div>
-                    </article> */}
+                    </article>
 
                 </section>
 
@@ -127,9 +145,7 @@ export default function OrderList({order, onClick, onDelete, background} :ListPr
                         }`}  status={order.status} 
                     />
 
-                        {/* <FileDownIcon className={`h-6 w-8 fill-slate-400`} /> */}
                         <div 
-                        // onClick={()=>{window.open(`/orderPdf?id=${order.id}`)}}
                         onClick={onDelete}
                         className={`flex bg-slate-400 w-fit h-fit rounded-lg p-[.3rem] opacity-70 hover:bg-red-500 hover:opacity-90 hover:scale-110`}>
 
@@ -141,6 +157,99 @@ export default function OrderList({order, onClick, onDelete, background} :ListPr
                 
 
             </div>
+
+            {/* <div className={`flex items-center justify-between gap-2 w-full h-fit p-2 cursor-pointer opacity-75 duration-300
+                ${
+
+                    order.status === 'finalizado' ? 'bg-white' :
+                    order.status === 'arquivado' ? 'bg-white' :
+
+                    days >= 4 && order.status !== 'finalizado' && order.status !== 'arquivado' ? 'bg-red-700' :
+                    days == 3 && order.status !== 'finalizado' && order.status !== 'arquivado' ? 'bg-yellow-700' :
+
+                    days < 3 && order.status === 'aprovado' ? 'bg-emerald-700' :
+                    days < 3 && order.status === 'aguardando' ? 'bg-sky-700' :
+
+                    'bg-indigo-700'
+                }
+            `}>
+                
+                <section onClick={onClick} className="flex w-36  justify-start px-1 items-center gap-2">
+                    <div className={`flex bg-black w-fit h-fit  p-1.5`}>
+                        <TagIcon width={18} height={18} fill={`white`}/>
+                    </div>
+                    <div className="flex justify-center items-center">
+                        <p className="text-lg text-black font-bold">{order.id}</p>
+                    </div>
+
+                </section>
+
+                <section onClick={onClick} className="flex w-32  justify-start px-1 items-center gap-2">
+
+                    <div className={`flex bg-black w-fit h-fit  p-[6px]`}>
+                        <ShelfIcon className="h-3 w-3 fill-white"/>
+                    </div>
+                    <div className="flex justify-center items-center">
+                        <p className="text-base text-black font-bold">{order.shelfId ? order.shelfId :'●'}</p>
+                    </div>
+                </section>
+
+                <section onClick={onClick} className="grid gap-2 grid-cols-8 w-full">
+                
+
+                    <article className="flex justify-start items-center gap-2 col-span-2">
+                        <div className={`flex bg-black w-fit h-fit  p-1.5`}>
+                            <DescktopIcon width={16} height={16} fill={`white`}/>
+                        </div>
+                        <div className="flex justify-center items-center overflow-hidden">
+                            <p className="text-base text-black font-bold overflow-hidden text-ellipsis whitespace-nowrap">{order.model ? order.model : 'Outros'}</p>
+                        </div>
+                    </article>
+
+                    <article className="flex justify-start items-center gap-2 col-span-2">
+                        <div className={`flex bg-black w-fit h-fit  p-1.5`}>
+                            <UserIcon width={16} height={16} fill={`white`}/>
+                        </div>
+                        <div className="flex justify-center items-center overflow-hidden">
+                            <p className="text-base text-black font-bold overflow-hidden text-ellipsis whitespace-nowrap">{order.client.name}</p>
+                        </div>
+                    </article>
+
+                    <article className="flex justify-start items-center gap-2 col-span-2">
+                        <div className={`flex bg-black w-fit h-fit  p-[6px]`}>
+                            <WrenchIcon className="h-3 w-3 fill-white"/>
+                        </div>
+                        <div className="flex justify-center items-center overflow-hidden">
+                            <p className="text-sm text-black font-bold overflow-hidden text-ellipsis whitespace-nowrap">{order.user.name}</p>
+                        </div>
+                    </article>
+
+                    <article className="flex justify-start items-center gap-2 col-span-2">
+                        <CalendarIcon className="h-[14px] w-[14px] fill-black"/>
+                        <div className="flex justify-center items-center overflow-hidden">
+                            <p className="text-xs text-black font-bold overflow-hidden text-ellipsis whitespace-nowrap">{ brDate(order.createdAt) }</p>
+                        </div>
+                    </article>
+
+                </section>
+
+                <section className="flex w-48 justify-end items-center gap-2">
+                    
+                    <p>{order.status}</p>
+                        <div 
+                        onClick={onDelete}
+                        className={`flex bg-slate-400 w-fit h-fit  p-[.3rem] opacity-70 hover:bg-red-500 hover:opacity-90 hover:scale-110`}>
+
+                            <CloseIcon className="h-[15px] w-[15px] fill-white"/>
+
+                        </div>
+                </section>
+
+                
+
+            </div> */}
+
+            
         </>
     )
 }
@@ -172,3 +281,5 @@ function creationTime(startParam:string | number, endParam?:string | number) {
     return 'não estimado';
 
 }
+
+function brDate(date:any){ return (new Date(date)).toLocaleDateString('pt-BR')}

@@ -33,7 +33,7 @@ function model() {
         const orderDb = <OrderType[]> await prisma.orders.findMany({
             skip: index,
             take: limit,
-            include:{client:true, services:true},
+            include:{client:true, services:true, user:true},
             orderBy: { id: 'desc'}
         })
         return orderDb

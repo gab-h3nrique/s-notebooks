@@ -234,7 +234,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                             <FileDownIcon className="h-[24px] w-[24px] fill-white"/>
                                         </div>
                                     </div>
-                                    <div onClick={()=>{window.open(`/orderPdf?id=${order.id}`)}} className="flex items-center justify-center duration-300 hover:scale-110 cursor-pointer">
+                                    <div onClick={()=>{window.open(`/orderPdf?id=${order.id}&internal=true`)}} className="flex items-center justify-center duration-300 hover:scale-110 cursor-pointer">
                                         <div className={`flex bg-slate-400 w-fit h-fit rounded-lg p-[3px]`}>
                                             <ClouldSetting  className="h-[25px] w-[25px] fill-white"/>
                                         </div>
