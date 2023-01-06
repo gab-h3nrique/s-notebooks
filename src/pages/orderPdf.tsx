@@ -137,7 +137,7 @@ const Home: NextPage<Props> = ({order, isInternal}) => {
                 <header className="col-span-2 text-slate-600 text-lg font-bold px-2 py-1">Informações</header>
 
                 <div className="col-span-2 py-1 px-2 border-2 border-gray-500 bg-white rounded-md flex items-center justify-start gap-2">
-                  <p className="text-sm text-slate-600 font-bold w-fit h-fit">Backup</p>
+                  <p className="text-sm text-slate-600 font-bold w-fit h-fit">Backup:</p>
                   <p className="text-sm text-slate-600 font-semibold">{order.backup ? `Sim, ${order.backupDescription}` : "Não"}</p>
                 </div>
 
@@ -160,7 +160,7 @@ const Home: NextPage<Props> = ({order, isInternal}) => {
               <div className="grid grid-cols-10 gap-2">
 
                 
-                <div className={`flex ${isInternal ? 'col-span-3' : 'col-span-10'} ${order.services.length === 0 && !isInternal && 'h-16'} flex-col rounded-md overflow-hidden`}>
+                <div className={`flex ${isInternal ? 'col-span-6' : 'col-span-10'} ${order.services.length === 0 && !isInternal && 'h-16'} flex-col rounded-md overflow-hidden`}>
                   <header className="w-full text-slate-600  text-sm font-bold px-2 py-[.1rem]">Serviços</header>
 
 
@@ -172,7 +172,7 @@ const Home: NextPage<Props> = ({order, isInternal}) => {
                         order?.services.map(({name, value}:any, key:any)=>{
                           return (
                             <p key={key} className="text-sm text-slate-600 font-semibold">
-                              {name} {value ? `RS%${value}` : ''}
+                              {name} {value ? `: R$ ${value}` : ''}
                             </p>
                           )
                         })
@@ -186,7 +186,7 @@ const Home: NextPage<Props> = ({order, isInternal}) => {
               
                 {isInternal ? 
 
-                  <div className="flex col-span-7 flex-col rounded-md overflow-hidden">
+                  <div className="flex col-span-6 flex-col rounded-md overflow-hidden">
                     <header className="w-full text-slate-600 text-sm font-bold px-2 py-[.1rem]">Observação técnica</header>
 
                     <div className="w-full h-full py-1 px-2 border-2 border-gray-500 bg-white rounded-md flex items-center justify-start gap-2">
@@ -224,8 +224,8 @@ const Home: NextPage<Props> = ({order, isInternal}) => {
 
               <div className="grid grid-cols-3 gap-2">
                 <p className="col-span-10 text-sm text-slate-600 font-bold">Assinaturas</p>
-                <p className="col-span-4 text-sm text-slate-600 font-semibold">S Notebooks:_____________________________________</p>
-                <p className="col-span-4 text-sm text-slate-600 font-semibold">Cliente: ________________________________________</p>
+                <p className="col-span-4 text-sm text-slate-600 font-semibold">S Notebooks:________________________________</p>
+                <p className="col-span-4 text-sm text-slate-600 font-semibold">Cliente: ___________________________________</p>
                 <p className="col-span-2 text-sm text-slate-600 font-semibold">Data:_____ /_______ /______</p>
               </div>
 
