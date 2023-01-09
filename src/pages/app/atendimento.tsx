@@ -16,6 +16,8 @@ import IconMenu from '../../components/barComponent/IconMenu'
 import SearchIcon from '../../components/icons/SearchIcon'
 import SpinnerIcon from '../../components/icons/SpinnerIcon'
 import { OrderType } from '../../types/orderType'
+import CalendarIcon from '../../components/icons/CalendarIcon'
+import WrenchIcon from '../../components/icons/WrenchIcon'
 
 /* components */
 
@@ -119,8 +121,53 @@ const Atendimento: NextPage = () => {
         
         <section className="">
           
-          {/* <article className="flex w-full gap-4">
-              <InfoCard title="Serviços" total={1.987} porcent={12.5}>
+          {/* <article className="flex w-full gap-4"> */}
+          <article className="flex w-full justify-evenly gap-4">
+
+            {/* <div className="flex items-center justify-center">
+              <div className="datepicker relative form-floating mb-3 xl:w-96" data-mdb-toggle-button="false">
+                <input type="date"
+                  className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                  placeholder="" data-mdb-toggle="datepicker" />
+              </div>
+            </div> */}
+
+            <div className="flex items-center justify-center bg-white rounded-2xl w-32 p-[9px] gap-2 cursor-pointer">
+              <WrenchIcon className="h-[18px] w-[18px] fill-slate-400"/>
+              <div className="flex justify-center items-center overflow-hidden">
+                  <p className="text-sm text-slate-500 font-bold overflow-hidden text-ellipsis whitespace-nowrap">{ 'status' }</p>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-center bg-white rounded-2xl w-32 p-[9px] gap-2 cursor-pointer">
+              <WrenchIcon className="h-[18px] w-[18px] fill-slate-400"/>
+              <div className="flex justify-center items-center overflow-hidden">
+                  <p className="text-sm text-slate-500 font-bold overflow-hidden text-ellipsis whitespace-nowrap">{ 'técnico' }</p>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-center bg-white rounded-2xl w-32 p-[9px] gap-2 cursor-pointer">
+              <CalendarIcon className="h-[18px] w-[18px] fill-slate-400"/>
+              <div className="flex justify-center items-center overflow-hidden">
+                  <p className="text-sm text-slate-500 font-bold overflow-hidden text-ellipsis whitespace-nowrap">{ 'data início' }</p>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-center bg-white rounded-2xl w-32 p-[9px] gap-2 cursor-pointer">
+              <CalendarIcon className="h-[18px] w-[18px] fill-slate-400"/>
+              <div className="flex justify-center items-center overflow-hidden">
+                  <p className="text-sm text-slate-500 font-bold overflow-hidden text-ellipsis whitespace-nowrap">{ 'data final' }</p>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-center bg-orange-500 rounded-2xl w-32 p-[9px] gap-2 cursor-pointer">
+              <CalendarIcon className="h-[18px] w-[18px] fill-white"/>
+              <div className="flex justify-center items-center overflow-hidden">
+                  <p className="text-sm text-white font-bold overflow-hidden text-ellipsis whitespace-nowrap">{ 'filtrar' }</p>
+              </div>
+            </div>
+
+              {/* <InfoCard title="Serviços" total={1.987} porcent={12.5}>
                 <IconMenu>
                     <PasteIcon width={22} height={22} fill={`#94a3b8`}/>
                 </IconMenu>
@@ -134,8 +181,8 @@ const Atendimento: NextPage = () => {
                 <IconMenu>
                     <PasteIcon width={22} height={22} fill={`#94a3b8`}/>
                 </IconMenu>
-              </InfoCard>
-          </article> */}
+              </InfoCard> */}
+          </article>
 
         </section>
 
@@ -171,7 +218,11 @@ const Atendimento: NextPage = () => {
         </section>
         
         <section>
-            <Paginate page={page ? page : 1} pageHandle={pageHandle} total={total ? total : 1} />
+          {
+            total && total > 1 ?
+              <Paginate page={page ? page : 1} pageHandle={pageHandle} total={total} />
+            : null
+          }
         </section>
       <NewOrderModal isOpen={newOrderModal} onClose={()=> setNewOrderModal(false)} id={orderId} orderHandle={orderHandle} />
     </Layout>
