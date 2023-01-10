@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest,res: NextApiResponse) 
     if(!name || !email || !password) return res.status(200).json({ message: 'missing parameters' })
     
     try {
-        console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+        
         const response = await prisma.users.findUnique({
             where: { email: email }
         })

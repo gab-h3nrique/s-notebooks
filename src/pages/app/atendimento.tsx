@@ -63,10 +63,24 @@ const Atendimento: NextPage = () => {
 
   const [loading, setLoading] = useState<boolean>(false)
   
-  const [excel, setExcel] = useState<boolean>(false)
-
-
+  
+  
   const [dropdown, setDropdown] = useState<DropdownFilter>({ status: false, technician: false, startDate: false, endDate: false })
+  
+  // PROVISORIO APENAS PARA MUDAR O TIPO DO LAYOUT //
+  const [layout, setLayout] = useState<boolean>(false)
+  function handleLayout(param:boolean) {
+    setLayoutStorage(param)
+    setLayout(getLayout())
+  }
+
+  function setLayoutStorage(param:boolean) {
+    localStorage.setItem('layout', JSON.stringify(param));
+  }
+  function getLayout():boolean {
+      return JSON.parse(localStorage.getItem('layout') as string)
+  }
+  // ----------------------------------------------- //
 
   const getOrders = async(page:number, limit:number) => {
 
@@ -109,8 +123,10 @@ const Atendimento: NextPage = () => {
 
   useEffect(()=>{
     (async () => {
+      if (typeof window !== "undefined") handleLayout(getLayout())
       await getOrders(1, maxLimit)
       await getUsers()
+      
     })()
   },[])
 
@@ -119,7 +135,7 @@ const Atendimento: NextPage = () => {
         <section>
           <article className="flex w-full justify-between py-2">
 
-            <div onClick={() =>setExcel(!excel)}className="flex justify-center items-center">
+            <div onClick={() => handleLayout(!getLayout())}className="flex justify-center items-center">
               <p className="text-3xl text-slate-600 font-semibold">Atendimentos</p>
             </div>
 
@@ -219,7 +235,7 @@ const Atendimento: NextPage = () => {
               <input onChange={(e)=> setSearchFilter({...searchFilter, endDate: e.target.value})} type='date' className="absolute w-1 h-1 scale-x-[30] scale-y-[10] opacity-0 cursor-pointer"/>
             </div>
 
-            <div onClick={()=>pageHandle(1)} className="ml-auto flex items-center justify-center bg-orange-500 rounded-2xl w-32 p-[9px] gap-2 cursor-pointer">
+            <div onClick={()=>pageHandle(1)} className="ml-auto flex items-center justify-center bg-slate-400 rounded-2xl w-32 p-[9px] gap-2 cursor-pointer">
               <CalendarIcon className="h-[18px] w-[18px] fill-white"/>
               <div className="flex justify-center items-center overflow-hidden">
                   <p className="text-sm text-white font-bold overflow-hidden text-ellipsis whitespace-nowrap">{ 'filtrar' }</p>
@@ -260,7 +276,7 @@ const Atendimento: NextPage = () => {
                       return  (
                         <React.Fragment key={index}>
                           <OrderList 
-                            excel={excel}
+                            layout={layout}
                             onClick={()=>{setOrderId(order.id); setNewOrderModal(true)} }
                             onDelete={()=>deleteOrder(order.id)}
                             background={index % 2 === 0 ? true : false} 

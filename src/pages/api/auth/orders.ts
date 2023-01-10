@@ -64,7 +64,6 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
             const page = Number(req.query.page)
             const limit = Number(req.query.limit)
-            console.log({status, userId, startDate, endDate})
 
             let orders;
 

@@ -120,8 +120,6 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
     const addServiceOrder = async() => {
 
-        console.log('id order: ', order.id)
-
         if(!newService.name || !newService.status) return;
 
         if(order.id) await Api.post('/api/auth/servicesOrder', { serviceOrder: {...newService, orderId: order.id}  })

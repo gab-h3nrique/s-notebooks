@@ -28,17 +28,17 @@ export interface ListProps {
     onClick: any;
     onDelete: any;
     background: boolean;
-    excel: boolean
+    layout: boolean
 }
 
-export default function OrderList({order, onClick, onDelete, background, excel} :ListProps) {
+export default function OrderList({order, onClick, onDelete, background, layout} :ListProps) {
 
     const { days } = timeDifference(order.createdAt)
-
+    
     return (
         <>
             {
-                !excel ?
+                !layout ?
 
                     <div className={`flex items-center justify-between gap-2 ${background ? 'bg-white': 'bg-slate-100'} w-full h-fit p-2 rounded-2xl cursor-pointer opacity-75 hover:opacity-100 hover:scale-x-[.97] duration-300`}>
                         

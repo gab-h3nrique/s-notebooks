@@ -31,7 +31,6 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
         try {
 
             const { userId, start, end } = req.body
-            console.log(req.body)
 
             if(!userId || !start || !end) return res.status(500).json({ message: 'Todos os campos precisam ser preenchidos' })
             
