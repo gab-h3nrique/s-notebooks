@@ -62,6 +62,9 @@ const Atendimento: NextPage = () => {
   const [orderId, setOrderId] = useState<number | null>()
 
   const [loading, setLoading] = useState<boolean>(false)
+  
+  const [excel, setExcel] = useState<boolean>(false)
+
 
   const [dropdown, setDropdown] = useState<DropdownFilter>({ status: false, technician: false, startDate: false, endDate: false })
 
@@ -116,7 +119,7 @@ const Atendimento: NextPage = () => {
         <section>
           <article className="flex w-full justify-between py-2">
 
-            <div onClick={() =>console.log('click')}className="flex justify-center items-center">
+            <div onClick={() =>setExcel(!excel)}className="flex justify-center items-center">
               <p className="text-3xl text-slate-600 font-semibold">Atendimentos</p>
             </div>
 
@@ -257,7 +260,7 @@ const Atendimento: NextPage = () => {
                       return  (
                         <React.Fragment key={index}>
                           <OrderList 
-
+                            excel={excel}
                             onClick={()=>{setOrderId(order.id); setNewOrderModal(true)} }
                             onDelete={()=>deleteOrder(order.id)}
                             background={index % 2 === 0 ? true : false} 

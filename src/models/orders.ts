@@ -36,7 +36,7 @@ function model() {
                 userId: userId !== '' ? { equals: Number(userId)} : undefined,
                 createdAt: {
                     gte: startDate !== '' ? new Date(startDate)  : undefined,
-                    lte: endDate !== '' ? new Date(endDate) : undefined
+                    lte: endDate !== '' ? new Date(endDate) : undefined,
                 },
             },
             skip: index,
