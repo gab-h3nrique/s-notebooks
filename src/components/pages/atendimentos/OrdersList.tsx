@@ -34,7 +34,7 @@ export interface ListProps {
 export default function OrderList({order, onClick, onDelete, background, excel} :ListProps) {
 
     const { days } = timeDifference(order.createdAt)
-
+    
     return (
         <>
             {

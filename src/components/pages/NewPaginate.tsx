@@ -1,6 +1,7 @@
 /* components */
 
 import AngleUpIcon from "../icons/AngleUpIcon";
+import DoubleAngleIcon from "../icons/DoubleAngleIcon";
 
 /* components */
 
@@ -22,18 +23,26 @@ export default function NewPaginate({ page, pageHandle, total}:Props) {
                     <p className="text-white text-sm font-bold">Primeira</p>
                 </section>
 
-                <section className="bg-slate-100 flex h-full items-center justify-center border-solid border-[.2rem] border-white rounded-2xl">
+                {/* <section onClick={()=>pageHandle(1)} className="bg-orange-500 flex items-center justify-center rounded-2xl h-full px-3  text-white cursor-pointer">
+                    <DoubleAngleIcon className="rotate-[270deg] w-6 h-6 fill-white cursor-pointer"/>
+                </section> */}
 
-                    <div onClick={()=>page && page === 1 && pageHandle(page?page-1: 1)}>
+                <section className="bg-slate-100 flex h-full items-center justify-center border-solid border-[.2rem] border-white rounded-2xl gap-2">
+
+                    <div onClick={()=>page && page > 1 && pageHandle(page?page-1: 1)}>
                         <AngleUpIcon className="rotate-[270deg] w-6 h-6 fill-slate-400 cursor-pointer"/>
                     </div>
 
-                    <div className="text-sm text-slate-500 font-bold ">{`${page} de ${total}`}</div>
+                    <div className="text-sm text-slate-500 font-bold overflow-hidden text-ellipsis whitespace-nowrap">{`${page} de ${total}`}</div>
 
-                    <div onClick={()=>total && page === total && pageHandle(page?page+1: 1)}>
+                    <div onClick={()=>total && page < total && pageHandle(page?page+1: 1)}>
                         <AngleUpIcon className="rotate-[90deg] w-6 h-6 fill-slate-400 cursor-pointer"/>
                     </div>
                 </section>
+
+                {/* <section onClick={()=>pageHandle(total)} className="bg-orange-500 flex items-center justify-center rounded-2xl h-full px-3  text-white cursor-pointer">
+                    <DoubleAngleIcon className="rotate-[90deg] w-6 h-6 fill-white cursor-pointer"/>
+                </section> */}
 
                 <section onClick={()=>pageHandle(total)} className="bg-slate-400 flex items-center justify-center rounded-2xl h-full w-20  text-white cursor-pointer">
                     <p className="text-white text-sm font-bold">Última</p>
