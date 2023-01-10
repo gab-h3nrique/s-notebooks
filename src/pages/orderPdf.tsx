@@ -160,7 +160,7 @@ const Home: NextPage<Props> = ({order, isInternal}) => {
               <div className="grid grid-cols-10 gap-2">
 
                 
-                <div className={`flex ${isInternal ? 'col-span-6' : 'col-span-10'} ${order.services.length === 0 && !isInternal && 'h-16'} flex-col rounded-md overflow-hidden`}>
+                <div className={`flex ${isInternal ? 'col-span-4' : 'col-span-10'} ${order.services.length === 0 && !isInternal && 'h-16'} flex-col rounded-md overflow-hidden`}>
                   <header className="w-full text-slate-600  text-sm font-bold px-2 py-[.1rem]">Serviços</header>
 
 

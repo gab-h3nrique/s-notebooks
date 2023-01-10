@@ -19,6 +19,7 @@ import { OrderType } from '../../types/orderType'
 import CalendarIcon from '../../components/icons/CalendarIcon'
 import WrenchIcon from '../../components/icons/WrenchIcon'
 import { UserType } from '../../types/userType'
+import NewPaginate from '../../components/pages/NewPaginate'
 
 /* components */
 
@@ -219,12 +220,20 @@ const Atendimento: NextPage = () => {
               <input onChange={(e)=> setSearchFilter({...searchFilter, endDate: e.target.value})} type='date' className="absolute w-1 h-1 scale-x-[30] scale-y-[10] opacity-0 cursor-pointer"/>
             </div>
 
-            <div onClick={()=>pageHandle(1)} className="ml-auto flex items-center justify-center bg-orange-500 rounded-2xl w-32 p-[9px] gap-2 cursor-pointer">
+            <div onClick={()=>pageHandle(1)} className="flex items-center justify-center bg-orange-500 rounded-2xl w-32 p-[9px] gap-2 cursor-pointer">
               <CalendarIcon className="h-[18px] w-[18px] fill-white"/>
               <div className="flex justify-center items-center overflow-hidden">
                   <p className="text-sm text-white font-bold overflow-hidden text-ellipsis whitespace-nowrap">{ 'filtrar' }</p>
               </div>
             </div>
+
+            {
+              total ?
+              <>
+                  <NewPaginate page={page ? page : 1} pageHandle={pageHandle} total={total} />
+              </>
+              : null
+            }
 
               {/* <InfoCard title="Serviços" total={1.987} porcent={12.5}>
                 <IconMenu>
@@ -276,13 +285,13 @@ const Atendimento: NextPage = () => {
 
         </section>
         
-        {
+        {/* {
           total && total > 1 ?
           <>
               <Paginate page={page ? page : 1} pageHandle={pageHandle} total={total} />
           </>
           : null
-        }
+        } */}
         
       <NewOrderModal isOpen={newOrderModal} onClose={()=> setNewOrderModal(false)} id={orderId} orderHandle={orderHandle} />
     </Layout>
