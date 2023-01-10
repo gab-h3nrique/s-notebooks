@@ -76,7 +76,7 @@ function model() {
     const searchByClient = async(clientId:number) => {
         const clientFound = <OrderType[]> await prisma.orders.findMany({
             where: { clientId: clientId},
-            include:{client:true, services:true}
+            include: {client:true, services:true, user:true},
         })
         return clientFound
     }

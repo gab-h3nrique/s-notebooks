@@ -27,10 +27,10 @@ function model() {
         const clientFound = await prisma.clients.findMany({
             where: {
                 OR: [
-                    {email:{contains:content}},
-                    {name:{contains:content}},
-                    {document:{contains:content}},
-                    {number:{contains:content}}
+                    { email:{contains:content} },
+                    { name:{contains:content} },
+                    { document:{contains:content} },
+                    { number:{contains:content} }
                 ]
             }
         })
@@ -40,10 +40,8 @@ function model() {
         const clientFound = await prisma.clients.findFirst({
             where: {
                 OR: [
-                    { name: String(content) },
-                    { email: String(content) },
-                    // { document: String(content) },
-                    // { number: String(content) }
+                    { name: {contains: String(content)} },
+                    { email: {contains: String(content)} },
                 ]
             }
         })

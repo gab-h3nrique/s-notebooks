@@ -44,7 +44,7 @@ const Sidebar = (props:Props) => {
 
 
             <div className={`absolute w-fit h-fit duration-700 ${!open ? 'rotate-0' :'rotate-180'} -right-3 top-[46px] bg-orange-500 border-[6px] border-solid border-white rounded-full p-[.18rem]`}>
-                <AngleUpIcon transform={'rotate(90)'} width={20} height={20} fill={`white`}/>
+                <AngleUpIcon className="rotate-[90deg] w-5 h-5 fill-white"/>
             </div>        
 
             <section className="hover:scale-110 duration-300 ">
