@@ -18,6 +18,7 @@ import SpinnerIcon from '../../components/icons/SpinnerIcon'
 import { OrderType } from '../../types/orderType'
 import CalendarIcon from '../../components/icons/CalendarIcon'
 import WrenchIcon from '../../components/icons/WrenchIcon'
+import { UserType } from '../../types/userType'
 
 /* components */
 
@@ -29,6 +30,20 @@ interface PagConfig {
   totalPages: number;
 }
 
+interface DropdownFilter {
+  status: boolean;
+  technician: boolean;
+  startDate: boolean;
+  endDate: boolean;
+}
+
+interface SearchFilter {
+  status: string;
+  userId: string;
+  startDate: string;
+  endDate: string;
+}
+
 const Atendimento: NextPage = () => {
 
   const maxLimit:number = 25
@@ -36,25 +51,36 @@ const Atendimento: NextPage = () => {
   const [newOrderModal, setNewOrderModal] = useState<boolean>(false)
 
   const [arrayOrder, setArrayOrder] = useState<any[]>()
+  const [userArray, setUserArray] = useState<UserType[]>()
  
   const [total, setTotal] = useState<number>()
   const [page, setPage] = useState<number>()
 
   const [search, setSearch] = useState<string>("")
+  const [searchFilter, setSearchFilter] = useState<SearchFilter>({ status: '', userId: '', startDate: '', endDate: '' })
 
   const [orderId, setOrderId] = useState<number | null>()
 
   const [loading, setLoading] = useState<boolean>(false)
 
+  const [dropdown, setDropdown] = useState<DropdownFilter>({ status: false, technician: false, startDate: false, endDate: false })
+
   const getOrders = async(page:number, limit:number) => {
 
     setLoading(true)
-    const {response} = await Api.get('/api/auth/orders', {page, limit})
+    const {response} = await Api.get('/api/auth/orders', {page, limit, status: searchFilter?.status, userId: searchFilter?.userId, startDate: searchFilter?.startDate, endDate: searchFilter?.endDate})
     setTotal(response.totalPages)
     setPage(response.currentPage)
     setArrayOrder(response.results)
     setLoading(false)
-  } 
+  }
+
+  const getUsers = async() => {
+
+    const {response:users} = await Api.get('/api/auth/users')
+    setUserArray(users)
+
+  }
 
   const pageHandle = async(paramPage:number) => {
     await getOrders(paramPage, maxLimit)
@@ -81,6 +107,7 @@ const Atendimento: NextPage = () => {
   useEffect(()=>{
     (async () => {
       await getOrders(1, maxLimit)
+      await getUsers()
     })()
   },[])
 
@@ -122,45 +149,74 @@ const Atendimento: NextPage = () => {
         <section className="">
           
           {/* <article className="flex w-full gap-4"> */}
-          <article className="flex w-full justify-evenly gap-4">
+          <article className="flex w-full justify-start gap-4">
 
-            {/* <div className="flex items-center justify-center">
-              <div className="datepicker relative form-floating mb-3 xl:w-96" data-mdb-toggle-button="false">
-                <input type="date"
-                  className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                  placeholder="" data-mdb-toggle="datepicker" />
-              </div>
-            </div> */}
-
-            <div className="flex items-center justify-center bg-white rounded-2xl w-32 p-[9px] gap-2 cursor-pointer">
+            <div onClick={()=> setDropdown({...dropdown, status: !dropdown.status})} className="flex relative items-center justify-center bg-slate-100 rounded-2xl w-32 p-[8px] gap-2 cursor-pointer border-solid border-[.2rem] border-white">
               <WrenchIcon className="h-[18px] w-[18px] fill-slate-400"/>
               <div className="flex justify-center items-center overflow-hidden">
-                  <p className="text-sm text-slate-500 font-bold overflow-hidden text-ellipsis whitespace-nowrap">{ 'status' }</p>
+                  <p className="text-sm text-slate-500 font-bold overflow-hidden text-ellipsis whitespace-nowrap">{searchFilter.status ? searchFilter.status : 'status'}</p>
               </div>
+
+                <div className={`absolute w-fit top-10 z-10 duration-150 rounded-md bg-white shadow-2xl overflow-hidden text-ellipsis whitespace-nowrap ${!dropdown.status ? "opacity-0 pointer-events-none" : "opacity-1 pointer-events-auto"}`} >
+                  <div className="py-1" >
+
+                      <a onClick={()=>{setDropdown({...dropdown, status: !dropdown.status}); setSearchFilter({...searchFilter, status: ''})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-lg" >{'todos'}</a>
+                      <a onClick={()=>{setDropdown({...dropdown, status: !dropdown.status}); setSearchFilter({...searchFilter, status: 'aguardando'})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-lg" >{'aguardando'}</a>
+                      <a onClick={()=>{setDropdown({...dropdown, status: !dropdown.status}); setSearchFilter({...searchFilter, status: 'aprovado'})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-lg" >{'aprovado'}</a>
+                      <a onClick={()=>{setDropdown({...dropdown, status: !dropdown.status}); setSearchFilter({...searchFilter, status: 'reprovado'})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-lg" >{'reprovado'}</a>
+                      <a onClick={()=>{setDropdown({...dropdown, status: !dropdown.status}); setSearchFilter({...searchFilter, status: 'finalizado'})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-lg" >{'finalizado'}</a>
+                      <a onClick={()=>{setDropdown({...dropdown, status: !dropdown.status}); setSearchFilter({...searchFilter, status: 'arquivado'})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-lg" >{'arquivado'}</a>
+
+                  </div>
+                </div>
             </div>
 
-            <div className="flex items-center justify-center bg-white rounded-2xl w-32 p-[9px] gap-2 cursor-pointer">
+            <div onClick={()=> setDropdown({...dropdown, technician: !dropdown.technician})} className="flex relative items-center justify-center bg-slate-100 rounded-2xl w-32 p-[8px] gap-2 cursor-pointer border-solid border-[.2rem] border-white">
               <WrenchIcon className="h-[18px] w-[18px] fill-slate-400"/>
               <div className="flex justify-center items-center overflow-hidden">
-                  <p className="text-sm text-slate-500 font-bold overflow-hidden text-ellipsis whitespace-nowrap">{ 'técnico' }</p>
+                  <p className="text-sm text-slate-500 font-bold overflow-hidden text-ellipsis whitespace-nowrap">
+                    {
+                      searchFilter.userId ?
+                      userArray?.map(({id, name})=>{return Number(searchFilter.userId) === id ? name : null})
+                      : 'técnico'
+                    }
+                  </p>
               </div>
+
+                <div className={`absolute w-fit top-10 z-10 duration-150 rounded-md bg-white shadow-2xl overflow-hidden text-ellipsis whitespace-nowrap ${!dropdown.technician ? "opacity-0 pointer-events-none" : "opacity-1 pointer-events-auto"}`} >
+                  <div className="py-1" >
+                      <>
+                      <a onClick={()=>{setDropdown({...dropdown, technician: !dropdown.technician}); setSearchFilter({...searchFilter, userId: ''})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-lg" >{'todos'}</a>
+                          {
+                              userArray ? 
+                                  userArray.map(({id, name})=>{
+                                      return <a key={id} onClick={()=>{setDropdown({...dropdown, technician: !dropdown.technician}); setSearchFilter({...searchFilter, userId: String(id)})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-lg" >{name}</a>
+                                  })
+                                  : null
+                          }
+                      </>
+                  </div>
+                </div>
+
             </div>
 
-            <div className="flex items-center justify-center bg-white rounded-2xl w-32 p-[9px] gap-2 cursor-pointer">
+            <div className="flex relative items-center justify-center bg-slate-100 rounded-2xl w-32 p-[8px] gap-2 cursor-pointer border-solid border-[.2rem] border-white">
               <CalendarIcon className="h-[18px] w-[18px] fill-slate-400"/>
               <div className="flex justify-center items-center overflow-hidden">
-                  <p className="text-sm text-slate-500 font-bold overflow-hidden text-ellipsis whitespace-nowrap">{ 'data início' }</p>
+                  <p className="text-sm text-slate-500 font-bold overflow-hidden text-ellipsis whitespace-nowrap">{searchFilter.startDate ? searchFilter.startDate : 'data início'}</p>
               </div>
+              <input onChange={(e)=> setSearchFilter({...searchFilter, startDate: e.target.value})} type='date' className="absolute w-1 h-1 scale-x-[30] scale-y-[10] opacity-0 cursor-pointer"/>
             </div>
 
-            <div className="flex items-center justify-center bg-white rounded-2xl w-32 p-[9px] gap-2 cursor-pointer">
+            <div className="flex relative items-center justify-center bg-slate-100 rounded-2xl w-32 p-[8px] gap-2 cursor-pointer border-solid border-[.2rem] border-white">
               <CalendarIcon className="h-[18px] w-[18px] fill-slate-400"/>
               <div className="flex justify-center items-center overflow-hidden">
-                  <p className="text-sm text-slate-500 font-bold overflow-hidden text-ellipsis whitespace-nowrap">{ 'data final' }</p>
+                  <p className="text-sm text-slate-500 font-bold overflow-hidden text-ellipsis whitespace-nowrap">{searchFilter.endDate ? searchFilter.endDate : 'data final'}</p>
               </div>
+              <input onChange={(e)=> setSearchFilter({...searchFilter, endDate: e.target.value})} type='date' className="absolute w-1 h-1 scale-x-[30] scale-y-[10] opacity-0 cursor-pointer"/>
             </div>
 
-            <div className="flex items-center justify-center bg-orange-500 rounded-2xl w-32 p-[9px] gap-2 cursor-pointer">
+            <div onClick={()=>pageHandle(1)} className="ml-auto flex items-center justify-center bg-orange-500 rounded-2xl w-32 p-[9px] gap-2 cursor-pointer">
               <CalendarIcon className="h-[18px] w-[18px] fill-white"/>
               <div className="flex justify-center items-center overflow-hidden">
                   <p className="text-sm text-white font-bold overflow-hidden text-ellipsis whitespace-nowrap">{ 'filtrar' }</p>
@@ -186,7 +242,7 @@ const Atendimento: NextPage = () => {
 
         </section>
 
-        <section className="flex flex-col w-full h-full overflow-hidden border-solid border-4 bg-white border-slate-100 px-1 py-1 rounded-2xl">
+        <section onClick={()=> setDropdown({...dropdown, status: false, technician: false})} className="flex flex-col w-full h-full overflow-hidden border-solid border-4 bg-white border-slate-100 px-1 py-1 rounded-2xl">
           {
             loading ? 
               <article className="w-full h-full flex justify-center items-center">
@@ -217,13 +273,14 @@ const Atendimento: NextPage = () => {
 
         </section>
         
-        <section>
-          {
-            total && total > 1 ?
+        {
+          total && total > 1 ?
+          <>
               <Paginate page={page ? page : 1} pageHandle={pageHandle} total={total} />
-            : null
-          }
-        </section>
+          </>
+          : null
+        }
+        
       <NewOrderModal isOpen={newOrderModal} onClose={()=> setNewOrderModal(false)} id={orderId} orderHandle={orderHandle} />
     </Layout>
   )

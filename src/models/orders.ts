@@ -29,8 +29,16 @@ function model() {
         return orderDb
     }
     
-    const getPageOrders = async(index: number, limit: number) => {
+    const getPageOrders = async(index: number, limit: number, status:any = '', userId:any = '', startDate:any = '', endDate:any = '') => {
         const orderDb = <OrderType[]> await prisma.orders.findMany({
+            where: {
+                status: status !== '' ? { equals: status} : undefined,
+                userId: userId !== '' ? { equals: Number(userId)} : undefined,
+                createdAt: {
+                    gte: startDate !== '' ? new Date(startDate)  : undefined,
+                    lte: endDate !== '' ? new Date(endDate) : undefined
+                },
+            },
             skip: index,
             take: limit,
             include:{client:true, services:true, user:true},

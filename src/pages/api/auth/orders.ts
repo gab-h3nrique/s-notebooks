@@ -60,10 +60,11 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
         if(method === 'GET') {
         
-            const { id } = req.query
+            const { id, status, userId, startDate, endDate} = req.query
 
             const page = Number(req.query.page)
             const limit = Number(req.query.limit)
+            console.log({status, userId, startDate, endDate})
 
             let orders;
 
@@ -78,7 +79,7 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
                 currentPage: page,
                 total: await Orders.getTotalOrders(),
                 totalPages: Math.ceil(await Orders.getTotalOrders() / limit),
-                results: await Orders.getPageOrders(startIndex, limit)
+                results: await Orders.getPageOrders(startIndex, limit, status, userId, startDate, endDate)
             }
             
             return res.status(200).json({response: response})
