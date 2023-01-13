@@ -48,9 +48,15 @@ function model() {
         return clientFound
     }
 
+    const getAll = async() => {
+        const clientDb = await prisma.clients.findMany()
+        return clientDb
+    }
+
+
 
     // export all function that is in the return
-    return { createClient, createOrUpdateClient, searchClient, searchFirstClient }
+    return { createClient, createOrUpdateClient, searchClient, searchFirstClient, getAll }
 }
 
 export const Clients = model();
