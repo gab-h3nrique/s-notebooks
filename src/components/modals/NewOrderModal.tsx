@@ -292,7 +292,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                             </div>
 
 
-                                            <div className={`${!dropdownNameClient ? "opacity-0 pointer-events-none" : "opacity-1 pointer-events-auto"} absolute z-10 w-full h-48 origin-center rounded-md bg-white shadow-2xl overflow-auto overflow-x-hidden cursor-pointer  duration-150`} >
+                                            <div className={`${!dropdownNameClient ? "opacity-0 pointer-events-none" : "opacity-1 pointer-events-auto"} absolute z-10 w-full h-48 origin-center rounded-md bg-white shadow-2xl overflow-auto overflow-x-hidden cursor-pointer duration-150`} >
                                                 <div className="py-1" >
 
                                                     {
@@ -300,7 +300,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                             if(client.name == "") return name;
                                                                 else if(name.toLowerCase().includes(client.name?.toLocaleLowerCase())) return name;
                                                         }).map((clientParam, j)=>{
-                                                            return <a key={j} onClick={()=>{setDropdownNameClient(!dropdownNameClient); setClient({...clientParam})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointe rounded-md" >{clientParam.name}</a>
+                                                            return <a key={j} onClick={()=>{setDropdownNameClient(!dropdownNameClient); setClient({...clientParam})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 bg-white hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointe rounded-md" >{clientParam.name}</a>
                                                         })
                                                     }
 

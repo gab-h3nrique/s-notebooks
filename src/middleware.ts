@@ -9,13 +9,13 @@ export default async function middleware(req: NextRequest) {
 
     try{
 
-        if(!await isAuthenticated(req)) return redictNotAuthenticated(req);
+        if(!await isAuthenticated(req)) return handleNotAuthenticated(req);
 
         return NextResponse.next();
         
     } catch(error) {
         
-        return redictNotAuthenticated(req);
+        return handleNotAuthenticated(req);
     
     }
     
@@ -39,10 +39,12 @@ async function isAuthenticated(request: NextRequest):Promise<boolean> {
 
 }
 
-function redictNotAuthenticated(request: NextRequest): NextResponse | undefined {
+function handleNotAuthenticated(request: NextRequest): NextResponse | undefined {
 
-    if (request.nextUrl.pathname.startsWith('/app')) return NextResponse.redirect(new URL('/login', request.url))
-    if (request.nextUrl.pathname.startsWith('/api')) return NextResponse.redirect(new URL('/api/unauthorized', request.url));
+    const { pathname } = request.nextUrl
+
+    if (pathname.startsWith('/app')) return NextResponse.redirect(new URL('/login', request.url))
+    if (pathname.startsWith('/api')) return NextResponse.redirect(new URL('/api/unauthorized', request.url));
 
 }
 
