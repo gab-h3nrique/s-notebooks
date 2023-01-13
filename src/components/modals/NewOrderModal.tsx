@@ -236,17 +236,24 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                     <p className="text-2xl text-slate-500 font-semibold">Ordem de serviço</p>
                                 </div>
                                 <div className="flex justify-center items-center gap-2">
+                                    {
+                                        order.id ?
 
-                                    <div onClick={()=>{window.open(`/orderPdf?id=${order.id}`)}} className="flex items-center justify-center duration-300 hover:scale-110 cursor-pointer">
-                                        <div className={`flex bg-slate-400 w-fit h-fit rounded-lg p-[4px]`}>
-                                            <FileDownIcon className="h-[24px] w-[24px] fill-white"/>
-                                        </div>
-                                    </div>
-                                    <div onClick={()=>{window.open(`/orderPdf?id=${order.id}&internal=true`)}} className="flex items-center justify-center duration-300 hover:scale-110 cursor-pointer">
-                                        <div className={`flex bg-slate-400 w-fit h-fit rounded-lg p-[3px]`}>
-                                            <ClouldSetting  className="h-[25px] w-[25px] fill-white"/>
-                                        </div>
-                                    </div>
+                                            <>
+                                                <div onClick={()=>{window.open(`/orderPdf?id=${order.id}`)}} className="flex items-center justify-center duration-300 hover:scale-110 cursor-pointer">
+                                                    <div className={`flex bg-slate-400 w-fit h-fit rounded-lg p-[4px]`}>
+                                                        <FileDownIcon className="h-[24px] w-[24px] fill-white"/>
+                                                    </div>
+                                                </div>
+                                                <div onClick={()=>{window.open(`/orderPdf?id=${order.id}&internal=true`)}} className="flex items-center justify-center duration-300 hover:scale-110 cursor-pointer">
+                                                    <div className={`flex bg-slate-400 w-fit h-fit rounded-lg p-[3px]`}>
+                                                        <ClouldSetting  className="h-[25px] w-[25px] fill-white"/>
+                                                    </div>
+                                                </div>
+                                            </>
+
+                                        : null
+                                    }
                                     <div onClick={onClose} className="flex items-center justify-center duration-300 hover:scale-110 cursor-pointer">
                                         <div className={`flex bg-orange-500 w-fit h-fit rounded-lg p-1.5`}>
                                             <CloseIcon  className="h-[22px] w-[22px] fill-white"/>
@@ -599,7 +606,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
                                             <article className="grid grid-cols-12 gap-x-2 py-1">
                                             
-                                                <div className="col-span-4">
+                                                <div className="col-span-4 relative">
                                                     <div >
                                                         <label onClick={()=>console.log(order.userId)} className="block text-sm font-medium text-slate-500">Técnico responsável</label>
                                                         <button type="button" onClick={()=> setDropdownOrderInfo(!dropdownOrderInfo)} className={`flex justify-between px-5 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 ${tryedToSave ? !order.userId ? 'ring-2 ring-red-400' : 'ring-2 ring-green-200' : null}`}>
@@ -617,7 +624,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                         </button>
                                                     </div>
 
-                                                    <div className={`${!dropdownOrderInfo ? "opacity-0 pointer-events-none" : "opacity-1 pointer-events-auto"} duration-150 absolute left-48 bottom-20 z-10  w-56 origin-top-right rounded-md bg-white shadow-2xl`} >
+                                                    <div className={`${!dropdownOrderInfo ? "opacity-0 pointer-events-none" : "opacity-1 pointer-events-auto"} absolute bottom-10 z-10 w-full duration-150 rounded-md bg-white shadow-2xl`} >
                                                         <div className="py-1" >
                                                             <>
                                                                 {
@@ -632,7 +639,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                     </div>
                                                 </div>
                                                 
-                                                <div className="col-span-3">
+                                                <div className="col-span-3 relative">
                                                     <div className="cursor-pointer" onClick={()=> setDropdownStatus(!dropdownStatus)}>
                                                         <label className="block text-sm font-medium text-slate-500 ">Status</label>
                                                         <button type="button" className={`flex justify-between px-5 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 ${tryedToSave ? !order.status ? 'ring-2 ring-red-400' : 'ring-2 ring-green-200' : null}`}>
@@ -644,7 +651,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                         </button>
                                                     </div>
 
-                                                    <div className={`${!dropdownStatus ? "opacity-0 pointer-events-none" : "opacity-1 pointer-events-auto"} duration-150 absolute  right-3 bottom-5 z-10  w-56 origin-top-right rounded-md bg-white shadow-2xl`} >
+                                                    <div className={`${!dropdownStatus ? "opacity-0 pointer-events-none" : "opacity-1 pointer-events-auto"} absolute bottom-10 z-10 w-full duration-150 rounded-md bg-white shadow-2xl`} >
                                                         <div className="py-1" >
 
                                                             <a onClick={()=>{setDropdownStatus(!dropdownStatus); setOrder({...order, status: "aguardando"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >aguardando</a>
