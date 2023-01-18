@@ -7,6 +7,7 @@ import Api from "../../../lib/api";
 import { ClientType } from "../../types/clientType";
 import { OrderType } from "../../types/orderType";
 import { ServiceOrderType, ServiceType } from "../../types/serviceType";
+import { Shelf } from "../../types/shelf";
 import { UserType } from "../../types/userType";
 import CheckDouble from "../icons/CheckDouble";
 import CheckIcon from "../icons/CheckIcon";
@@ -77,6 +78,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
     const [newService, setNewService] = useState<ServiceOrderType>({id: undefined, name:"", status: "", orderId: undefined, value: 0})
     const [services, setArrayservices] = useState<ServiceOrderType[]>([])
+    const [shelf, setShelf] = useState<string>()
 
     const [dropdownEquipament, setDropdownEquipament] = useState<boolean>(false)
     const [dropdownOrderInfo, setDropdownOrderInfo] = useState<boolean>(false)
@@ -85,6 +87,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
     const [dropdownNameClient, setDropdownNameClient] = useState<boolean>(false)
     const [dropdownNameService, setDropdownNameService] = useState<boolean>(false)
     const [dropdownStatusService, setDropdownStatusService] = useState<boolean>(false)
+    const [dropdownShelf, setDropdownShelf] = useState<boolean>(false)
 
     const [loading, setLoading] = useState<boolean>(false)
     const [contentLoading, setContentLoading] = useState<boolean>(true)
@@ -97,12 +100,14 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
         
         if(!response.id) return;
         
-        const {user, client, services, ...allOrder} = response
+        const {user, client, services, shelf, ...allOrder} = response
 
         setOrder(allOrder)
         setClient(client)
+        setShelf(shelf.type)
         setArrayservices(services)
         setContentLoading(false)
+        
     }
 
     const getUsers = async() => {
@@ -194,7 +199,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
         setLoading(true)
 
-        const { response, ...error } = await Api.post('/api/auth/orders', {order, client, services})
+        const { response, ...error } = await Api.post('/api/auth/orders', {order, client, services, shelfType: shelf && shelf})
         
         if(!response) {
             setMessage(error?.message)
@@ -211,6 +216,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
         setLoading(false)
         setTryedToSave(false)
         setMessage("")
+        setShelf("")
         setContentLoading(true)
         setClient({name: "", document: "", email: "", number: "", cep: "", info: ""})
         setArrayservices([])
@@ -291,7 +297,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                             <div className="col-span-5 relative" onClick={()=> setDropdownNameClient(!dropdownNameClient)}>
                                             
                                             <label className="block text-sm font-medium text-slate-500">Nome do cliente</label>
-                                            <div className="flex gap-1 col-span-4 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 px-3 py-1 border-2 border-gray-300 outline-none hover:border-transparent hover:ring hover:ring-orange-400 hover:scale-y-105 duration-150">
+                                            <div className={`flex gap-1 col-span-4 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 px-3 py-1 border-2 border-gray-300 outline-none hover:border-transparent hover:ring hover:ring-orange-400 hover:scale-y-105 duration-150 ${tryedToSave ? !client.name ? 'ring-2 ring-red-400' : 'ring-2 ring-green-200' : null}`}>
                                                 <input onChange={(event)=> setClient({...client, name: event.target.value}) } type="text" className={`bg-gray-50 h-full w-full outline-0 overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer`}  value={client.name}/>
                                                 <svg className={`-mr-1 ml-2 h-5 w-6 ${dropdownNameClient ? "rotate-[-180deg]" : "rotate-[0deg]"} duration-150`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" >
                                                     <path  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" />
@@ -506,10 +512,31 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                     <textarea onChange={(x)=>  setOrder({...order, technicalReport: x.target.value})} value={order.technicalReport} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" />
                                                 </div> 
 
-                                                <div className="col-span-2">
+                                                <div className="col-span-1">
                                                     <label className="block text-sm font-medium text-slate-500">Senha do equipamento</label>
                                                     <input type="text" onChange={(x)=>  setOrder({...order, equipamentPassword: x.target.value})} value={order.equipamentPassword ? order.equipamentPassword : ""} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder=""/>
                                                 </div> 
+
+                                                <div className="col-span-1 relative cursor-pointer" onClick={()=> setDropdownShelf(!dropdownShelf)}>
+                                                    <label className="block text-sm font-medium text-slate-500">Prateleira</label>
+                                                    <div className={`flex justify-between gap-1 col-span-4 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 px-3 py-1 border-2 border-gray-300 outline-none hover:border-transparent hover:ring hover:ring-orange-400 hover:scale-y-105 duration-150`}>
+                                                        <label className="block text-sm font-medium text-slate-500 overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer">{ shelf ? shelf : "" }
+                                                        </label>
+                                                        <svg className={`-mr-1 ml-2 h-5 w-6 ${dropdownShelf ? "rotate-[-180deg]" : "rotate-[0deg]"} duration-150`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" >
+                                                            <path  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" />
+                                                        </svg>
+                                                    </div>
+
+                                                    <div className={`${!dropdownShelf ? "opacity-0 pointer-events-none" : "opacity-1 pointer-events-auto"} absolute bottom-10 z-10 w-full  origin-center rounded-md bg-white shadow-2xl cursor-pointer duration-150`} >
+                                                        <div className="py-1">
+
+                                                            <a onClick={()=>{setDropdownShelf(!dropdownShelf); setShelf("recepcao")}}className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >recepção</a>
+                                                            <a onClick={()=>{setDropdownShelf(!dropdownShelf); setShelf( "manutencao")}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointe rounded-md" >manutenção</a>
+
+                                                        </div>
+                                                    </div>
+
+                                                </div>
 
                                             </article>
 

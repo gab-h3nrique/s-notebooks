@@ -16,10 +16,11 @@ function model() {
         return shelfDb
     }
 
-    const getFirstShelfEmpty = async(userId:number) => {
+    const getFirstShelfEmpty = async(userId:number, type?:string) => {
         const shelfDb = <Shelf> await prisma.shelf.findFirst({
             where: {
                 userId: userId,
+                type: type ? type : undefined,
                 order: {
                     is: null
                 }
@@ -28,9 +29,21 @@ function model() {
         return shelfDb
     }
 
+    const firstEmptyShelf = async(type:string) => {
+        const shelfDb = <Shelf> await prisma.shelf.findFirst({
+            where: {
+                type: type,
+                order: {
+                    is: null
+                }
+            }
+        })
+        return shelfDb
+    }
+    
 
     // export all function that is in the return
-    return { getFirstShelfEmpty, createOrUpdate }
+    return { firstEmptyShelf, getFirstShelfEmpty, createOrUpdate }
 }
 
 export const Shelfs = model();

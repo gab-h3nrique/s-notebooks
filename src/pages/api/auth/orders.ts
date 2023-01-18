@@ -3,6 +3,7 @@ import { Clients } from '../../../models/clients'
 import { Orders } from '../../../models/orders'
 import { ServicesOrder } from '../../../models/servicesOrder'
 import { Shelfs } from '../../../models/shelf'
+import { Shelf } from '../../../types/shelf'
 import { OrderType } from '../../../types/orderType'
 import { ClientType } from '../../../types/clientType'
 import { ServiceType } from '../../../types/serviceType'
@@ -35,7 +36,7 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
         if(method === 'POST') {
 
-            const {order, client, services} =  req.body
+            const {order, client, services, shelfType} =  req.body
 
             delete client.cep; delete order.createdAt;  delete order.updatedAt;
 
@@ -44,8 +45,12 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
             const createdClient = await Clients.createOrUpdateClient(client)
 
             if(!createdClient) return res.status(500).json( { message: "error ao salvar o cliente!"})
+            
+            let shelfEmpty;
 
-            const shelfEmpty = await Shelfs.getFirstShelfEmpty(order.userId)
+            if(shelfType !== 'recepcao') shelfEmpty = await Shelfs.getFirstShelfEmpty(order.userId, 'manutencao')
+            else shelfEmpty = await Shelfs.firstEmptyShelf(shelfType)
+            
 
             const allOrder = { ...order, shelfId: shelfEmpty?.id, clientId: createdClient.id }
 

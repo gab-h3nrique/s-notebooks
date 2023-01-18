@@ -9,14 +9,14 @@ function model() {
             where: { id: order.id ? order.id : -1 },
             update: {...order},
             create: {...order},
-            include:{client:true, services:true, user:true}
+            include:{client:true, services:true, user:true, shelf:true}
         })
         return orderDb
     }
 
     const getAllOrders = async() => {
         const orderDb = <OrderType[]> await prisma.orders.findMany({
-            include:{client:true, services:true}
+            include:{client:true, services:true, shelf:true}
         })
         return orderDb
     }
@@ -24,7 +24,7 @@ function model() {
     const getOrderById = async(id:number) => {
         const orderDb = <OrderType> await prisma.orders.findUnique({
             where:{id:id},
-            include:{client:true, services:true, user:true}
+            include:{client:true, services:true, user:true, shelf:true}
         })
         return orderDb
     }
@@ -41,7 +41,7 @@ function model() {
             },
             skip: index,
             take: limit,
-            include:{client:true, services:true, user:true},
+            include:{client:true, services:true, user:true, shelf:true},
             orderBy: { id: 'desc'}
         })
         return orderDb

@@ -92,6 +92,7 @@ const Atendimento: NextPage = () => {
     setPage(response.currentPage)
     setArrayOrder(response.results)
     setLoading(false)
+    console.log(response)
   }
 
   const getUsers = async() => {
@@ -142,7 +143,7 @@ const Atendimento: NextPage = () => {
             </div>
 
             <div className="flex gap-3">
-              <div className={`flex justify-center items-center gap-2 cursor-pointer rounded-2xl p-3 duration-150 hover:scale-105 bg-slate-100 border-solid border-[.2rem] border-white`}>
+              <div className={`flex justify-center items-center gap-2 cursor-pointer rounded-2xl p-3 duration-150 hover:scale-105 bg-slate-100 border-solid border-[.2rem] border-white group`}>
                   <div  onClick={() => handleSearch()} className="w-fit h-fit">
                     <SearchIcon width={20} height={20} fill={`#94a3b8`}/>
                   </div>
