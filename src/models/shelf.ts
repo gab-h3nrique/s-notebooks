@@ -16,7 +16,7 @@ function model() {
         return shelfDb
     }
 
-    const getFirstShelfEmpty = async(userId:number, type?:string) => {
+    const getShelfEmptyByUser = async(userId:number, type?:string) => {
         const shelfDb = <Shelf> await prisma.shelf.findFirst({
             where: {
                 userId: userId,
@@ -43,7 +43,7 @@ function model() {
     
 
     // export all function that is in the return
-    return { firstEmptyShelf, getFirstShelfEmpty, createOrUpdate }
+    return { firstEmptyShelf, getShelfEmptyByUser, createOrUpdate }
 }
 
 export const Shelfs = model();

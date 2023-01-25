@@ -94,6 +94,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
 
     const getOrderById = async(id:number | null | undefined) => {
+        
         if(!id) return setContentLoading(false);
         setContentLoading(true)
         const { response } = await Api.get('/api/auth/orders', {id:id})
@@ -102,10 +103,11 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
         
         const {user, client, services, shelf, ...allOrder} = response
 
-        setOrder(allOrder)
-        setClient(client)
-        setShelf(shelf.type)
-        setArrayservices(services)
+        allOrder && setOrder(allOrder)
+        client && setClient(client)
+        services && setArrayservices(services)
+        shelf && setShelf(shelf.type)
+
         setContentLoading(false)
         
     }

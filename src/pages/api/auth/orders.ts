@@ -48,11 +48,15 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
             
             let shelfEmpty;
 
-            if(shelfType !== 'recepcao') shelfEmpty = await Shelfs.getFirstShelfEmpty(order.userId, 'manutencao')
-            else shelfEmpty = await Shelfs.firstEmptyShelf(shelfType)
-            
+            if(shelfType) shelfEmpty = await Shelfs.getShelfEmptyByUser(order.userId, shelfType)
+                // else shelfEmpty = await Shelfs.firstEmptyShelf(shelfType)
 
-            const allOrder = { ...order, shelfId: shelfEmpty?.id, clientId: createdClient.id }
+            if(order.status && order.status === 'finalizado') shelfEmpty = await Shelfs.firstEmptyShelf('recepcao')
+            if(order.status && order.status === 'arquivado') shelfEmpty = null
+
+            console.log(order.status, await Shelfs.firstEmptyShelf('recepcao'))
+
+            const allOrder = { ...order, shelfId: (shelfEmpty?.id ? shelfEmpty.id : null), clientId: createdClient.id }
 
             const createdOrder = await Orders.createOrUpdateOrder(allOrder)
 

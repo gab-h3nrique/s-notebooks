@@ -38,6 +38,7 @@ function model() {
                     gte: startDate !== '' ? new Date(startDate)  : undefined,
                     lte: endDate !== '' ? new Date(endDate) : undefined,
                 },
+                AND: { NOT: { status: 'arquivado'} }
             },
             skip: index,
             take: limit,
