@@ -245,13 +245,9 @@ const Atendimento: NextPage = () => {
               </div>
             </div>
 
-            {
-              total ?
-              <>
-                  <NewPaginate page={page ? page : 1} pageHandle={pageHandle} total={total} />
-              </>
-              : null
-            }
+            <>
+              <NewPaginate page={page ? page : 1} pageHandle={pageHandle} total={total ? total : 1} />
+            </>
 
               {/* <InfoCard title="Serviços" total={1.987} porcent={12.5}>
                 <IconMenu>
