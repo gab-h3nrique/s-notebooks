@@ -49,7 +49,7 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
             let shelfEmpty;
 
             if(shelfType) shelfEmpty = await Shelfs.getShelfEmptyByUser(order.userId, shelfType)
-                // else shelfEmpty = await Shelfs.firstEmptyShelf(shelfType)
+                else shelfEmpty = await Shelfs.getShelfEmptyByUser(order.userId, 'manutencao')
 
             if(order.status && order.status === 'finalizado') shelfEmpty = await Shelfs.firstEmptyShelf('recepcao')
             if(order.status && order.status === 'arquivado') shelfEmpty = null
