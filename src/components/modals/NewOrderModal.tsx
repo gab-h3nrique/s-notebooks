@@ -237,7 +237,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                 setDropdownNameService(false)
                                 setDropdownStatusService(false)
                             }
-                       })} className="flex flex-col bg-slate-100 w-[36rem] h-[56rem] scale-[.93] rounded-2xl py-4 gap-4 overflow-hidden">
+                       })} className="flex flex-col bg-slate-100 max-w-[36rem] max-h-[56rem] scale-[.93] rounded-2xl py-4 gap-4 overflow-hidden">
                         <header className="px-4">
                             <section className="flex w-full justify-between">
                                 <div onClick={()=>console.log(order)} className="flex justify-center items-center">
@@ -273,7 +273,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                         </header>
                         {
                             contentLoading ?
-                                <main className="w-full h-[50rem] flex justify-center items-center">
+                                <main className="w-[36rem] h-[50rem] flex justify-center items-center">
                                     <div className="flex gap-2 animate-ping">
                                         <SpinnerIcon className="h-12 w-12 text-orange-500 fill-white"/>
                                     </div>
