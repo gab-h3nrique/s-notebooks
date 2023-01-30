@@ -26,10 +26,10 @@ class MyDocument extends Document {
         <Head>
           <Header/>
         </Head>
-        <body className="bg-slate-200 h-screen w-screen">
+        <body className="bg-slate-200 h-screen w-screen relative">
           <Main />
           <NextScript />
-          <div id="portal"></div>
+          <div className="relative" id="portal"></div>
         </body>
       </Html>
     )
