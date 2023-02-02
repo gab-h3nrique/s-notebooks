@@ -16,7 +16,7 @@ function model() {
 
     const createOrUpdateClient = async(client:ClientType) => {
         const createdClient = await prisma.clients.upsert({
-            where: {email: client.email},
+            where: {id: client.id ? client.id : -1},
             create:{...client},
             update:{...client}
         })

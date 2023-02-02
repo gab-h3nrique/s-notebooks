@@ -1,4 +1,5 @@
 export interface ClientType {
+    id?: number;
     name: string;
     document: string;
     email: string;

@@ -35,13 +35,13 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
     try{
 
         if(method === 'POST') {
-
+            
             const {order, client, services, shelfType} =  req.body
 
             delete client.cep; delete order.createdAt;  delete order.updatedAt;
 
             if(!client.name || !client.email || !order.userId || !order.brand || !order.model || !order.status) return res.status(500).json( { message: 'Por favor, verifique os campos obrigatórios!'} )
-
+            
             const createdClient = await Clients.createOrUpdateClient(client)
 
             if(!createdClient) return res.status(500).json( { message: "error ao salvar o cliente!"})
@@ -57,7 +57,7 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
             console.log(order.status, await Shelfs.firstEmptyShelf('recepcao'))
 
             const allOrder = { ...order, shelfId: (shelfEmpty?.id ? shelfEmpty.id : null), clientId: createdClient.id }
-
+            
             const createdOrder = await Orders.createOrUpdateOrder(allOrder)
 
             if(!createdOrder) return res.status(500).json( { message: "error ao salvar ordem de serviço!"})
