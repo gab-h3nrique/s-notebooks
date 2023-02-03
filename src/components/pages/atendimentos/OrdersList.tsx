@@ -149,13 +149,13 @@ export default function OrderList({order, onClick, onDelete, background, layout}
                                 }`}  status={order.status} 
                             />
 
-                                <div 
+                                {/* <div 
                                 onClick={onDelete}
                                 className={`flex bg-slate-400 w-fit h-fit rounded-lg p-[.3rem] opacity-70 hover:bg-red-500 hover:opacity-90 hover:scale-110`}>
 
                                     <CloseIcon className="h-[15px] w-[15px] fill-white"/>
 
-                                </div>
+                                </div> */}
                         </section>
 
                         
@@ -247,13 +247,13 @@ export default function OrderList({order, onClick, onDelete, background, layout}
                         <section className="flex w-48 justify-end items-center gap-2">
                             
                             <p>{order.status}</p>
-                                <div 
+                                {/* <div 
                                 onClick={onDelete}
                                 className={`flex bg-slate-400 w-fit h-fit  p-[.3rem] opacity-70 hover:bg-red-500 hover:opacity-90 hover:scale-110`}>
 
                                     <CloseIcon className="h-[15px] w-[15px] fill-white"/>
 
-                                </div>
+                                </div> */}
                         </section>
 
                         
