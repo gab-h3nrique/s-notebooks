@@ -15,34 +15,32 @@ export interface Props {
 
 
 const Layout = ({page, children}:Props) => {
+
     return (
-        <>
             
 
-            <div className="flex flex-col gap-1 w-screen h-screen">
+            <div className="flex flex-col w-screen h-screen bg-slate-200 gap-1 border-t-[3px] border-orange-600">
 
-                {/* <NavBar></NavBar> */}
+                {/* <NavBar/> */}
 
-                <div className="flex justify-center h-full w-full border-t-[3px] border-orange-600">
+                <div className="flex p-3 h-full w-full">
 
-                    <section className="flex justify-around w-full p-2">
 
                         <Sidebar menu={page}/>
+
                         <main className="flex overflow-auto flex-col w-full h-full gap-4 px-4">
                             {children}
                         </main>
 
                         {/* <Asidebar/> */}
                         
-                    </section>
 
                 </div>
 
+                {/* <Footer/> */}
             </div>
 
 
-            {/* <Footer/> */}
-        </>
     )
 }
 export default Layout;

@@ -26,7 +26,7 @@ class MyDocument extends Document {
         <Head>
           <Header/>
         </Head>
-        <body className="bg-slate-200 h-screen w-screen">
+        <body className="bg-slate-200">
           <Main />
           <NextScript />
           <div id="portal"></div>
