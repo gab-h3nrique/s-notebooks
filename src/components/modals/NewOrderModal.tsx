@@ -152,14 +152,28 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
 
 
-  const handleDocument = (e:any) => {
+    const handleDocument = (e:any) => {
 
-    setClient({...client, document: cpfAndCnpjMask(e.target.value)})
+        setClient({...client, document: cpfAndCnpjMask(e.target.value)})
 
-    // this.setState({ documentId: cpfAndCnpjMask(e.target.value) })
-  }
+        // this.setState({ documentId: cpfAndCnpjMask(e.target.value) })
+    }
 
+    const handleNumber = (e:any) => {
+        setClient({...client, number: foneMask(e.target.value)})
+    }
 
+    const getCep = async() => {
+        if(!client.cep) return;
+
+        const address = await Api.get(`https://viacep.com.br/ws/${client.cep}/json/`)
+
+        if(!address.logradouro) return;
+
+        setClient({...client, info: `${address.logradouro}, ${address.bairro}, ${address.localidade}/${address.uf}` })
+        console.log(address)
+
+    }
 
     
     useEffect(()=>{
@@ -351,18 +365,18 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                             </div>
                                             <div className="col-span-3">
                                                     <label  className="block text-sm font-medium text-slate-500">Número telefone</label>
-                                                    <input type="text" onChange={(x)=> setClient({...client, number: x.target.value})} value={client.number} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder="(00) 0000-0000"/>
+                                                    <input maxLength={15} type="text" onChange={handleNumber} value={client.number} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder="(00) 0000-0000"/>
                                             </div>
 
                                         </div>
 
                                         <div className="grid gap-2 grid-cols-8">
 
-                                            <div className="col-span-3">
+                                            <div className="col-span-2">
                                                 <label className="block text-sm font-medium text-slate-500">Cep</label>
                                                 <div className="flex justify-center items-center gap-1">
                                                     <input type="text" onChange={(x)=> setClient({...client, cep: x.target.value})} value={client.cep ? client.cep : ""} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder="000-000-000-00"/>
-                                                    <div className={`flex bg-orange-500 w-fit h-fit rounded-lg p-1.5 duration-300 hover:scale-110 cursor-pointer`}>
+                                                    <div onClick={getCep} className={`flex bg-orange-500 w-fit h-fit rounded-lg p-1.5 duration-300 hover:scale-110 cursor-pointer`}>
                                                         <IconComponent width={20} height={19} fill={`white`}>
                                                             <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/>
                                                         </IconComponent>
@@ -370,7 +384,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                 </div>
                                             </div>
 
-                                            <div className="col-span-5">
+                                            <div className="col-span-6">
                                                 <label className="block text-sm font-medium text-slate-500">Endereço</label>
                                                 <input type="text" onChange={(x)=> setClient({...client, info: x.target.value})} value={client.info} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder="Rua Paraíba, Savassi, Belo Horizonte/MG"/>
                                             </div>
@@ -406,6 +420,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
                                                         <a onClick={()=>{setDropdownEquipament(!dropdownEquipament); setOrder({...order, name: 'Notebook'})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer" >Notebook</a>
                                                         <a onClick={()=>{setDropdownEquipament(!dropdownEquipament); setOrder({...order, name: 'Desktop'})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer" >Desktop</a>
+                                                        <a onClick={()=>{setDropdownEquipament(!dropdownEquipament); setOrder({...order, name: 'All in One'})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer" >All in One</a>
                                                         <a onClick={()=>{setDropdownEquipament(!dropdownEquipament); setOrder({...order, name: 'Outros'})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer" >Outros</a>
 
                                                     </div>
@@ -688,6 +703,8 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                             <a onClick={()=>{setDropdownStatus(!dropdownStatus); setOrder({...order, status: "reprovado"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >reprovado</a>
                                                             <a onClick={()=>{setDropdownStatus(!dropdownStatus); setOrder({...order, status: "finalizado"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >finalizado</a>
                                                             <a onClick={()=>{setDropdownStatus(!dropdownStatus); setOrder({...order, status: "arquivado"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >arquivado</a>
+                                                            <a onClick={()=>{setDropdownStatus(!dropdownStatus); setOrder({...order, status: "orçamento"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >orçamento</a>
+                                                            <a onClick={()=>{setDropdownStatus(!dropdownStatus); setOrder({...order, status: "aguardando peça"})}} className=" block px-4 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:scale-105 duration-150 cursor-pointer rounded-md" >aguardando peça</a>
 
                                                         </div>
                                                     </div>
@@ -748,4 +765,12 @@ function cpfAndCnpjMask(v: string) {
     }
   
     return v
-  }
+}
+
+function foneMask(v: string) {
+
+    const formattedPhone = v.replace(/\D/g, '').replace(/(\d{2})(\d)/, '($1) $2').replace(/(\d{5})(\d)/, '$1-$2');
+    
+    return formattedPhone
+
+}

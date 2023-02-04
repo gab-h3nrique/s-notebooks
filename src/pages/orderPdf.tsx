@@ -80,7 +80,7 @@ const Home: NextPage<Props> = ({order, isInternal}) => {
 
                 <div className="col-span-2 px-2 border-2 border-gray-500 bg-white rounded-md">
                   <p className="text-base text-slate-600 font-bold">Endereço</p>
-                  <p className="text-sm text-slate-600 font-semibold">{order.client.info ? order.client.info : 'não informado'}</p>
+                  <p className="text-sm text-slate-600 font-semibold">{order.client.info ? order.client.cep ?  `${order.client.cep + " - "}${order.client.info}` :  order.client.info : 'não informado'}</p>
                 </div>
               </div>
 
@@ -151,10 +151,6 @@ const Home: NextPage<Props> = ({order, isInternal}) => {
                   <p className="text-sm text-slate-600 font-semibold">{order.technicalReport ? order.technicalReport : "não informado"}</p>
                 </div>
 
-                <div className="col-span-2 py-1 px-2 border-2 border-gray-500 bg-white rounded-md flex items-center justify-start gap-2">
-                  <p className="text-sm text-slate-600 font-bold w-fit h-fit">Serviço:</p>
-                  <p className="text-sm text-slate-600 font-semibold">{order.generalDescription ? order.generalDescription : "não informado"}</p>
-                </div>
               </div>
 
               <div className="grid grid-cols-10 gap-2">
