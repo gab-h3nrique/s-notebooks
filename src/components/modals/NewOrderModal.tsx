@@ -251,7 +251,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                 setDropdownNameService(false)
                                 setDropdownStatusService(false)
                             }
-                       })} className="flex flex-col bg-slate-100 max-w-[36rem] max-h-[56rem] scale-[.93] rounded-2xl py-4 gap-4 overflow-hidden">
+                       })} className="flex flex-col bg-slate-100 max-w-[36rem] max-h-[56rem] rounded-2xl py-4 gap-4 overflow-hidden">
                         <header className="px-4">
                             <section className="flex w-full justify-between">
                                 <div onClick={()=>console.log(order)} className="flex justify-center items-center">
