@@ -458,23 +458,23 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                     <div onClick={()=> setOrder({...order, charger: !order.charger})} className={`flex items-center ${order.charger ? 'bg-orange-100' : 'bg-slate-100' } gap-1 px-1 py-2  rounded-lg w-full hover:scale-110 duration-100 cursor-pointer `}>
                                                         {order.charger ? <CircleCheckIcon  width={20} height={20} fill={`#F06531`} />
                                                                 : <CircleIcon  width={20} height={20} fill={`#94a3b8`} />}
-                                                        <label  className={`text-sm ${order.charger ? 'text-orange-500' : 'text-slate-500' } font-semibold cursor-pointer`}>Carregador</label>
+                                                        <label  className={`text-sm ${order.charger ? 'text-orange-500' : 'text-slate-400' } font-semibold overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer`}>Carregador</label>
                                                     </div>
 
                                                     <div onClick={()=> setOrder({...order, battery: !order.battery})} className={`flex items-center ${order.battery ? 'bg-orange-100' : 'bg-slate-100' } gap-1 px-1 py-2  rounded-lg w-full hover:scale-110 duration-100 cursor-pointer `}>
                                                         {order.battery ? <CircleCheckIcon  width={20} height={20} fill={`#F06531`} />
                                                                 : <CircleIcon  width={20} height={20} fill={`#94a3b8`} />}
-                                                        <label  className={`text-sm ${order.battery ? 'text-orange-500' : 'text-slate-500' } font-semibold cursor-pointer`}>Bateria</label>
+                                                        <label  className={`text-sm ${order.battery ? 'text-orange-500' : 'text-slate-400' } font-semibold overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer`}>Bateria</label>
                                                     </div>
                                                     <div onClick={()=> setOrder({...order, energyCable: !order.energyCable})} className={`flex items-center ${order.energyCable ? 'bg-orange-100' : 'bg-slate-100' } gap-1 px-1 py-2  rounded-lg w-full hover:scale-110 duration-100 cursor-pointer `}>
                                                         {order.energyCable ? <CircleCheckIcon  width={20} height={20} fill={`#F06531`} />
                                                                 : <CircleIcon  width={20} height={20} fill={`#94a3b8`} />}
-                                                        <label  className={`text-sm ${order.energyCable ? 'text-orange-500' : 'text-slate-500' } font-semibold cursor-pointer`}>Corda de força</label>
+                                                        <label  className={`text-sm ${order.energyCable ? 'text-orange-500' : 'text-slate-400' } font-semibold overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer`}>Corda de força</label>
                                                     </div>
                                                     <div onClick={()=> setOrder({...order, bag: !order.bag})} className={`flex items-center ${order.bag ? 'bg-orange-100' : 'bg-slate-100' } gap-1 px-1 py-2  rounded-lg w-full hover:scale-110 duration-100 cursor-pointer `}>
                                                         {order.bag ? <CircleCheckIcon  width={20} height={20} fill={`#F06531`} />
                                                                 : <CircleIcon  width={20} height={20} fill={`#94a3b8`} />}
-                                                        <label  className={`text-sm ${order.bag ? 'text-orange-500' : 'text-slate-500' } font-semibold cursor-pointer`}>Bolsa</label>
+                                                        <label  className={`text-sm ${order.bag ? 'text-orange-500' : 'text-slate-400' } font-semibold overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer`}>Bolsa</label>
                                                     </div>
 
                                                 </article>
@@ -642,7 +642,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                         })
                                                     }
 
-                                                    <hr></hr>
+                                                    {services.length > 0 ? <hr></hr> : null }
 
                                                 </div>
 
@@ -714,7 +714,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                     <div onClick={()=> setOrder({...order, deliveryConfirmation: !order.deliveryConfirmation})} className={`flex items-center ${order.deliveryConfirmation ? 'bg-orange-100' : 'bg-slate-100' } gap-1 px-1 py-2  rounded-lg w-full hover:scale-105 duration-150 cursor-pointer `}>
                                                         {order.deliveryConfirmation ? <CircleCheckIcon  width={20} height={20} fill={`#F06531`} />
                                                                 : <CircleIcon  width={20} height={20} fill={`#94a3b8`} />}
-                                                        <label  className={`text-sm ${order.deliveryConfirmation ? 'text-orange-500' : 'text-slate-500' } font-semibold cursor-pointer`}>Confirmação de entrega</label>
+                                                        <label  className={`text-sm ${order.deliveryConfirmation ? 'text-orange-500' : 'text-slate-400' } font-semibold cursor-pointer`}>Confirmação de entrega</label>
                                                     </div>
                                                 </div>
 
