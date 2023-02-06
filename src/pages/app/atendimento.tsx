@@ -110,6 +110,7 @@ const Atendimento: NextPage = () => {
   }
 
   const handleSearch = async() => {
+    if(!search) pageHandle(1)
     const {response} = await Api.get('/api/auth/search/orders',{content: search})
     setArrayOrder(response)
   }
