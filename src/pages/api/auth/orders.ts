@@ -56,7 +56,7 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
             console.log(order.status, await Shelfs.firstEmptyShelf('recepcao'))
 
-            const allOrder = { ...order, shelfId: (shelfEmpty?.id ? shelfEmpty.id : null), clientId: createdClient.id }
+            const allOrder = { ...order, shelfId: (shelfEmpty?.id ? shelfEmpty.id : order.shelfId), clientId: createdClient.id }
             
             const createdOrder = await Orders.createOrUpdateOrder(allOrder)
 
