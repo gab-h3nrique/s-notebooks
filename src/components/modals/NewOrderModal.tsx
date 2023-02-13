@@ -529,12 +529,12 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                     <textarea onChange={(x)=>  setOrder({...order, technicalReport: x.target.value})} value={order.technicalReport} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" />
                                                 </div> 
 
-                                                <div className="col-span-1">
+                                                <div className="col-span-2">
                                                     <label className="block text-sm font-medium text-slate-500">Senha do equipamento</label>
                                                     <input type="text" onChange={(x)=>  setOrder({...order, equipamentPassword: x.target.value})} value={order.equipamentPassword ? order.equipamentPassword : ""} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder=""/>
                                                 </div> 
 
-                                                <div className="col-span-1 relative cursor-pointer" onClick={()=> setDropdownShelf(!dropdownShelf)}>
+                                                {/* <div className="col-span-1 relative cursor-pointer" onClick={()=> setDropdownShelf(!dropdownShelf)}>
                                                     <label className="block text-sm font-medium text-slate-500">Prateleira</label>
                                                     <div className={`flex justify-between gap-1 col-span-4 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 px-3 py-1 border-2 border-gray-300 outline-none hover:border-transparent hover:ring hover:ring-orange-400 hover:scale-y-105 duration-150`}>
                                                         <label className="block text-sm font-medium text-slate-500 overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer">{ shelf ? shelf : "" }
@@ -553,7 +553,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                         </div>
                                                     </div>
 
-                                                </div>
+                                                </div> */}
 
                                             </article>
 
