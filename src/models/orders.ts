@@ -38,7 +38,7 @@ function model() {
                     gte: startDate !== '' ? new Date(startDate)  : undefined,
                     lte: endDate !== '' ? new Date(endDate) : undefined,
                 },
-                AND: { NOT: { status: 'arquivado'} }
+                AND: status !== 'arquivado' ? { NOT: { status: 'arquivado'} } : {}
             },
             skip: index,
             take: limit,
@@ -48,8 +48,17 @@ function model() {
         return orderDb
     }
 
-    const getTotalOrders = async(index: number | undefined = undefined, limit: number | undefined = undefined) => {
+    const getTotalOrders = async(index: number | undefined = undefined, limit: number | undefined = undefined, status:any = '', userId:any = '', startDate:any = '', endDate:any = '') => {
         const orderDb = <number> await prisma.orders.count({
+            where: {
+                status: status !== '' ? { equals: status} : undefined,
+                userId: userId !== '' ? { equals: Number(userId)} : undefined,
+                createdAt: {
+                    gte: startDate !== '' ? new Date(startDate)  : undefined,
+                    lte: endDate !== '' ? new Date(endDate) : undefined,
+                },
+                AND: status !== 'arquivado' ? { NOT: { status: 'arquivado'} } : {}
+            },
             skip: index ? index : undefined,
             take: limit ? limit : undefined
         })

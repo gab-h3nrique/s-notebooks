@@ -51,24 +51,28 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
 
             //---------------- SHELF ----------------//
-            let shelfEmpty;
-            let orderDb;
+            let shelfEmpty = <any>{};
+            let orderDb: any;
 
             if(order.id) orderDb = await Orders.getOrderById(order.id)
-
+            
             // assigns a shelf to the order that does not exist
             if(!order.shelfId) shelfEmpty = await Shelfs.getShelfEmptyByUser(order.userId, shelfType ? shelfType : 'manutencao')
+            
+            // assigns a shelf to the order that exist
+            if(order.shelfId) shelfEmpty.id = order.shelfId
 
-            // assigns a shelf to the userId of request
+            // assigns a shelf to the os who was changed tec
             if(orderDb && order.userId !== orderDb.userId) shelfEmpty = await Shelfs.getShelfEmptyByUser(order.userId, shelfType ? shelfType : 'manutencao')
 
+            // assigns a shelf to the os who was changed its status
             if(order.status && order.status === 'finalizado') shelfEmpty = await Shelfs.firstEmptyShelf('recepcao')
             if(order.status && order.status === 'arquivado') shelfEmpty = null
             //---------------------------------------//
 
 
             //---------------- ORDER ----------------//
-            const allOrder = { ...order, shelfId: (shelfEmpty?.id ? shelfEmpty.id : order.shelfId), clientId: createdClient.id }
+            const allOrder = { ...order, shelfId: (shelfEmpty?.id ? shelfEmpty.id : null), clientId: createdClient.id }
             
             const createdOrder = await Orders.createOrUpdateOrder(allOrder)
 
@@ -101,7 +105,7 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
             const response = {
                 currentPage: page,
                 total: await Orders.getTotalOrders(),
-                totalPages: Math.ceil(await Orders.getTotalOrders() / limit),
+                totalPages: Math.ceil(await Orders.getTotalOrders(undefined, undefined, status, userId, startDate, endDate) / limit),
                 results: await Orders.getPageOrders(startIndex, limit, status, userId, startDate, endDate)
             }
             
