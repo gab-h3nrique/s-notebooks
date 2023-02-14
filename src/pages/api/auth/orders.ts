@@ -36,26 +36,38 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
         if(method === 'POST') {
             
-            const {order, client, services, shelfType} =  req.body
+            const { order, client, services, shelfType } =  req.body
 
             delete order.createdAt;  delete order.updatedAt;
 
             if(!client.name || !client.email || !order.userId || !order.brand || !order.model || !order.status) return res.status(500).json( { message: 'Por favor, verifique os campos obrigatórios!'} )
-            
+
+
+            //---------------- CLIENT ---------------//
             const createdClient = await Clients.createOrUpdateClient(client)
 
             if(!createdClient) return res.status(500).json( { message: "error ao salvar o cliente!"})
-            
+            //---------------------------------------//
+
+
+            //---------------- SHELF ----------------//
             let shelfEmpty;
+            let orderDb;
+
+            if(order.id) orderDb = await Orders.getOrderById(order.id)
 
             // assigns a shelf to the order that does not exist
             if(!order.shelfId) shelfEmpty = await Shelfs.getShelfEmptyByUser(order.userId, shelfType ? shelfType : 'manutencao')
 
+            // assigns a shelf to the userId of request
+            if(orderDb && order.userId !== orderDb.userId) shelfEmpty = await Shelfs.getShelfEmptyByUser(order.userId, shelfType ? shelfType : 'manutencao')
+
             if(order.status && order.status === 'finalizado') shelfEmpty = await Shelfs.firstEmptyShelf('recepcao')
             if(order.status && order.status === 'arquivado') shelfEmpty = null
+            //---------------------------------------//
 
-            console.log(order.status, await Shelfs.firstEmptyShelf('recepcao'))
 
+            //---------------- ORDER ----------------//
             const allOrder = { ...order, shelfId: (shelfEmpty?.id ? shelfEmpty.id : order.shelfId), clientId: createdClient.id }
             
             const createdOrder = await Orders.createOrUpdateOrder(allOrder)
@@ -63,6 +75,9 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
             if(!createdOrder) return res.status(500).json( { message: "error ao salvar ordem de serviço!"})
 
             if(!allOrder.id && createdOrder.id) await ServicesOrder.createManyByOrderId(services, createdOrder.id)
+            //---------------------------------------//
+
+
 
             return res.status(201).json( { response: createdOrder } )
         }
