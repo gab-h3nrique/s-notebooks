@@ -40,8 +40,11 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
             delete order.createdAt;  delete order.updatedAt;
 
-            if(!client.name || !client.email || !order.userId || !order.brand || !order.model || !order.status) return res.status(500).json( { message: 'Por favor, verifique os campos obrigatórios!'} )
+            if(!client.name || !client.email || !order.userId || !order.brand || !order.model || !order.status) {
 
+                return res.status(500).json( { message: 'Por favor, verifique os campos obrigatórios!'} )
+
+            }
 
             //---------------- CLIENT ---------------//
             const createdClient = await Clients.createOrUpdateClient(client)
@@ -62,10 +65,10 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
             // assigns a shelf to the order that exist
             if(order.shelfId) shelfEmpty.id = order.shelfId
 
-            // assigns a shelf to the os who was changed tec
+            // assigns a shelf to the Order who was changed tec
             if(orderDb && order.userId !== orderDb.userId) shelfEmpty = await Shelfs.getShelfEmptyByUser(order.userId, shelfType ? shelfType : 'manutencao')
 
-            // assigns a shelf to the os who was changed its status
+            // assigns a shelf to the Order who was finished or archived
             if(order.status && order.status === 'finalizado') shelfEmpty = await Shelfs.firstEmptyShelf('recepcao')
             if(order.status && order.status === 'arquivado') shelfEmpty = null
             //---------------------------------------//
@@ -80,8 +83,6 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
             if(!allOrder.id && createdOrder.id) await ServicesOrder.createManyByOrderId(services, createdOrder.id)
             //---------------------------------------//
-
-
 
             return res.status(201).json( { response: createdOrder } )
         }
