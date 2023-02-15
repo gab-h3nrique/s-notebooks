@@ -55,21 +55,25 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
             //---------------- SHELF ----------------//
             let shelfEmpty = <any>{};
-            let orderDb: any;
-
-            if(order.id) orderDb = await Orders.getOrderById(order.id)
             
             // assigns a shelf to the order that does not exist
             if(!order.shelfId) shelfEmpty = await Shelfs.getShelfEmptyByUser(order.userId, shelfType ? shelfType : 'manutencao')
             
             // assigns a shelf to the order that exist
             if(order.shelfId) shelfEmpty.id = order.shelfId
-
+            
             // assigns a shelf to the Order who was changed tec
+            const orderDb: any = order.id ? await Orders.getOrderById(order.id) : null
+
             if(orderDb && order.userId !== orderDb.userId) shelfEmpty = await Shelfs.getShelfEmptyByUser(order.userId, shelfType ? shelfType : 'manutencao')
 
-            // assigns a shelf to the Order who was finished or archived
-            if(order.status && order.status === 'finalizado') shelfEmpty = await Shelfs.firstEmptyShelf('recepcao')
+            // assigns a shelf to the Order who was finished
+            const shelfDb: any = order.id && order.shelfId ? await Shelfs.get(order.shelfId) : null;
+
+            if(order.status === 'finalizado' && shelfDb && shelfDb.type === 'recepcao') shelfEmpty = shelfDb
+            else if(order.status === 'finalizado') shelfEmpty = await Shelfs.firstEmptyShelf('recepcao')
+
+
             if(order.status && order.status === 'arquivado') shelfEmpty = null
             //---------------------------------------//
 

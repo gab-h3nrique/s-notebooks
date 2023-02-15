@@ -40,10 +40,20 @@ function model() {
         })
         return shelfDb
     }
+
+    const get = async(id:number, type?:string) => {
+        const shelfDb = <Shelf> await prisma.shelf.findFirst({
+            where: {
+                id: id,
+                type: type ? type : undefined,
+            }
+        })
+        return shelfDb
+    }
     
 
     // export all function that is in the return
-    return { firstEmptyShelf, getShelfEmptyByUser, createOrUpdate }
+    return { firstEmptyShelf, getShelfEmptyByUser, createOrUpdate, get }
 }
 
 export const Shelfs = model();
