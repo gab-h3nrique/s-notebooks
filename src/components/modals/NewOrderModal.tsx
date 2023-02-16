@@ -153,10 +153,13 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
 
     const handleDocument = (e:any) => {
-
         setClient({...client, document: cpfAndCnpjMask(e.target.value)})
+    }
 
-        // this.setState({ documentId: cpfAndCnpjMask(e.target.value) })
+    const handleValue = (e:any) => {
+
+        // setNewService({...newService, value: Number(event.target.value)})
+        setNewService({...newService, value: Number(valueMask(e.target.value))})
     }
 
     const handleNumber = (e:any) => {
@@ -613,7 +616,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                         </div>
 
 
-                                                        <input type="number" onChange={(event)=>{setNewService({...newService, value: Number(event.target.value)})}} value={newService.value ? newService.value : ''} className="col-span-2 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder="Valor"/>
+                                                        <input type="number" onChange={handleValue} value={newService.value ? newService.value : ''} className="col-span-2 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder="Valor"/>
 
                                                         
 
@@ -774,3 +777,10 @@ function foneMask(v: string) {
     return formattedPhone
 
 }
+
+function valueMask(i: any) {
+    let v = i.replace(/\D/g,'');
+    v = (v/100).toFixed(2) + '';
+    v = v.replace(".", ",");
+    return v
+  }

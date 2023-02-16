@@ -1,4 +1,5 @@
 import prisma from "../../db/prisma"
+import { ClientType } from "../types/clientType"
 import { OrderType } from "../types/orderType"
 
 
@@ -83,12 +84,16 @@ function model() {
         })
         return clientFound
     }
-    const searchByClient = async(clientId:number) => {
-        const clientFound = <OrderType[]> await prisma.orders.findMany({
-            where: { clientId: clientId},
+    const searchByClient = async(clients:ClientType[]) => {
+        const orderDb = <OrderType[]> await prisma.orders.findMany({
+            where: { 
+                clientId: {
+                    in: clients.map((client:any) => client.id)
+                }
+            },
             include: {client:true, services:true, user:true},
         })
-        return clientFound
+        return orderDb
     }
 
     const deletetOrderById = async(orderId:number) => {

@@ -31,24 +31,18 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
     try{
 
-        if(method === 'GET') {
+        if(method !== 'GET')  return res.status(405).json({ message: 'method Not allowed' })
         
-            const { content }: SearchQuery = req.query
+        const { content }: SearchQuery = req.query
 
-            const foundClient = await Clients.searchFirstClient(content? content : '')
+        console.log(Number.isNaN(Number(content)))
 
-            let foundOrders;
+        const foundClient = await Clients.searchClient(content? content : '')
 
-            if(foundClient) foundOrders = await Orders.searchByClient(foundClient.id)
+        const foundOrders = !Number.isNaN(Number(content)) ? [await Orders.getOrderById(Number(content))] : await Orders.searchByClient(foundClient)
 
-            // if(!foundClient) foundOrders = await Orders.searchOrders(content? content : '')
-
-            return res.status(200).json({response: foundOrders})
+        return res.status(200).json({response: foundOrders})
             
-        }
-
-        return res.status(405).json({ message: 'method Not allowed' })
-
     } catch(error) {
 
         console.error(error)

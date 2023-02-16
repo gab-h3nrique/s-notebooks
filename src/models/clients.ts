@@ -24,13 +24,13 @@ function model() {
     }
 
     const searchClient = async(content:string) => {
-        const clientFound = await prisma.clients.findMany({
+        const clientFound = <ClientType[]> await prisma.clients.findMany({
             where: {
                 OR: [
-                    { email:{contains:content} },
                     { name:{contains:content} },
-                    { document:{contains:content} },
-                    { number:{contains:content} }
+                    { email:{contains:content} },
+                    // { document:{contains:content} },
+                    // { number:{contains:content} }
                 ]
             }
         })
