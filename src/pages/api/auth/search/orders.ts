@@ -35,11 +35,11 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
         
         const { content }: SearchQuery = req.query
 
-        console.log(Number.isNaN(Number(content)))
-
         const foundClient = await Clients.searchClient(content? content : '')
 
-        const foundOrders = !Number.isNaN(Number(content)) ? [await Orders.getOrderById(Number(content))] : await Orders.searchByClient(foundClient)
+        const foundOrders = !Number.isNaN(Number(content)) 
+        ? await Orders.getOrderById(Number(content)) ? [await Orders.getOrderById(Number(content))] : []
+        : await Orders.searchByClient(foundClient)
 
         return res.status(200).json({response: foundOrders})
             
