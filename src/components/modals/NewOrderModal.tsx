@@ -616,7 +616,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                         </div>
 
 
-                                                        <input type="number" onChange={handleValue} value={newService.value ? newService.value : ''} className="col-span-2 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder="Valor"/>
+                                                        <input type="number" onChange={(x)=> setNewService({...newService, value: Number(x.target.value)})} value={newService.value ? newService.value : ''} className="col-span-2 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder="Valor"/>
 
                                                         
 
