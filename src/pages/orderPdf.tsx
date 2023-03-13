@@ -168,7 +168,7 @@ const Home: NextPage<Props> = ({order, isInternal}) => {
                         order?.services.map(({name, value}:any, key:any)=>{
                           return (
                             <p key={key} className="text-sm text-slate-600 font-semibold">
-                              {name} {value ? `: R$ ${value}` : ''}
+                              {name} {value ? `: R$ ${ (String(value)).replace(".",",") }` : ''}
                             </p>
                           )
                         })

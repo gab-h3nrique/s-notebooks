@@ -6,7 +6,7 @@ import ReactDom from "react-dom";
 import Api from "../../../lib/api";
 import { ClientType } from "../../types/clientType";
 import { OrderType } from "../../types/orderType";
-import { ServiceOrderType, ServiceType } from "../../types/serviceType";
+import { ServiceType } from "../../types/serviceType";
 import { Shelf } from "../../types/shelf";
 import { UserType } from "../../types/userType";
 import CheckDouble from "../icons/CheckDouble";
@@ -61,6 +61,14 @@ const emptyOrder :OrderType = {
     value:0,
 }
 
+interface ServiceOrderType {
+    id?: number;
+    name: string;
+    status: string;
+    orderId?: number;
+    value: string;
+}
+
 const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
     const [portal, setPortal] = useState<HTMLElement>()
 
@@ -76,7 +84,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
     const [order, setOrder] = useState<OrderType>(emptyOrder)
 
-    const [newService, setNewService] = useState<ServiceOrderType>({id: undefined, name:"", status: "", orderId: undefined, value: 0})
+    const [newService, setNewService] = useState<ServiceOrderType>({id: undefined, name:"", status: "", orderId: undefined, value: ""})
     const [services, setArrayservices] = useState<ServiceOrderType[]>([])
     const [shelf, setShelf] = useState<string>()
 
@@ -141,7 +149,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
         if(order.id) await Api.post('/api/auth/servicesOrder', { serviceOrder: {...newService, orderId: order.id}  })
 
         setArrayservices( services => [...services, newService])
-        setNewService({id: undefined, name:"", status: "", orderId: undefined, value: 0})
+        setNewService({id: undefined, name:"", status: "", orderId: undefined, value: "0"})
     }
     const removeServiceorder = async(service:ServiceOrderType) => {
 
@@ -158,8 +166,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
     const handleValue = (e:any) => {
 
-        // setNewService({...newService, value: Number(event.target.value)})
-        setNewService({...newService, value: Number(valueMask(e.target.value))})
+        setNewService({...newService, value: String(brMask(e.target.value))})
     }
 
     const handleNumber = (e:any) => {
@@ -239,7 +246,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
         setContentLoading(true)
         setClient({name: "", document: "", email: "", number: "", cep: "", info: ""})
         setArrayservices([])
-        setNewService({id: undefined, name:"", status: "", orderId: undefined, value: 0})
+        setNewService({id: undefined, name:"", status: "", orderId: undefined, value: "0"})
     }
 
     return (
@@ -528,7 +535,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                 </div>
 
                                                 <div >
-                                                    <label className="block text-sm font-medium text-slate-500">Laudo técnico</label>
+                                                    <label className="flex text-sm font-medium text-slate-500 justify-between">Laudo técnico <p>a</p></label>
                                                     <textarea onChange={(x)=>  setOrder({...order, technicalReport: x.target.value})} value={order.technicalReport} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" />
                                                 </div> 
 
@@ -616,7 +623,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                         </div>
 
 
-                                                        <input type="number" onChange={handleValue} value={newService.value ? newService.value : ''} className="col-span-2 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder="Valor"/>
+                                                        <input type="text" onChange={handleValue} value={newService.value ? newService.value : ''} className="col-span-2 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder="Valor"/>
 
                                                         
 
@@ -783,4 +790,12 @@ function valueMask(i: any) {
     v = (v/100).toFixed(2) + '';
     v = v.replace(".", ",");
     return v
-  }
+}
+
+function brMask(i:any) {
+let v = i.replace(/\D/g,'');
+v = (v/100).toFixed(2) + '';
+v = v.replace(".", ",");
+i = v;
+return i
+}

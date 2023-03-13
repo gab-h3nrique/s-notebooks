@@ -10,7 +10,7 @@ function model() {
 
     const createManyByOrderId = async(serviceOrder: ServiceOrderType[], orderId: number) => {
 
-        const serviceOrderWithOrderId = serviceOrder.map((serviceOrder:ServiceOrderType) => {return { ...serviceOrder, orderId: orderId } })
+        const serviceOrderWithOrderId = serviceOrder.map((serviceOrder:ServiceOrderType) => {return { ...serviceOrder, orderId: orderId, value: Number(serviceOrder.value.replace(",", "."))} })
         
         const servicesOrderDb = await prisma.servicesOrder.createMany({
             data: serviceOrderWithOrderId

@@ -7,5 +7,5 @@ export interface ServiceOrderType {
   name: string;
   status: string;
   orderId?: number;
-  value: number;
+  value: any;
 }
