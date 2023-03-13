@@ -212,8 +212,11 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
     function isEmptyRequiredField():Boolean {
 
-        if(!client.name || !client.email || !order.userId) return false;
-        if(!order.status || !order.model || !order.brand) return false;
+        //client
+        if(!client.name || !client.email || !order.userId) return true;
+
+        //order
+        if(!order.status || !order.model || !order.brand || !order.equipamentPassword) return true;
 
         return false;
     }
@@ -221,7 +224,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
     const saveOrder = async() => {
 
         setTryedToSave(true)
-        if(isEmptyRequiredField()) return; 
+        if(isEmptyRequiredField()) return setMessage('Por favor, verifique os campos obrigatórios!'); 
 
         setLoading(true)
 
@@ -529,19 +532,19 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                             </article>
                                             <article className="grid grid-cols-2 gap-x-2">
 
-                                                <div>
-                                                    <label className="block text-sm font-medium text-slate-500">Relatório do cliente</label>
-                                                    <textarea onChange={(x)=>  setOrder({...order, defectDescription: x.target.value})} value={order.defectDescription} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" />
+                                                <div className="group">
+                                                    <label className="flex justify-between text-sm font-medium text-slate-500">Relatório do cliente <p className="text-xs hidden group-hover:flex" >{ 300 - (order.defectDescription ? order.defectDescription.length : 0)}</p></label>
+                                                    <textarea maxLength={299} onChange={(x)=> setOrder({...order, defectDescription: x.target.value})} value={order.defectDescription} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" />
                                                 </div>
 
-                                                <div >
-                                                    <label className="flex text-sm font-medium text-slate-500 justify-between">Laudo técnico <p>a</p></label>
-                                                    <textarea onChange={(x)=>  setOrder({...order, technicalReport: x.target.value})} value={order.technicalReport} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" />
+                                                <div className="group">
+                                                    <label className="flex justify-between text-sm font-medium text-slate-500">Laudo técnico <p className="text-xs hidden group-hover:flex" >{ 300 - (order.technicalReport ? order.technicalReport.length : 0)}</p></label>
+                                                    <textarea maxLength={299} onChange={(x)=>  setOrder({...order, technicalReport: x.target.value})} value={order.technicalReport} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 group/txt"/>
                                                 </div> 
 
                                                 <div className="col-span-2">
                                                     <label className="block text-sm font-medium text-slate-500">Senha do equipamento</label>
-                                                    <input type="text" onChange={(x)=>  setOrder({...order, equipamentPassword: x.target.value})} value={order.equipamentPassword ? order.equipamentPassword : ""} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder=""/>
+                                                    <input type="text" onChange={(x)=>  setOrder({...order, equipamentPassword: x.target.value})} value={order.equipamentPassword ? order.equipamentPassword : ""} className={`text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 ${tryedToSave ? !order.equipamentPassword ? 'ring-2 ring-red-400' : 'ring-2 ring-green-200' : null}`} placeholder=""/>
                                                 </div> 
 
                                                 {/* <div className="col-span-1 relative cursor-pointer" onClick={()=> setDropdownShelf(!dropdownShelf)}>

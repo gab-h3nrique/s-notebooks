@@ -40,7 +40,7 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
             delete order.createdAt;  delete order.updatedAt;
 
-            if(!client.name || !client.email || !order.userId || !order.brand || !order.model || !order.status) {
+            if(!client.name || !client.email || !order.userId || !order.brand || !order.model || !order.status || !order.equipamentPassword) {
 
                 return res.status(500).json( { message: 'Por favor, verifique os campos obrigatórios!'} )
 
