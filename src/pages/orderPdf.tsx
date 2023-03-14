@@ -168,7 +168,7 @@ const Home: NextPage<Props> = ({order, isInternal}) => {
                         order?.services.map(({name, value}:any, key:any)=>{
                           return (
                             <p key={key} className="text-sm text-slate-600 font-semibold">
-                              {name} {value ? `: R$ ${ (String(value)).replace(".",",") }` : ''}
+                              {name} {value ? `: R$ ${ valueMask(value) }` : ''}
                             </p>
                           )
                         })
@@ -236,3 +236,7 @@ const Home: NextPage<Props> = ({order, isInternal}) => {
 
 export default Home
 
+function valueMask(i: any) {
+  const match : any = /(\d+)(\.\d+)?/.exec(String(i))
+  return match[1].replace(/\d(?=(\d{3})+$)/g, "$&,") + (match[2] ? match[2].replace(".", ",") : ",00");
+}
