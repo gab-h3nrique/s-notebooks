@@ -533,13 +533,13 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                             <article className="grid grid-cols-2 gap-x-2">
 
                                                 <div className="group">
-                                                    <label className="flex justify-between text-sm font-medium text-slate-500">Relatório do cliente <p className="text-xs hidden group-hover:flex" >{ 300 - (order.defectDescription ? order.defectDescription.length : 0)}</p></label>
-                                                    <textarea maxLength={299} onChange={(x)=> setOrder({...order, defectDescription: x.target.value})} value={order.defectDescription} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" />
+                                                    <label className="flex justify-between text-sm font-medium text-slate-500">Relatório do cliente <p className="text-xs hidden group-hover:flex" >{ 400 - (order.defectDescription ? order.defectDescription.length : 0)}</p></label>
+                                                    <textarea maxLength={399} onChange={(x)=> setOrder({...order, defectDescription: x.target.value})} value={order.defectDescription} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" />
                                                 </div>
 
                                                 <div className="group">
-                                                    <label className="flex justify-between text-sm font-medium text-slate-500">Laudo técnico <p className="text-xs hidden group-hover:flex" >{ 300 - (order.technicalReport ? order.technicalReport.length : 0)}</p></label>
-                                                    <textarea maxLength={299} onChange={(x)=>  setOrder({...order, technicalReport: x.target.value})} value={order.technicalReport} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 group/txt"/>
+                                                    <label className="flex justify-between text-sm font-medium text-slate-500">Laudo técnico <p className="text-xs hidden group-hover:flex" >{ 512 - (order.technicalReport ? order.technicalReport.length : 0)}</p></label>
+                                                    <textarea maxLength={511} onChange={(x)=>  setOrder({...order, technicalReport: x.target.value})} value={order.technicalReport} className="text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 group/txt"/>
                                                 </div> 
 
                                                 <div className="col-span-2">

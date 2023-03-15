@@ -97,9 +97,9 @@ model Orders {
   // isWorking           Boolean @default(true)
   // workingDescription  String?
   defectDescription   String? @db.VarChar(300)
-  technicalReport     String? @db.VarChar(300)
+  technicalReport     String? @db.VarChar(512)
   equipamentPassword  String?
-  generalDescription  String? @db.VarChar(300)
+  generalDescription  String?
 
   deliveryConfirmation Boolean @default(false)
 
