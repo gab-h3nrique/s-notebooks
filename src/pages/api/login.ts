@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest,res: NextApiResponse) 
 
     console.log('sdalkfjl', await prisma.users.findMany())
 
-    return res.status(405).json({ users: await prisma.users.findMany() })
+    return res.status(200).json({ users: await prisma.users.findMany() })
     
     const {email, password} = req.body;
     const { method } = req;
