@@ -7,7 +7,7 @@ import { Users } from './models/users';
 
 export default async function middleware(req: NextRequest) {
 
-    try{
+    try {
 
         if(!await isAuthenticated(req)) return handleNotAuthenticated(req);
 
