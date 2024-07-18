@@ -8,6 +8,7 @@
 // npx prisma migrate dev --name  init    ** atualizar migrate
 // npx prisma migrate dev --name migrate's name    ** atualizar migrate
 // npx prisma db push  
+// npx prisma studio 
 
 generator client {
   provider = "prisma-client-js"

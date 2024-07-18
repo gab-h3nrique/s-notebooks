@@ -85,7 +85,8 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
             if(!createdOrder) return res.status(500).json( { message: "error ao salvar ordem de serviço!"})
 
-            if(!allOrder.id && createdOrder.id) await ServicesOrder.createManyByOrderId(services, createdOrder.id)
+            // if(!allOrder.id && createdOrder.id) await ServicesOrder.createManyByOrderId(services, createdOrder.id)
+            if(createdOrder.id) await ServicesOrder.createOrUpdateMany(services, createdOrder.id)
             //---------------------------------------//
 
             return res.status(201).json( { response: createdOrder } )

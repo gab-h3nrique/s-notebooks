@@ -26,12 +26,23 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const Home: NextPage<Props> = ({order, isInternal}) => {
 
+  const [showType, setShowType] = useState(true)
 
+
+  function print() {
+
+    setShowType(false)
+
+    setTimeout(()=> window.print(), 50)
+
+    setTimeout(()=> setShowType(true), 100)
+
+  }
 
   return (
     order &&
       <>
-          <main onClick={()=>window.print()} className="flex overflow-auto flex-col m-auto mt-5 gap-4 p-4 bg-white w-[230mm] h-[297mm] cursor-pointer" >
+        <main onClick={() => print()} className="flex overflow-auto flex-col m-auto mt-5 gap-4 p-4 bg-white w-[230mm] h-[297mm] cursor-pointer relative" >
 
           <div className="w-full h-full pointer-events-none">
 
@@ -195,7 +206,7 @@ const Home: NextPage<Props> = ({order, isInternal}) => {
 
 
               </div>
-             
+              
             </section>
 
             <section className="flex flex-col gap-2">
@@ -229,7 +240,15 @@ const Home: NextPage<Props> = ({order, isInternal}) => {
 
           </div>
 
-          </main>
+          {
+            showType ?
+
+              <span className={`absolute m-auto top-0 right-0 left-0 bottom-0 z-40 w-fit h-fit text-orange-500 font-bold text-[10rem] rotate-[45deg] opacity-25`}>{ isInternal ? 'INTERNO' : 'CLIENTE' }</span>
+              
+            : null
+          }
+
+        </main>
       </>
   )
 }

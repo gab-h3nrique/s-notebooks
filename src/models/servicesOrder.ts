@@ -30,6 +30,15 @@ function model() {
         return servicesOrderDb
     }
 
+    const createOrUpdateMany = async(serviceOrder: any[], orderId: number) => {
+
+        await prisma.servicesOrder.deleteMany({ where: { orderId: orderId } })
+        
+        const servicesOrderDb = createManyByOrderId(serviceOrder, orderId)
+
+        return servicesOrderDb
+    }
+
     const deleteManyByrId = async(serviceId: number) => {
 
         const servicesOrderDb = await prisma.servicesOrder.deleteMany({ where: { id: serviceId } })
@@ -37,7 +46,7 @@ function model() {
 
     }
   
-    return { getAllServices, createManyByOrderId, createOrUpdate,  deleteManyByrId }
+    return { getAllServices, createManyByOrderId, createOrUpdate, createOrUpdateMany,  deleteManyByrId }
 }
 
 export const ServicesOrder = model();
