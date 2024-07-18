@@ -32,10 +32,10 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
         try {
 
 
-        } catch(error) {
+        } catch(error:any) {
 
             console.error(error)
-            return res.status(500).json({ message: error })
+            return res.status(500).json({ message: error.message })
             
         }
 
@@ -51,10 +51,10 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
             return res.status(201).json({ response: createdServiceOrder })
 
-        } catch(error) {
+        } catch(error:any) {
 
             console.error(error)
-            return res.status(500).json({ message: error })
+            return res.status(500).json({ message: error.message })
             
         }
 
@@ -72,10 +72,10 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
             return res.status(200).json({ response: deletedServiceOrder })
 
-        } catch(error) {
+        } catch(error: any) {
 
             console.error(error)
-            return res.status(500).json({ message: error })
+            return res.status(500).json({ message: error.message })
             
         }
 

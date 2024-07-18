@@ -151,7 +151,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
         if(!newService.name || !newService.status) return;
 
-        if(order.id) await Api.post('/api/auth/servicesOrder', { serviceOrder: {...newService, orderId: order.id}  })
+        // if(order.id) await Api.post('/api/auth/servicesOrder', { serviceOrder: {...newService, orderId: order.id}  })
 
         setArrayservices( services => [...services, newService])
         setNewService({id: undefined, name:"", status: "", orderId: undefined, value: "0"})
