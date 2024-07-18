@@ -100,6 +100,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
     const [dropdownShelf, setDropdownShelf] = useState<boolean>(false)
 
     const [dropdownArrayService, setDropdownArrayService] = useState<any>()
+    const [dropdownPdf, setDropdownPdf] = useState(false)
 
     const [loading, setLoading] = useState<boolean>(false)
     const [contentLoading, setContentLoading] = useState<boolean>(true)
@@ -288,26 +289,21 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                 <div onClick={()=>console.log(order)} className="flex justify-center items-center">
                                     <p className="text-2xl text-slate-500 font-semibold">Ordem de serviço</p>
                                 </div>
-                                <div className="flex justify-center items-center gap-2">
+                                <div className="flex justify-center items-center gap-2 relative">
                                     {
                                         order.id ?
 
                                             <>
-                                                {/* <div onClick={()=>{window.open(`/orderPdf?id=${order.id}`)}} className="flex items-center justify-center duration-300 hover:scale-110 cursor-pointer">
-                                                    <div className={`flex bg-slate-400 w-fit h-fit rounded-lg p-[4px]`}>
-                                                        <FileDownIcon className="h-[24px] w-[24px] fill-white"/>
-                                                    </div>
-                                                </div> */}
-                                                <div onClick={()=>{window.open(`/orderPdf?id=${order.id}`)}} className="flex items-center justify-center duration-300 hover:scale-110 cursor-pointer">
-                                                    <div className={`flex bg-slate-400 w-fit h-fit rounded-lg p-[3px]`}>
-                                                        <ClouldSetting  className="h-[25px] w-[25px] fill-white"/>
-                                                    </div>
-                                                </div>
-                                                <div onClick={()=> window.open(`/orderPdf?id=${order.id}&internal=true`)} className="flex items-center justify-center duration-300 hover:scale-110 cursor-pointer">
+                                                <div onClick={()=> setDropdownPdf(true)} className="flex items-center justify-center duration-300 hover:scale-110 cursor-pointer">
                                                     <div className={`flex bg-slate-400 w-fit h-fit rounded-lg p-[6.5px]`}>
                                                         <Pdf className="h-[20px] w-[20px] fill-white"/>
                                                     </div>
                                                 </div>
+
+                                                <DropDown.card isOpen={dropdownPdf} close={()=> setDropdownPdf(false)} className="top-10 right-5">
+                                                    <DropDown.item onClick={()=>{setDropdownPdf(false); window.open(`/orderPdf?id=${order.id}&internal=true`)}} value={'Interno'}/>
+                                                    <DropDown.item onClick={()=>{setDropdownPdf(false); window.open(`/orderPdf?id=${order.id}`)}} value={'Cliente'}/>
+                                                </DropDown.card>
                                             </>
 
                                         : null
