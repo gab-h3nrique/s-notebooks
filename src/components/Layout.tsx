@@ -5,8 +5,6 @@ import Header from './Header';
 import Asidebar from './barComponent/Asidebar';
 import Sidebar from './barComponent/Sidebar';
 import NavBar from './barComponent/NavBar';
-import { useAuth } from '../context/auth';
-// import Navigation from '../navigation/Navigation';
 /* components */
 
 export interface Props {

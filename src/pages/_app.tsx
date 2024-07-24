@@ -1,6 +1,5 @@
 import '../../styles/globals.css'
 import type { AppProps } from 'next/app'
-import { AuthProvider } from '../context/auth'
 import { UserProvider } from '../context/UserContext'
 // import { BudgetProvider } from '../context/budget'
 

@@ -27,7 +27,6 @@ import ModalComponent from "./ModalComponent";
 import Pdf from "../icons/Pdf";
 import DropDown from "../elements/DropDown";
 import { authUser } from "../../../lib/auth";
-import { useAuth } from "../../context/auth";
 import { userContext } from "../../context/UserContext";
 
 /* components */

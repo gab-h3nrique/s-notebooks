@@ -26,7 +26,7 @@ export const UserProvider = ({ children }:any) => {
 
     const [ user, setUser ] = useState<UserType>();
 
-    const load = async() => {// get again user from localStorage
+    async function load() {// get again user from localStorage
         if(typeof window !== "undefined" && (!user || !user.id) ) setUser(await cookieUser() as UserType)
     }
 

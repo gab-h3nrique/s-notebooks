@@ -5,8 +5,8 @@ import Api from '../../lib/api';
 import Router from 'next/router';
 
 import LoginForm from '../components/LoginForm';
-import { AuthContext } from '../context/auth';
-import Snotebooks from '../components/icons/Snotebooks';
+import { setCookie } from '../../lib/cookie';
+import { userContext } from '../context/UserContext';
 
 const Home: NextPage = () => {
  
@@ -17,18 +17,36 @@ const Home: NextPage = () => {
   const [message, setMessage] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false)
 
-  const { setAuthUserLogin }:any = useContext(AuthContext)
+  const { setUser } = userContext()
 
   const login = async() => {
-    setLoading(true)
-    let data = await Api.auth('/api/login', {name, email, password});
-    if(data.accessToken && data.user) {
-      await setAuthUserLogin(data.user)
+
+    try {
+      
+      setLoading(true)
+  
+      let { user, accessToken } = await Api.auth('/api/login', { name, email, password });
+  
+      if(!accessToken || user) return setMessage(message);
+  
+      setUser(user)
+
+      await setCookie('auth', accessToken, 360)
+  
       Router.push('/app/atendimento');
-    } else {
-      setMessage(data.message);
+      
+    } catch (error: any) {
+
+      console.log(error)
+      setMessage(error.message)
+      
+    } finally {
+      
+      setLoading(false)
+
     }
-    setLoading(false)
+
+
   }
 
   useEffect(() => {
