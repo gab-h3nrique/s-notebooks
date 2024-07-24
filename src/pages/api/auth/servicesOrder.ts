@@ -47,7 +47,7 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
             const { serviceOrder } = req.body
 
-            const createdServiceOrder = await ServicesOrder.createOrUpdate({...serviceOrder, value: Number(serviceOrder.value.replace(",", "."))})
+            const createdServiceOrder = await ServicesOrder.createOrUpdate({...serviceOrder, value: Number(String(serviceOrder.value).replace(",", "."))})
 
             return res.status(201).json({ response: createdServiceOrder })
 

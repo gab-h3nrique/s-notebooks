@@ -1,4 +1,4 @@
-import {JWTPayload, jwtVerify} from 'jose';
+import {JWTPayload, jwtVerify, decodeJwt} from 'jose';
 
 
 export async function verify(token: string, secret: string): Promise<JWTPayload> {
@@ -7,4 +7,12 @@ export async function verify(token: string, secret: string): Promise<JWTPayload>
 
     // if its all good, return it, or perhaps just return a boolean
     return payload;
+}
+
+export async function decode(token: string, secret?: string) {
+    
+    const payload = await decodeJwt(token)
+
+    return payload
+    
 }

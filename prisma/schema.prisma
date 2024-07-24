@@ -50,8 +50,8 @@ model Shelf {
   id          Int @id
   type        String
 
-  user        Users @relation("shelfUser", fields: [userId], references: [id])
-  userId      Int
+  user        Users? @relation("shelfUser", fields: [userId], references: [id])
+  userId      Int?
 
   // order       Orders? @relation("shelfOrder", fields: [orderId], references: [id])
   // orderId     Int? @unique
@@ -95,7 +95,7 @@ model Orders {
   backup            Boolean @default(false)
   backupDescription String?
 
-  // isWorking           Boolean @default(true)
+  isWorking           Boolean @default(true)
   // workingDescription  String?
   defectDescription   String? @db.VarChar(300)
   technicalReport     String? @db.VarChar(512)

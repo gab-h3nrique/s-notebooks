@@ -7,13 +7,26 @@ import { Shelf } from "../types/shelf"
 
 function model() {
 
-    const createOrUpdate = async(idShelf:number, userId:number,) => {
+    const createOrUpdate = async(shelf: Shelf) => {
+
+        const lastResult = await prisma.shelf.findFirst({
+            where: {
+                type: shelf.type ? { equals: shelf.type} : undefined,
+                userId: shelf.userId ? { equals: shelf.userId} : undefined,
+            },
+            take: 1,
+            orderBy: { id: 'desc'}
+        })
+
+        if(!lastResult || !lastResult.id) return null
+
         const shelfDb = <Shelf> await prisma.shelf.upsert({
-            where: { id: idShelf},
-            update: { userId: userId },
-            create: { id: idShelf, type: 'manutencao', userId: userId}
+            where: {id: shelf.id ? shelf.id : -1},
+            create: {...shelf, id: (lastResult.id + 1), type: (shelf.type || 'manutencao'), userId: shelf.userId || undefined},
+            update: {...shelf, id: (shelf.id || (lastResult.id + 1)), type: (shelf.type || 'manutencao'), userId: shelf.userId || undefined}
         })
         return shelfDb
+
     }
 
     const getShelfEmptyByUser = async(userId:number, type?:string) => {
@@ -50,10 +63,39 @@ function model() {
         })
         return shelfDb
     }
+
+    const getPaginated = async(page?:number, limit?: number, type?: string, userId?: number) => {
+
+        const startIndex = page && limit ? (page - 1) * limit : undefined
+
+        const shelfDb = <Shelf[]> await prisma.shelf.findMany({
+            where: {
+                type: type ? { equals: type} : undefined,
+                userId: type ? { equals: userId} : undefined,
+            },
+            skip: startIndex,
+            take: limit || undefined,
+            include:{ user: true, order: true },
+            orderBy: { id: 'asc'}
+        })
+
+        return shelfDb
+
+    }
+
+    const deletetById = async(id:number) => {
+
+        const deleted = <Shelf> await prisma.shelf.delete({
+            where: { id: id}
+        })
+
+        return deleted
+
+    }
     
 
     // export all function that is in the return
-    return { firstEmptyShelf, getShelfEmptyByUser, createOrUpdate, get }
+    return { firstEmptyShelf, getShelfEmptyByUser, createOrUpdate, get, getPaginated, deletetById }
 }
 
 export const Shelfs = model();

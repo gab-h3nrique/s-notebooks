@@ -25,6 +25,7 @@ export interface OrderType {
     backup:boolean;
     backupDescription?:string;
 
+    isWorking:boolean;
     defectDescription?:string;
     technicalReport?:string;
     equipamentPassword?:string;

@@ -10,15 +10,16 @@ export interface Props {
     textColor: string;
     backgroundColor: string
     className?:string
+    textStyle?:string
 }
 
 
-export default function InfoCard( { status, textColor, backgroundColor, className } :Props ) {
+export default function InfoCard( { status, textColor, backgroundColor, className, textStyle } :Props ) {
 
 return (
     <>
-       <div className={`flex justify-center items-center ${backgroundColor} rounded-lg py-1 px-3 scale-95 ${className ? className : 'w-fit h-fit'}`}>
-              <p className={`text-sm ${textColor} font-bold overflow-hidden text-ellipsis whitespace-nowrap`}>{status}</p>
+        <div className={`flex justify-center items-center ${backgroundColor} rounded-lg py-1 px-3 scale-95 ${className ? className : 'w-fit h-fit'}`}>
+              <p className={`text-sm ${textColor} font-bold overflow-hidden text-ellipsis whitespace-nowrap ${textStyle}`}>{status}</p>
         </div>
     </>
 )

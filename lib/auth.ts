@@ -1,6 +1,7 @@
 
 import { getCookie } from "./cookie"
 import jwt from 'jsonwebtoken';
+import { decode } from "./jwtToken";
 
 export async function cookieUser() {
 
@@ -16,3 +17,14 @@ export async function authorizationToken(req:any) {
     return token
 }
 
+export const authUser = {
+
+    get: async() => {
+
+        const auth = await getCookie('auth')
+
+        return await jwt.decode(auth as string) || null
+
+    },
+
+}

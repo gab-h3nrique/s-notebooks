@@ -1,13 +1,17 @@
 import { createContext, useContext, useState } from "react";
 import { cookieUser } from "../../lib/auth";
+import { UserType } from "../types/userType";
 
-export const AuthContext = createContext({});
+
+
+export const AuthContext = createContext(null);
 
 export const useAuth = () => {
     return useContext(AuthContext);
 };
 
 export const AuthProvider = ({ children }:any) => {
+
     const [authUser, setAuthUser]:any = useState({});
 
     const getAuthUser = () => {

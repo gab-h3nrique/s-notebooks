@@ -20,7 +20,7 @@ function Drop({ close, isOpen, className, children }: DropProps) {
 
                 </div>
             </div>
-            <div onClick={close} className={`fixed top-0 left-0 backdrop-blur-[.5px] w-screen h-screen ${!isOpen ? "opacity-0 pointer-events-none hidden" : "opacity-1 pointer-events-auto z-[98]"}`}> a</div>
+            <div onClick={close} className={`fixed top-0 left-0 backdrop-blur-[.5px] w-screen h-screen ${!isOpen ? "opacity-0 pointer-events-none hidden" : "opacity-1 pointer-events-auto z-[98]"}`}></div>
         </>
 
     )

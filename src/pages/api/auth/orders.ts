@@ -42,14 +42,14 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
             if(!client.name || !client.email || !order.userId || !order.brand || !order.model || !order.status || !order.equipamentPassword) {
 
-                return res.status(500).json( { message: 'Por favor, verifique os campos obrigatórios!'} )
+                return res.status(500).json( { message: 'Por favor, verifique os campos obrigatórios!' } )
 
             }
 
             //---------------- CLIENT ---------------//
             const createdClient = await Clients.createOrUpdateClient(client)
 
-            if(!createdClient) return res.status(500).json( { message: "error ao salvar o cliente!"})
+            if(!createdClient) return res.status(500).json( { message: "error ao salvar o cliente!" })
             //---------------------------------------//
 
 

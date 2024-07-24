@@ -1,12 +1,13 @@
 import '../../styles/globals.css'
 import type { AppProps } from 'next/app'
 import { AuthProvider } from '../context/auth'
+import { UserProvider } from '../context/UserContext'
 // import { BudgetProvider } from '../context/budget'
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
 
-    <AuthProvider>  {/* // Passando usuario logado para todos os componentes */}
+    <UserProvider>  {/* // Passando usuario logado para todos os componentes */}
 
       {/* <BudgetProvider>    // Passando orcamento selecionado para todos os componentes */}
 
@@ -14,7 +15,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
       {/* </BudgetProvider> */}
 
-    </AuthProvider>
+    </UserProvider>
 
   )
 }

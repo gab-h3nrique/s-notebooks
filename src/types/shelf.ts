@@ -1,7 +1,7 @@
 
   export interface Shelf {
-    id: number;
+    id?: number;
     type: string;
-    userId: number;
-    orderId?: number;
+    userId?: number;
+    [x: string]: any;
   }

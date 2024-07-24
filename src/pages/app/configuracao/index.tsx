@@ -3,11 +3,9 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { start } from 'repl'
-import Api from '../../../lib/api'
-import SpinnerIcon from '../../components/icons/SpinnerIcon'
-import Layout from '../../components/Layout'
-import ContentSection from '../../components/pages/content/ContentSection'
-import HeaderContent from '../../components/pages/content/HeaderSection'
+import Router from 'next/router';
+import Layout from '../../../components/Layout'
+import Api from '../../../../lib/api'
 
 interface User {
   id: number;
@@ -55,7 +53,31 @@ const Configuracao: NextPage = () => {
   return (
     <>
       <Layout page={'configuracao'}>
-        <HeaderContent title={'Configuração'}>
+
+      <article className="flex flex-col w-full justify-between py-2">
+
+        <section className="flex items-center">
+          <p className="text-3xl text-slate-600 font-semibold">Configuração</p>
+        </section>
+
+        <section className='flex mt-4 p-2'>
+
+          <article onClick={()=>{Router.push('/app/configuracao/prateleiras')}} className='flex flex-col bg-white p-4 gap-3 rounded-lg cursor-pointer hover:scale-105 duration-150'>
+
+            <p className="text-xl text-slate-400 font-semibold ">Prateleira</p>
+            <p className="text-sm text-slate-400 font-semibold ">Configure as prateleiras do sistema</p>
+
+
+          </article>
+
+        </section>
+
+      </article>
+
+
+
+
+        {/* <HeaderContent title={'Configuração'}>
           <div></div>
         </HeaderContent>
 
@@ -66,12 +88,10 @@ const Configuracao: NextPage = () => {
             <div className="flex w-full h-full bg-white rounded-2xl">
               <div className="flex flex-col justify-start bg-white w-full p-4 gap-4 rounded-2xl">
                   <section className="flex items-center gap-1">
-                    {/* icone */}
                       <p className="text-xl text-slate-400 font-semibold ">Prateleira</p>
                   </section>
 
                   <section className="flex items-center justify-center gap-1">
-                    {/* icone */}
                       <p className="text-lg text-slate-400 font-semibold ">Range</p>
                   </section>
 
@@ -160,7 +180,7 @@ const Configuracao: NextPage = () => {
 
             </div>
           </div>
-        </ContentSection>
+        </ContentSection> */}
 
 
       </Layout>
