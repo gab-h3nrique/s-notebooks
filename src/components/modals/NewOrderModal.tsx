@@ -787,7 +787,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                 <DropDown.item onClick={()=>{setDropdownStatus(false); setOrder({...order, status: "aberto"})}} value={'aberto'}/>
                                                 {/* <DropDown.item onClick={()=>{setDropdownStatus(false); setOrder({...order, status: "reprovado"})}} value={'reprovado'}/> */}
                                                 <DropDown.item onClick={()=>{setDropdownStatus(false); setOrder({...order, status: "finalizado"})}} value={'finalizado'}/>
-                                                <DropDown.item onClick={()=>{setDropdownStatus(false); setOrder({...order, status: "arquivado"}); setOrder({...order, deliveryConfirmation: true})}} value={'arquivado'}/>
+                                                <DropDown.item onClick={()=>{setDropdownStatus(false); setOrder({...order, status: "arquivado", deliveryConfirmation: true})}} value={'arquivado'}/>
                                                 {/* <DropDown.item onClick={()=>{setDropdownStatus(false); setOrder({...order, status: "orçamento"})}} value={'orçamento'}/> */}
                                                 {/* <DropDown.item onClick={()=>{setDropdownStatus(false); setOrder({...order, status: "aguardando peça"})}} value={'aguardando peça'}/> */}
                                             </DropDown.card>
