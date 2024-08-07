@@ -18,7 +18,7 @@ function ShelfItem({ shelf, onClick }: Props) {
 
     return (
 
-        <article onClick={onClick} className={`p-3 gap-3 rounded-lg flex flex-col bg-white w-full h-fit cursor-pointer hover:scale-105 duration-150`}>
+        <article onClick={onClick} className={`p-3 gap-3 rounded-lg flex flex-col bg-white w-full h-full cursor-pointer hover:scale-105 duration-150`}>
             <section className="flex justify-start items-center gap-2">
                 {/* <ShelfIcon className="h-4 w- fill-slate-400"/>
                 <p className="text-xl text-slate-400 font-bold">{shelf.id ? shelf.id :'●'}</p> */}

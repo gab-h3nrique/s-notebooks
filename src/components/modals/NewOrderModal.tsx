@@ -28,6 +28,10 @@ import Pdf from "../icons/Pdf";
 import DropDown from "../elements/DropDown";
 import { authUser } from "../../../lib/auth";
 import { userContext } from "../../context/UserContext";
+import Dialog from "./Dialog";
+import Svg from "../icons/Svg";
+import email from "../../../lib/email";
+import { emailObject } from "../../utils/email";
 
 /* components */
 
@@ -95,9 +99,13 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
     const [order, setOrder] = useState<OrderType>(emptyOrder)
 
-    const [newService, setNewService] = useState<ServiceOrderType>({id: undefined, name:"", status: "", orderId: undefined, value: ""})
     const [services, setArrayservices] = useState<ServiceOrderType[]>([])
     const [shelf, setShelf] = useState<string>()
+
+
+    const [serviceModal, setServiceModal] = useState(false)
+    const [newService, setNewService] = useState<ServiceOrderType>({id: undefined, name:"", status: "", orderId: undefined, value: ""})
+    const [indexServiceOrder, setIndexServiceOrder] = useState<number>(-1)
 
     const [dropdownEquipament, setDropdownEquipament] = useState<boolean>(false)
     const [dropdownOrderInfo, setDropdownOrderInfo] = useState<boolean>(false)
@@ -114,6 +122,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
     const [dropdownPdf, setDropdownPdf] = useState(false)
 
     const [loading, setLoading] = useState<boolean>(false)
+    const [loadingEmail, setLoadingEmail] = useState<boolean>(false)
     const [deleteLoading, setDeleteLoading] = useState<boolean>(false)
     const [contentLoading, setContentLoading] = useState<boolean>(true)
 
@@ -159,33 +168,39 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
         if(response.id) setClient({...client, ...response})
     }
 
-    const addServiceOrder = async() => {
+
+    function openModalService(serviceParam?: ServiceOrderType, index: number = -1) {
+
+        setServiceModal(true)
+        setIndexServiceOrder(-1)
+
+        if(index != -1) setIndexServiceOrder(index)
+
+        if(serviceParam && index != -1) return setNewService(serviceParam)
+        
+        setNewService({id: undefined, name:"", status: "", orderId: undefined, value: "0"})
+
+    }
+
+    async function  addServiceOrder() {
 
         if(!newService.name || !newService.status) return;
 
-        // if(order.id) await Api.post('/api/auth/servicesOrder', { serviceOrder: {...newService, orderId: order.id}  })
+        if(indexServiceOrder != -1) setArrayservices(services => services.map((e, i) => i == indexServiceOrder ? ({...newService}) : e))
+        else setArrayservices(services => [...services, newService])
 
-        setArrayservices(services => [...services, newService])
         setNewService({id: undefined, name:"", status: "", orderId: undefined, value: "0"})
-    }
-    const editeServiceOrder = async(service:ServiceOrderType, index: number) => {
-
-        // if(!service.name || !service.status) return;
-
-        // if(order.id) await Api.post('/api/auth/servicesOrder', { serviceOrder: {...service, orderId: order.id}  })
-
-        setArrayservices(services => services.map((e, i) => i == index ? ({...service}) : e))
+        setServiceModal(false)
 
     }
 
-    const removeServiceorder = async(service:ServiceOrderType) => {
+    const removeServiceorder = async(service:ServiceOrderType, index: number) => {
 
         // if(order.id && service.id) await Api.delete('/api/auth/servicesOrder', { id: service.id })
 
-        setArrayservices(services.filter((item)=>item !== service ))
-    }
+        setArrayservices(services.filter((s, i)=> i !== index))
 
-    
+    }
 
 
     const handleDocument = (e:any) => {
@@ -273,7 +288,31 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
 
 
+    async function sendEmail() {
 
+        try {
+
+            if(!order.id || !client.email || !client.name) return
+
+            setLoadingEmail(true)
+
+            const { success } = await Api.post('/api/auth/email/order', emailObject(order, client, services))
+
+            if(!success) return alert('kdskfdskfsd')
+
+            console.log('email enviado')
+            
+        } catch (error: any) {
+
+            console.log('error:', error.message)
+            
+        } finally {
+
+            setLoadingEmail(false)
+
+        }
+
+    }
 
     const deleteOrder = async() => {
 
@@ -339,28 +378,29 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                 })} className="flex flex-col bg-slate-100 max-w-[36rem] max-h-[56rem] rounded-2xl py-4 gap-4 overflow-hidden">
                 <header className="px-4">
                     <section className="flex w-full justify-between">
+
                         <div onClick={()=>console.log(order)} className="flex justify-center items-center">
                             <p className="text-2xl text-slate-500 font-semibold">Ordem de serviço</p>
                         </div>
+
                         <div className="flex justify-center items-center gap-2 relative">
-                            {
-                                order.id ?
 
-                                    <>
-                                        <div onClick={()=> setDropdownPdf(true)} className="flex items-center justify-center duration-300 hover:scale-110 cursor-pointer">
-                                            <div className={`flex bg-slate-400 w-fit h-fit rounded-lg p-[6.5px]`}>
-                                                <Pdf className="h-[20px] w-[20px] fill-white"/>
-                                            </div>
-                                        </div>
+                            <button disabled={!client.email} onClick={sendEmail} className={`gap-2 p-[6.5px] rounded-lg bg-slate-400 flex items-center justify-center duration-300 hover:scale-105 cursor-pointer ${!client.email ? 'opacity-25' : ''}`}>
+                                <span className="text-sm font-bobld text-white truncate">{loadingEmail ? 'Enviando...' : 'Enviar email'}</span>
+                                <Svg.Envelope className={`h-[20px] w-[20px] fill-white ${loadingEmail ? 'hidden': ''}`}/>
+                                <Svg.Spinner className={`h-[20px] w-[20px] text-slate-500 fill-white ${!loadingEmail ? 'hidden': ''}`}/>
+                            </button>
 
-                                        <DropDown.card isOpen={dropdownPdf} close={()=> setDropdownPdf(false)} className="top-10 right-5">
-                                            <DropDown.item onClick={()=>{setDropdownPdf(false); window.open(`/orderPdf?id=${order.id}&internal=true`)}} value={'Interno'}/>
-                                            <DropDown.item onClick={()=>{setDropdownPdf(false); window.open(`/orderPdf?id=${order.id}`)}} value={'Cliente'}/>
-                                        </DropDown.card>
-                                    </>
+                            <button disabled={!order.id} onClick={()=> setDropdownPdf(true)} className={`gap-2 p-[6.5px] rounded-lg bg-slate-400 flex items-center justify-center duration-300 hover:scale-105 cursor-pointer ${!order.id ? 'opacity-25' : ''}`}>
+                                <span className="text-sm font-bobld text-white truncate">Baixar OS</span>
+                                <Pdf className="h-[20px] w-[20px] fill-white"/>
+                            </button>
 
-                                : null
-                            }
+                            <DropDown.card isOpen={dropdownPdf} close={()=> setDropdownPdf(false)} className="top-10 w-20 right-12">
+                                <DropDown.item onClick={()=>{setDropdownPdf(false); window.open(`/orderPdf?id=${order.id}&internal=true`)}} value={'Interno'}/>
+                                <DropDown.item onClick={()=>{setDropdownPdf(false); window.open(`/orderPdf?id=${order.id}`)}} value={'Cliente'}/>
+                            </DropDown.card>
+
                             <div onClick={onClose} className="flex items-center justify-center duration-300 hover:scale-110 cursor-pointer">
                                 <div className={`flex bg-orange-500 w-fit h-fit rounded-lg p-1.5`}>
                                     <CloseIcon  className="h-[22px] w-[22px] fill-white"/>
@@ -368,6 +408,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                             </div>
 
                         </div>
+
                     </section>
                 </header>
                 {
@@ -658,71 +699,19 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
                                             <label onClick={()=>console.log('servicos', services)} className="block text-sm font-medium text-slate-500">Serviços</label>
 
-                                            <div className="grid grid-cols-12 gap-2">
-
-                                                <div className="col-span-5 relative" onClick={()=> setDropdownNameService(!dropdownNameService)}>
-
-                                                    <div className="flex gap-1 col-span-4 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 px-3 py-1 border-2 border-gray-300 outline-none hover:border-transparent hover:ring hover:ring-orange-400 hover:scale-y-105 duration-150">
-                                                        <input onChange={(event)=> setNewService({...newService, name: event.target.value}) } type="text" className={`bg-gray-50 h-full w-full outline-0 overflow-hidden text-ellipsis whitespace-nowrap cursor-auto`} placeholder="..." value={newService.name}/>
-                                                        <svg className={`-mr-1 ml-2 h-5 w-6 ${dropdownNameService ? "rotate-[-180deg]" : "rotate-[0deg]"} cursor-pointer duration-150`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" >
-                                                            <path  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" />
-                                                        </svg>
-                                                    </div>
-
-                                                    <DropDown.card isOpen={dropdownNameService} close={()=>setDropdownNameService(false)} className="bottom-10">
-                                                        {
-                                                            serviceArray?.filter(({name})=>{
-                                                                if(newService.name == "") return name;
-                                                                    else if(name.toLowerCase().includes(newService.name?.toLocaleLowerCase())) return name;
-                                                            }).map(({name}, j)=>{
-                                                                return <DropDown.item key={j} onClick={()=>{setDropdownNameService(!dropdownNameService); setNewService({...newService, name: name})}} value={name}/>
-                                                            })
-                                                        }
-                                                    </DropDown.card>
-                                                    
-                                                </div>
-
-                                                <div className="col-span-4 relative" onClick={()=> setDropdownStatusService(true)}>
-
-                                                    <div className={`flex gap-1 col-span-4 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 px-3 py-1 border-2 border-gray-300 outline-none hover:border-transparent hover:ring hover:ring-orange-400 hover:scale-y-105 duration-150`}>
-                                                        <input onChange={(event)=>{setNewService({...newService, status: event.target.value})}} type="text" className={`bg-gray-50 h-full w-full outline-0 overflow-hidden text-ellipsis whitespace-nowrap cursor-auto`} placeholder="..." value={newService.status}/>
-                                                        <svg className={`-mr-1 ml-2 h-5 w-6 ${dropdownStatusService ? "rotate-[-180deg]" : "rotate-[0deg]"} cursor-pointer duration-150`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" >
-                                                            <path  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" />
-                                                        </svg>
-                                                    </div>
-
-                                                    <DropDown.card isOpen={dropdownStatusService} close={()=>setDropdownStatusService(false)} className="bottom-10">
-                                                        <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "aguardando"})}} value={'Aguardando'}/>
-                                                        <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "aprovado"})}} value={'Aprovado'}/>
-                                                        <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "reprovado"})}} value={'Reprovado'}/>
-                                                        <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "finalizado"})}} value={'Finalizado'}/>
-                                                        <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "aguardando peça"})}} value={'Aguardando peça'}/>
-                                                    </DropDown.card>
-
-                                                </div>
-
-
-                                                <input type="text" onChange={handleValue} value={newService.value ? newService.value : ''} className="col-span-2 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder="Valor"/>
-
-                                                
-
-                                                <div onClick={()=>addServiceOrder()} className="flex items-center justify-center duration-300 hover:scale-110 cursor-pointer">
-                                                    <div className={`flex bg-orange-500 w-fit h-fit rounded-lg p-1.5`}>
-                                                        <PlusIcon width={20} height={20} fill={`white`}/>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                            <hr></hr>
+                                            <button onClick={() => openModalService()} className="flex w-fit justify-center items-center bg-orange-100 text-orange-500 font-bold text-xs rounded-lg py-2 px-4 gap-2">
+                                                <PlusIcon className="h-4 w-4 fill-orange-500"/>
+                                                Novo serviço
+                                            </button>
 
                                             {
                                                 services.length > 0 && services?.map((item, i)=>{
                                                     return (
-                                                        <div key={i} className="grid grid-cols-12 gap-2">
-                                                            <input disabled value={item.name} className="col-span-5 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 opacity-80" />
-                                                            <input disabled value={item.status} className="col-span-4 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 opacity-80" />
-                                                            <input onChange={(e) => editeServiceOrder({...item, value: String(brMask(e.target.value)) }, i)} value={item.value} className="col-span-2 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 opacity-80" />
-                                                            <div onClick={()=>removeServiceorder(item)} className="flex items-center justify-center  duration-300 hover:scale-110 cursor-pointer">
+                                                        <div key={i} onClick={() => openModalService(item, i)} className="grid grid-cols-12 gap-2 cursor-pointer">
+                                                            <input disabled value={item.name} className="pointer-events-none cursor-pointer col-span-5 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 opacity-80" />
+                                                            <input disabled value={item.status} className="pointer-events-none cursor-pointer col-span-4 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 opacity-80" />
+                                                            <input disabled value={item.value} className="pointer-events-none cursor-pointer col-span-2 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 opacity-80" />
+                                                            <div onClick={(e)=> {e.stopPropagation(); removeServiceorder(item, i)}} className="flex items-center justify-center  duration-300 hover:scale-110 cursor-pointer">
                                                                 <div className={`flex bg-slate-400 w-fit h-fit rounded-lg p-1.5 hover:bg-red-500 hover:opacity-90`}>
                                                                     <CloseIcon className="h-[16px] w-[16px] fill-white"/>
                                                                 </div>
@@ -732,7 +721,59 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                 })
                                             }
 
-                                            {services.length > 0 ? <hr></hr> : null }
+                                            <Dialog isOpen={serviceModal} close={() => setServiceModal(false)}>
+                                                <div className="flex w-30 flex-col p-3 gap-2">
+
+                                                    <label className="font-bold text-xs text-slate-500">Serviço</label>
+
+                                                    <div onClick={()=> setDropdownNameService(true)} className="flex gap-1 col-span-4 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 px-3 py-1 border-2 border-gray-300 outline-none hover:border-transparent hover:ring hover:ring-orange-400 hover:scale-y-105 duration-150">
+                                                        <input onChange={(event)=> setNewService({...newService, name: event.target.value}) } type="text" className={`bg-gray-50 h-full w-full outline-0 overflow-hidden text-ellipsis whitespace-nowrap cursor-auto`} placeholder="..." value={newService.name}/>
+                                                        <svg className={`-mr-1 ml-2 h-5 w-6 ${dropdownNameService ? "rotate-[-180deg]" : "rotate-[0deg]"} cursor-pointer duration-150`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" >
+                                                            <path  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" />
+                                                        </svg>
+                                                    </div>
+
+                                                    <DropDown.card isOpen={dropdownNameService} close={()=>setDropdownNameService(false)} className="top-[4.5rem] left-9 w-44 h-40">
+                                                        {
+                                                            serviceArray?.filter(({name})=>{
+                                                                if(newService.name == "") return name;
+                                                                    else if(name.toLowerCase().includes(newService.name?.toLocaleLowerCase())) return name;
+                                                            }).map(({name}, j)=>{
+                                                                return <DropDown.item key={j} onClick={()=>{setDropdownNameService(!dropdownNameService); setNewService({...newService, name: name})}} value={name}/>
+                                                            })
+                                                        }
+                                                    </DropDown.card>
+                                                        
+                                                    <label className="font-bold text-xs text-slate-500">Status</label>
+
+                                                    <div onClick={()=> setDropdownStatusService(true)} className={`flex gap-1 col-span-4 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 px-3 py-1 border-2 border-gray-300 outline-none hover:border-transparent hover:ring hover:ring-orange-400 hover:scale-y-105 duration-150`}>
+                                                        <input onChange={(event)=>{setNewService({...newService, status: event.target.value})}} type="text" className={`bg-gray-50 h-full w-full outline-0 overflow-hidden text-ellipsis whitespace-nowrap cursor-auto`} placeholder="..." value={newService.status}/>
+                                                        <svg className={`-mr-1 ml-2 h-5 w-6 ${dropdownStatusService ? "rotate-[-180deg]" : "rotate-[0deg]"} cursor-pointer duration-150`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" >
+                                                            <path  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" />
+                                                        </svg>
+                                                    </div>
+
+                                                    <DropDown.card isOpen={dropdownStatusService} close={()=>setDropdownStatusService(false)} className="top-10 left-9 w-44 h-40">
+                                                        <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "aguardando"})}} value={'Aguardando'}/>
+                                                        <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "aprovado"})}} value={'Aprovado'}/>
+                                                        <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "reprovado"})}} value={'Reprovado'}/>
+                                                        <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "finalizado"})}} value={'Finalizado'}/>
+                                                        <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "aguardando peça"})}} value={'Aguardando peça'}/>
+                                                    </DropDown.card>
+
+                                                    <label className="font-bold text-xs text-slate-500">Valor</label>
+
+                                                    <input type="text" onChange={handleValue} value={newService.value ? newService.value : ''} className="col-span-2 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder="Valor"/>
+
+                                                    <button onClick={()=>addServiceOrder()} className="flex w-fit ml-auto justify-center items-center bg-orange-500 text-white font-bold text-xs rounded-lg py-2 px-4 gap-2">
+                                                        <PlusIcon className="h-4 w-4 fill-white"/>
+                                                        Salvar
+                                                    </button>
+
+                                                </div>
+                                            </Dialog>
+
+                                            <hr></hr>
 
                                         </div>
 
@@ -801,7 +842,6 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                 <label  className={`text-sm ${order.deliveryConfirmation ? 'text-orange-500' : 'text-slate-400' } font-semibold cursor-pointer`}>Confirmação de entrega</label>
                                             </div>
                                         </div> */}
-
                                         
 
                                     </article>

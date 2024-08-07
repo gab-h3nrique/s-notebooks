@@ -29,6 +29,17 @@ function model() {
 
     }
 
+    const createOrUpdateRange = async(shelf: Shelf) => {
+
+        const shelfDb = <Shelf> await prisma.shelf.upsert({
+            where: {id: shelf.id ? shelf.id : -1},
+            create: {...shelf, id: Number(shelf.id), type: (shelf.type || 'manutencao'), userId: shelf.userId || undefined},
+            update: {...shelf, type: (shelf.type || 'manutencao'), userId: shelf.userId || undefined}
+        })
+        return shelfDb
+
+    }
+
     const getShelfEmptyByUser = async(userId:number, type?:string) => {
         const shelfDb = <Shelf> await prisma.shelf.findFirst({
             where: {
@@ -95,7 +106,7 @@ function model() {
     
 
     // export all function that is in the return
-    return { firstEmptyShelf, getShelfEmptyByUser, createOrUpdate, get, getPaginated, deletetById }
+    return { firstEmptyShelf, getShelfEmptyByUser, createOrUpdate, createOrUpdateRange, get, getPaginated, deletetById }
 }
 
 export const Shelfs = model();

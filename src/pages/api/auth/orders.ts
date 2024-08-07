@@ -89,6 +89,13 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
             if(createdOrder.id) await ServicesOrder.createOrUpdateMany(services, createdOrder.id)
             //---------------------------------------//
 
+
+            //---------------- EMAIL ----------------//
+            // if(order.status === 'finalizado') email.send({to: 'gabrielbielrique10@gmail.com', subject: 'Teste', text: 'hehehehe'})
+            //---------------------------------------//
+
+
+
             return res.status(201).json( { response: createdOrder } )
         }
 
