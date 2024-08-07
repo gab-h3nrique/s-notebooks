@@ -26,6 +26,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const Home: NextPage<Props> = ({order, isInternal}) => {
 
+
   const [showType, setShowType] = useState(true)
 
 
@@ -148,8 +149,13 @@ const Home: NextPage<Props> = ({order, isInternal}) => {
                 <header className="col-span-2 text-slate-600 text-lg font-bold px-2 py-1">Informações</header>
 
                 <div className="col-span-2 py-1 px-2 border-2 border-gray-500 bg-white rounded-md flex items-center justify-start gap-2">
-                  <p className="text-sm text-slate-600 font-bold w-fit h-fit">Equipamento ligando:</p>
+                  <p className="text-sm text-slate-600 font-bold w-fit h-fit">Equipamento entregue:</p>
                   <p className="text-sm text-slate-600 font-semibold">{order.isWorking ? `Sim` : "Não"}</p>
+                </div>
+
+                <div className="col-span-2 py-1 px-2 border-2 border-gray-500 bg-white rounded-md flex items-center justify-start gap-2">
+                  <p className="text-sm text-slate-600 font-bold w-fit h-fit">Equipamento ligando:</p>
+                  <p className="text-sm text-slate-600 font-semibold">{order.deliveryConfirmation ? `Sim` : "Não"}</p>
                 </div>
 
                 <div className="col-span-2 py-1 px-2 border-2 border-gray-500 bg-white rounded-md flex items-center justify-start gap-2">
