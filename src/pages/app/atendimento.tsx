@@ -174,7 +174,7 @@ const Atendimento: NextPage = () => {
           {/* <article className="flex w-full gap-4"> */}
           <article className="flex w-full justify-start gap-4">
 
-            <div onClick={()=> setDropdown({...dropdown, technician: false, status: !dropdown.status})} className="flex relative items-center justify-center bg-slate-100 rounded-2xl w-32 p-1 gap-2 border-solid border-[.2rem] border-white duration-150 group cursor-default">
+            <div onClick={()=> setDropdown({...dropdown, technician: false, status: !dropdown.status})} className="flex relative items-center justify-center bg-slate-100 rounded-2xl w-32 p-1 gap-2 border-solid border-[.2rem] border-white duration-150 group cursor-pointer">
               <BookmarkIcon className="h-[18px] w-[18px] fill-slate-400 group-hover:fill-orange-500 duration-150"/>
               <div className="flex justify-center items-center overflow-hidden">
                   <p className="text-sm text-slate-500 font-bold overflow-hidden text-ellipsis whitespace-nowrap">{searchFilter.status ? searchFilter.status : 'status'}</p>
@@ -194,7 +194,7 @@ const Atendimento: NextPage = () => {
                 </div>
             </div>
 
-            <div onClick={()=> setDropdown({...dropdown,status: false, technician: !dropdown.technician})} className="flex relative items-center justify-center bg-slate-100 rounded-2xl w-32 p-1 gap-2 border-solid border-[.2rem] border-white duration-150 group cursor-default">
+            <div onClick={()=> setDropdown({...dropdown,status: false, technician: !dropdown.technician})} className="flex relative items-center justify-center bg-slate-100 rounded-2xl w-32 p-1 gap-2 border-solid border-[.2rem] border-white duration-150 group cursor-pointer">
               <WrenchIcon className="h-[18px] w-[18px] fill-slate-400 group-hover:fill-orange-500 duration-150"/>
               <div className="flex justify-center items-center overflow-hidden">
                   <p className="text-sm text-slate-500 font-bold overflow-hidden text-ellipsis whitespace-nowrap">
@@ -232,9 +232,9 @@ const Atendimento: NextPage = () => {
             </div>
 
             <div onClick={()=> setDropdown({...dropdown, status: false, technician: false})} className="flex relative items-center justify-center bg-slate-100 rounded-2xl w-32 p-1 gap-2 cursor-pointer border-solid border-[.2rem] border-white hover:scale-105 duration-150  group">
-              <CalendarIcon className="h-[18px] w-[18px] fill-slate-400 group-hover:fill-orange-500"/>
-              <div className="flex justify-center items-center overflow-hidden">
-                  <p className="text-sm text-slate-500 font-bold overflow-hidden text-ellipsis whitespace-nowrap">{searchFilter.endDate ? searchFilter.endDate : 'data final'}</p>
+              <CalendarIcon className="h-[18px] w-[18px] fill-slate-400 group-hover:fill-orange-500 cursor-pointer"/>
+              <div className="flex justify-center items-center overflow-hidden cursor-pointer">
+                  <p className="text-sm text-slate-500 font-bold overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer">{searchFilter.endDate ? searchFilter.endDate : 'data final'}</p>
               </div>
               <input onChange={(e)=> setSearchFilter({...searchFilter, endDate: e.target.value})} type='date' className="absolute w-1 h-1 scale-x-[30] scale-y-[10] opacity-0 cursor-pointer"/>
             </div>

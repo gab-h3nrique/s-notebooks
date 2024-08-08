@@ -36,8 +36,6 @@ const Home: NextPage<Props> = ({order, isInternal}) => {
 
     setTimeout(()=> window.print(), 50)
 
-    setTimeout(()=> setShowType(true), 100)
-
   }
 
   return (

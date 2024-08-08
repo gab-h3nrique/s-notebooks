@@ -27,7 +27,7 @@ const Home: NextPage = () => {
   
       let { user, accessToken } = await Api.auth('/api/login', { name, email, password });
   
-      if(!accessToken || user) return setMessage(message);
+      if(!accessToken || !user) return setMessage(message);
   
       setUser(user)
 

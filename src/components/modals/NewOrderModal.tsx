@@ -130,7 +130,9 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
     const getOrderById = async(id:number | null | undefined) => {
         
         if(!id) return setContentLoading(false);
+
         setContentLoading(true)
+        
         const { response } = await Api.get('/api/auth/orders', {id:id})
         
         if(!response.id) return;
@@ -379,8 +381,9 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                 <header className="px-4">
                     <section className="flex w-full justify-between">
 
-                        <div onClick={()=>console.log(order)} className="flex justify-center items-center">
+                        <div onClick={()=>console.log(order)} className="flex justify-center items-center gap-2">
                             <p className="text-2xl text-slate-500 font-semibold">Ordem de serviço</p>
+                            <span className="text-xs mt-2.5 text-orange-500 font-semibold">{order.id}</span>
                         </div>
 
                         <div className="flex justify-center items-center gap-2 relative">

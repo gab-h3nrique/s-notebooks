@@ -108,10 +108,9 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
             let orders;
 
-            if(id) orders = await Orders.getOrderById(Number(id))
-            if(!id) orders = await Orders.getAllOrders()
-            
-            if(!page || !limit)  return res.status(200).json({response: orders})
+            if(id) res.status(200).json({ response: await Orders.getOrderById(Number(id)) })
+                
+            if(!id && (!page || !limit)) return res.status(200).json({response: await Orders.getAllOrders() })
 
             const startIndex = (page - 1) * limit
             
