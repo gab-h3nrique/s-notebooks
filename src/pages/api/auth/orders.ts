@@ -7,6 +7,8 @@ import { Shelf } from '../../../types/shelf'
 import { OrderType } from '../../../types/orderType'
 import { ClientType } from '../../../types/clientType'
 import { ServiceType } from '../../../types/serviceType'
+import email from '../../../../lib/email'
+import { emailObject } from '../../../utils/email'
 
 // 200 OK
 // 201 Created
@@ -73,7 +75,6 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
             if(order.status === 'finalizado' && shelfDb && shelfDb.type === 'recepcao') shelfEmpty = shelfDb
             else if(order.status === 'finalizado') shelfEmpty = await Shelfs.firstEmptyShelf('recepcao')
 
-
             if(order.status && order.status === 'arquivado') shelfEmpty = null
             //---------------------------------------//
 
@@ -91,7 +92,7 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
 
             //---------------- EMAIL ----------------//
-            // if(order.status === 'finalizado') email.send({to: 'gabrielbielrique10@gmail.com', subject: 'Teste', text: 'hehehehe'})
+            if(order.status === 'finalizado') email.send(emailObject(createdOrder, client, services))
             //---------------------------------------//
 
 
@@ -108,8 +109,8 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
             let orders;
 
-            if(id) res.status(200).json({ response: await Orders.getOrderById(Number(id)) })
-                
+            if(id) return res.status(200).json({ response: await Orders.getOrderById(Number(id)) });
+
             if(!id && (!page || !limit)) return res.status(200).json({response: await Orders.getAllOrders() })
 
             const startIndex = (page - 1) * limit
