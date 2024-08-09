@@ -93,6 +93,7 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
             //---------------- EMAIL ----------------//
             if(order.status === 'finalizado') email.send(emailObject(createdOrder, client, services))
+            if(order.status === 'aguardando') email.send(emailObject(createdOrder, client, services))
             //---------------------------------------//
 
 

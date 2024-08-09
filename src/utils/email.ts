@@ -6,7 +6,7 @@ import { ServiceOrderType, ServiceType } from "../types/serviceType";
 export function emailObject(order: OrderType, client: ClientType, services: ServiceOrderType[] | undefined): any {
 
     const body = (`
-        <p>Olá ${client.name} o status do seu é <b>${order.status}</b></p>
+        <p>Olá ${client.name} o status do seu atendimento é <b>${order.status}</b></p>
         <p>Serviços:</p>
         <ul>
             ${
