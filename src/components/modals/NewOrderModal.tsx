@@ -32,6 +32,7 @@ import Dialog from "./Dialog";
 import Svg from "../icons/Svg";
 import email from "../../../lib/email";
 import { emailObject } from "../../utils/email";
+import { useNotification } from "../../context/NotificationContext";
 
 /* components */
 
@@ -81,6 +82,8 @@ interface ServiceOrderType {
 const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
     const { user } = userContext()
+
+    const notification = useNotification()
 
     const [portal, setPortal] = useState<HTMLElement>()
 
@@ -300,10 +303,10 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
             const { success } = await Api.post('/api/auth/email/order', emailObject(order, client, services))
 
-            if(!success) return alert('kdskfdskfsd')
+            if(!success) return notification.push({ type: 'error', title: 'Atenção!', description: 'Falha ao enviar o email.' })
 
-            console.log('email enviado')
-            
+            notification.push({ type: 'success', title: 'Sucesso!', description: 'O email foi enviado com sucesso.', time: 1000 })
+
         } catch (error: any) {
 
             console.log('error:', error.message)
@@ -760,8 +763,10 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                         <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "aguardando"})}} value={'Aguardando'}/>
                                                         <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "aprovado"})}} value={'Aprovado'}/>
                                                         <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "reprovado"})}} value={'Reprovado'}/>
-                                                        <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "finalizado"})}} value={'Finalizado'}/>
+                                                        {/* <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "finalizado"})}} value={'Finalizado'}/> */}
                                                         <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "aguardando peça"})}} value={'Aguardando peça'}/>
+                                                        <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "sem reparo"})}} value={'Sem reparo'}/>
+                                                        <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "sem solução"})}} value={'Sem solução'}/>
                                                     </DropDown.card>
 
                                                     <label className="font-bold text-xs text-slate-500">Valor</label>

@@ -22,6 +22,7 @@ import { UserType } from '../../types/userType'
 import NewPaginate from '../../components/pages/NewPaginate'
 import SortIcon from '../../components/icons/SortIcon'
 import BookmarkIcon from '../../components/icons/BookmarkIcon'
+import { useNotification } from '../../context/NotificationContext'
 /* components */
 
 interface PagConfig {
@@ -47,6 +48,8 @@ interface SearchFilter {
 }
 
 const Atendimento: NextPage = () => {
+
+  const notification = useNotification()
 
   const maxLimit:number = 25
 
@@ -155,9 +158,9 @@ const Atendimento: NextPage = () => {
                     type="text" className={`text-slate-500 bg-slate-100 outline-0 text-sm font-semibold duration-500 w-full`}/>
 
               </div>
-
+              
               <div onClick={() => {setOrderId(null); setNewOrderModal(!newOrderModal)}} className={`flex justify-start items-center bg-orange-500 gap-2 p-3 cursor-pointer  rounded-2xl duration-150 hover:scale-105`}>
-                      <PlusIcon width={22} height={22} fill={`white`}/>
+                  <PlusIcon width={22} height={22} fill={`white`}/>
                   <p className={`text-white text-sm font-semibold`}>
                       Novo atendimento
                   </p>
