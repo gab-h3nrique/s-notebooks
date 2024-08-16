@@ -305,7 +305,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
             if(!success) return notification.push({ type: 'error', title: 'Atenção!', description: 'Falha ao enviar o email.' })
 
-            notification.push({ type: 'success', title: 'Sucesso!', description: 'O email foi enviado com sucesso.', time: 1000 })
+            notification.push({ type: 'success', title: 'Sucesso!', description: 'O email foi enviado com sucesso.', time: 2000 })
 
         } catch (error: any) {
 
