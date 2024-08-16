@@ -27,13 +27,13 @@ export default function NotificationItem({ notification, onClose }: Props) {
     return (
 
         <article className='flex w-80 h-24 relative'>
-            <div className={`${ start && '-translate-x-96'} absolute left-96 ease-in-out duration-700 bg-white justify-between rounded-lg w-full h-full p-3 gap-2 flex shadow-sm pointer-events-auto`}>
+            <div className={`${ start && '-translate-x-96'} absolute left-96 ease-in-out duration-700 bg-white rounded-lg w-full h-full p-3 gap-3 flex shadow-sm pointer-events-auto`}>
     
                 {/* {
                     notification.type ? 
                 } */}
     
-                <section>
+                <section className="pt-1">
                     {
                         notification.type == 'success' ?  <Svg.Check className="h-5 w-5" fill='#16a34a' /> 
                         : <Svg.Check className="h-5 w-5" fill='#16a34a' />
@@ -41,12 +41,12 @@ export default function NotificationItem({ notification, onClose }: Props) {
                 </section>
     
                 
-                <section className='flex flex-col gap-1'>
+                <section className='flex flex-col gap-1 justify-around'>
                     <span className='font-semibold text-slate-500 opacity-80 text-base'>{notification.title}</span>
                     <p className='font-medium text-slate-500 opacity-80 text-sm'>{notification.description}</p>
                 </section>
     
-                <section onClick={onClose}>
+                <section onClick={onClose} className="ml-auto">
                     <Svg.Close className="fill-slate-500/80 w-4 h-4 cursor-pointer" fill='rgb(100 116 139 / 0.8)'/>
                 </section>
                 
