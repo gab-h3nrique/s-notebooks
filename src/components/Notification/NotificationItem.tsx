@@ -43,7 +43,7 @@ export default function NotificationItem({ notification, onClose }: Props) {
                 
                 <section className='flex flex-col gap-1'>
                     <span className='font-semibold text-slate-500 opacity-80 text-base'>{notification.title}</span>
-                    <p className='font-medium text-slate-500 opacity-80 text-sm'>{notification.description}{notification.description}</p>
+                    <p className='font-medium text-slate-500 opacity-80 text-sm'>{notification.description}</p>
                 </section>
     
                 <section onClick={onClose}>
