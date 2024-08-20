@@ -58,7 +58,7 @@ export const NotificationContext = ({ children }:any) => {
 
         <Context.Provider value={{ list, push }}>
 
-            <div className='w-full h-full flex absolute z-50 pointer-events-none overflow-hidden'>
+            <div className='w-full h-fit flex absolute z-50 pointer-events-none overflow-hidden'>
 
                 <div className='relative flex flex-col ml-auto p-3 gap-3'>
 
