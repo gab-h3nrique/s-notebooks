@@ -716,7 +716,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                         <div key={i} onClick={() => openModalService(item, i)} className="grid grid-cols-12 gap-2 cursor-pointer">
                                                             <input disabled value={item.name} className="pointer-events-none cursor-pointer col-span-5 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 opacity-80" />
                                                             <input disabled value={item.status} className="pointer-events-none cursor-pointer col-span-4 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 opacity-80" />
-                                                            <input disabled value={item.value} className="pointer-events-none cursor-pointer col-span-2 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 opacity-80" />
+                                                            <input disabled value={valueMask(item.value)} className="pointer-events-none cursor-pointer col-span-2 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 opacity-80" />
                                                             <div onClick={(e)=> {e.stopPropagation(); removeServiceorder(item, i)}} className="flex items-center justify-center  duration-300 hover:scale-110 cursor-pointer">
                                                                 <div className={`flex bg-slate-400 w-fit h-fit rounded-lg p-1.5 hover:bg-red-500 hover:opacity-90`}>
                                                                     <CloseIcon className="h-[16px] w-[16px] fill-white"/>
@@ -969,10 +969,10 @@ function valueMask(i: any) {
 }
 
 function brMask(i:any) {
-let v = i.replace(/\D/g,'');
-v = (v/100).toFixed(2) + '';
-v = v.replace(".", ",");
-i = v;
-return i
+    let v = i.replace(/\D/g,'');
+    v = (v/100).toFixed(2) + '';
+    v = v.replace(".", ",");
+    i = v;
+    return i
 }
 
