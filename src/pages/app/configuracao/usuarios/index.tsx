@@ -47,8 +47,9 @@ const Prateleiras: NextPage = () => {
 
   function openUser(user?: UserType) {
 
+    if(!verifyPermission()) return
 
-
+    Router.push(`/app/configuracao/usuarios/${user?.id || 'new'}`)
 
   }
 
@@ -68,8 +69,8 @@ const Prateleiras: NextPage = () => {
               <p className="text-3xl text-slate-600 font-semibold">Usuários</p>
             </div>
 
-            <div className="flex gap-3">
-              <div onClick={() => openUser()} className={`flex justify-start items-center bg-orange-500 gap-2 p-3 cursor-pointer  rounded-xl duration-150 hover:scale-105`}>
+            <div className={`flex gap-3`}>
+              <div onClick={() => openUser()} className={`flex justify-start items-center bg-orange-500 gap-2 p-3 cursor-pointer  rounded-xl duration-150 hover:scale-105 ${ !verifyPermission() ? 'hidden' : ''}`}>
                 <PlusIcon width={22} height={22} fill={`white`}/>
                 <p className={`text-white text-sm font-semibold`}>
                   Novo usuário
@@ -96,7 +97,7 @@ const Prateleiras: NextPage = () => {
 
 
                 return (
-                  <article key={i} onClick={() => Router.push(`/app/configuracao/usuario/${e.id}`)} className={`flex items-center justify-between gap-2 bg-slate-100 w-full h-fit p-2 rounded-2xl cursor-pointer opacity-75 hover:opacity-100 hover:scale-x-[.97] duration-300`}>
+                  <article key={i} onClick={() => openUser(e)} className={`flex items-center justify-between gap-2 bg-slate-100 w-full h-fit p-2 rounded-2xl cursor-pointer opacity-75 hover:opacity-100 hover:scale-x-[.97] duration-300`}>
                         
                     <section className="flex w-[50%] rounded-lg justify-start px-1 items-center gap-2">
                       <div className={`flex bg-orange-500 w-fit h-fit rounded-lg p-1.5`}>
@@ -109,13 +110,13 @@ const Prateleiras: NextPage = () => {
 
                     <section className="flex w-[50%] rounded-lg justify-start px-1 items-center gap-2">
                       <div className="flex justify-center items-center overflow-hidden">
-                        <p className="text-base text-slate-400 font-bold truncate">{e.email}</p>
+                        <p className="text-base text-slate-500 font-bold truncate">{e.email}</p>
                       </div>
                     </section>
 
                     <section className="flex w-[10rem] rounded-lg justify-start px-1 items-center gap-2">
                       <div className="flex justify-center items-center ">
-                        <p className="text-base text-slate-400 font-bold truncate">{e.role == 100 ? 'Administrador' : ''}</p>
+                        <p className="text-base text-slate-500 font-bold truncate">{e.role == 100 ? 'Administrador' : e.role == 200 ? 'Técnico' : e.role == 300 ? 'Atendente' : ''}</p>
                       </div>
                     </section>
 

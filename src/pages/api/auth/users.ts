@@ -48,5 +48,43 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
     }
 
+    if(method === 'POST') {
+
+        try {
+
+            const { user } = req.body
+
+            const data = Users.upsert(user)
+
+            return res.status(201).json({ data, success: true })
+
+        } catch(error:any) {
+
+            console.error(error)
+            return res.status(500).json({ message: error.message, success: false })
+            
+        }
+
+    }
+
+    if(method === 'DELETE') {
+
+        try {
+
+            const { id } = req.query
+
+            const data = Users.deleteUser(Number(id))
+
+            return res.status(200).json({ data: data })
+
+        } catch(error:any) {
+
+            console.error(error)
+            return res.status(500).json({ message: error.message, success: false })
+            
+        }
+
+    }
+
     // return res.status(405).json({ message: 'method Not allowed' })
 }
