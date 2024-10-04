@@ -80,7 +80,16 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
 
             //---------------- ORDER ----------------//
-            const allOrder = { ...order, shelfId: (shelfEmpty?.id ? shelfEmpty.id : null), clientId: createdClient.id }
+            let status = order.status || 'aberto'
+
+            if(order.status != 'finalizado' && order.status != 'arquivado' && services.some((e: any) => e.status == 'sem solução')) status = 'sem solução'
+            if(order.status != 'finalizado' && order.status != 'arquivado' && services.some((e: any) => e.status == 'reprovado')) status = 'reprovado'
+            if(order.status != 'finalizado' && order.status != 'arquivado' && services.some((e: any) => e.status == 'reparado')) status = 'reparado'
+            if(order.status != 'finalizado' && order.status != 'arquivado' && services.some((e: any) => e.status == 'aguardando')) status = 'aguardando'
+            if(order.status != 'finalizado' && order.status != 'arquivado' && services.some((e: any) => e.status == 'aguardando peça')) status = 'aguardando peça'
+            if(order.status != 'finalizado' && order.status != 'arquivado' && services.some((e: any) => e.status == 'aprovado')) status = 'aprovado'
+
+            const allOrder = { ...order, shelfId: (shelfEmpty?.id ? shelfEmpty.id : null), clientId: createdClient.id, status: status }
             
             const createdOrder = await Orders.createOrUpdateOrder(allOrder)
 
@@ -92,8 +101,8 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
 
             //---------------- EMAIL ----------------//
-            if(order.status === 'finalizado') email.send(emailObject(createdOrder, client, services))
-            if(order.status === 'aguardando') email.send(emailObject(createdOrder, client, services))
+            if(order.status == 'finalizado') email.send(emailObject(createdOrder, client, services))
+            else if(!order.id) email.send(emailObject(createdOrder, client, services))
             //---------------------------------------//
 
 

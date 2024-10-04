@@ -39,7 +39,7 @@ function model() {
                     gte: startDate !== '' ? new Date(startDate)  : undefined,
                     lte: endDate !== '' ? new Date(endDate) : undefined,
                 },
-                AND: status !== 'arquivado' && status !== 'finalizado' ? { NOT: [{ status: 'arquivado'}, { status: 'finalizado'}] } : {}
+                AND: status !== 'arquivado' ? { NOT: { status: 'arquivado'} } : {}
             },
             skip: index,
             take: limit,
@@ -58,7 +58,7 @@ function model() {
                     gte: startDate !== '' ? new Date(startDate)  : undefined,
                     lte: endDate !== '' ? new Date(endDate) : undefined,
                 },
-                AND: status !== 'arquivado' && status !== 'finalizado' ? { NOT: [{ status: 'arquivado'}, { status: 'finalizado'}] } : {}
+                AND: status !== 'arquivado' ? { NOT: { status: 'arquivado'} } : {}
             },
             skip: index ? index : undefined,
             take: limit ? limit : undefined

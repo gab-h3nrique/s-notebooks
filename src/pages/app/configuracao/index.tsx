@@ -60,12 +60,20 @@ const Configuracao: NextPage = () => {
           <p className="text-3xl text-slate-600 font-semibold">Configuração</p>
         </section>
 
-        <section className='flex mt-4 p-2'>
+        <section className='flex mt-4 p-2 gap-4'>
 
           <article onClick={()=>{Router.push('/app/configuracao/prateleiras')}} className='flex flex-col bg-white p-4 gap-3 rounded-lg cursor-pointer hover:scale-105 duration-150'>
 
             <p className="text-xl text-slate-400 font-semibold ">Prateleira</p>
             <p className="text-sm text-slate-400 font-semibold ">Configure as prateleiras do sistema</p>
+
+
+          </article>
+
+          <article onClick={()=>{Router.push('/app/configuracao/usuarios')}} className='flex flex-col bg-white p-4 gap-3 rounded-lg cursor-pointer hover:scale-105 duration-150'>
+
+            <p className="text-xl text-slate-400 font-semibold ">Usuários</p>
+            <p className="text-sm text-slate-400 font-semibold ">Configure os usuários do sistema</p>
 
 
           </article>

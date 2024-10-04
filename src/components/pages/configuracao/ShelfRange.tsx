@@ -15,6 +15,7 @@ import SpinnerIcon from '../../icons/SpinnerIcon'
 import CircleCheckIcon from '../../icons/CircleCheckIcon'
 import CircleIcon from '../../icons/CircleIcon'
 import RouteIcon from '../../icons/RouteIcon'
+import { userContext } from '../../../context/UserContext'
 
 interface Props {
     onUpdate: ()=> any
@@ -24,6 +25,8 @@ interface Props {
 const EMPITY_RANGE = { type: 'manutencao', userId: -1, start: '', end: '' }
 
 function ShelfRange({ onUpdate }:Props) {
+
+    const { user } = userContext()
 
     const [modal, setModal] = useState(false)
 
@@ -40,7 +43,15 @@ function ShelfRange({ onUpdate }:Props) {
     const [range, setRange] = useState(EMPITY_RANGE)
 
 
+    function verifyPermission() {
 
+        if(!user) return false
+
+        if(user.role <= 100) return true
+
+        false
+
+    }
 
 
 
@@ -61,6 +72,8 @@ function ShelfRange({ onUpdate }:Props) {
 
 
     function openModal() {
+
+        if(!verifyPermission()) return 
 
         setRange(EMPITY_RANGE)
         setModal(true)

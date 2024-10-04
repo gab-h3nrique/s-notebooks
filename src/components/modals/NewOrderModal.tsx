@@ -45,7 +45,7 @@ export interface Props {
 
 const emptyOrder :OrderType = {
     id: undefined,
-    status: "",
+    status: "aberto",
     clientId: undefined,
     userId: undefined,
     shelfId: undefined,            
@@ -101,6 +101,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
     const [client, setClient] = useState<ClientType>({name: "", document: "", email: "", number: "", cep: "", info: ""})
 
     const [order, setOrder] = useState<OrderType>(emptyOrder)
+    const [statusDb, setStatusDb] = useState('')
 
     const [services, setArrayservices] = useState<ServiceOrderType[]>([])
     const [shelf, setShelf] = useState<string>()
@@ -146,6 +147,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
         client && setClient(client)
         services && setArrayservices(services)
         shelf && setShelf(shelf.type)
+        setStatusDb(allOrder.status || '')
 
         setContentLoading(false)
         
@@ -352,9 +354,15 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
             setLoading(false)
             return;
         } 
+
+        notification.push({ type: 'success', title: 'Sucesso!', description: `OS salva na prateleira: ${response?.shelfId}`, time: 4000 })
         
-        await orderHandle()
-        setLoading(false)
+        setTimeout(async()=> {
+
+            await orderHandle()
+            setLoading(false)
+
+        }, 500)
     }
 
     function clearModal() {
@@ -760,12 +768,11 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                     </div>
 
                                                     <DropDown.card isOpen={dropdownStatusService} close={()=>setDropdownStatusService(false)} className="top-10 left-9 w-44 h-40">
-                                                        <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "aguardando"})}} value={'Aguardando'}/>
                                                         <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "aprovado"})}} value={'Aprovado'}/>
-                                                        <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "reprovado"})}} value={'Reprovado'}/>
-                                                        {/* <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "finalizado"})}} value={'Finalizado'}/> */}
                                                         <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "aguardando peça"})}} value={'Aguardando peça'}/>
-                                                        <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "sem reparo"})}} value={'Sem reparo'}/>
+                                                        <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "aguardando"})}} value={'Aguardando'}/>
+                                                        <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "reparado"})}} value={'Reparado'}/>
+                                                        <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "reprovado"})}} value={'Reprovado'}/>
                                                         <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "sem solução"})}} value={'Sem solução'}/>
                                                     </DropDown.card>
 
@@ -773,7 +780,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
                                                     <input type="text" onChange={handleValue} value={newService.value ? newService.value : ''} className="col-span-2 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150" placeholder="Valor"/>
 
-                                                    <button onClick={()=>addServiceOrder()} className="flex w-fit ml-auto justify-center items-center bg-orange-500 text-white font-bold text-xs rounded-lg py-2 px-4 gap-2">
+                                                    <button onClick={()=> addServiceOrder()} className="flex w-fit ml-auto justify-center items-center bg-orange-500 text-white font-bold text-xs rounded-lg py-2 px-4 gap-2">
                                                         <PlusIcon className="h-4 w-4 fill-white"/>
                                                         Salvar
                                                     </button>
@@ -819,7 +826,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
                                         </div>
                                         
-                                        <div className="col-span-4 relative">
+                                        {/* <div className="col-span-4 relative">
                                             <div className="cursor-pointer" onClick={()=> setDropdownStatus(true)}>
                                                 <label className="block text-sm font-medium text-slate-500 ">Status</label>
                                                 <button type="button" className={`flex justify-between px-5 text-sm font-medium text-slate-600 rounded-lg w-full bg-gray-50 p-1 border-2 border-gray-300 outline-none focus:border-transparent focus:ring focus:ring-orange-400 hover:scale-y-105 duration-150 ${tryedToSave ? !order.status ? 'ring-2 ring-red-400' : 'ring-2 ring-green-200' : null}`}>
@@ -832,24 +839,25 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                             </div>
 
                                             <DropDown.card isOpen={dropdownStatus} close={()=>setDropdownStatus(false)} className="bottom-10">
-                                                {/* <DropDown.item onClick={()=>{setDropdownStatus(false); setOrder({...order, status: "aguardando"}))}} value={'aguardando'}/> */}
                                                 <DropDown.item onClick={()=>{setDropdownStatus(false); setOrder({...order, status: "aberto"})}} value={'aberto'}/>
-                                                {/* <DropDown.item onClick={()=>{setDropdownStatus(false); setOrder({...order, status: "reprovado"})}} value={'reprovado'}/> */}
                                                 <DropDown.item onClick={()=>{setDropdownStatus(false); setOrder({...order, status: "finalizado"})}} value={'finalizado'}/>
                                                 <DropDown.item onClick={()=>{setDropdownStatus(false); setOrder({...order, status: "arquivado", deliveryConfirmation: true})}} value={'arquivado'}/>
-                                                {/* <DropDown.item onClick={()=>{setDropdownStatus(false); setOrder({...order, status: "orçamento"})}} value={'orçamento'}/> */}
-                                                {/* <DropDown.item onClick={()=>{setDropdownStatus(false); setOrder({...order, status: "aguardando peça"})}} value={'aguardando peça'}/> */}
                                             </DropDown.card>
-
-                                        </div>
-
-                                        {/* <div className="col-span-5 flex items-end py-[2.1px]">
-                                            <div onClick={()=> setOrder({...order, deliveryConfirmation: !order.deliveryConfirmation})} className={`flex items-center ${order.deliveryConfirmation ? 'bg-orange-100' : 'bg-slate-100' } gap-1 px-1 py-2  rounded-lg w-full hover:scale-105 duration-150 cursor-pointer `}>
-                                                {order.deliveryConfirmation ? <CircleCheckIcon  width={20} height={20} fill={`#F06531`} />
-                                                        : <CircleIcon  width={20} height={20} fill={`#94a3b8`} />}
-                                                <label  className={`text-sm ${order.deliveryConfirmation ? 'text-orange-500' : 'text-slate-400' } font-semibold cursor-pointer`}>Confirmação de entrega</label>
-                                            </div>
                                         </div> */}
+
+                                        <div className="col-span-5 flex flex-col gap-1">
+                                            <label className="block text-sm font-medium text-slate-500">Status</label>
+                                            <div onClick={()=> setOrder({...order, status: 'finalizado'})} className={`flex items-center ${order.status == 'finalizado' ? 'bg-orange-100' : 'bg-slate-100' } gap-1 px-1 py-2  rounded-lg w-full hover:scale-110 duration-100 cursor-pointer`}>
+                                                {order.status == 'finalizado' ? <CircleCheckIcon  width={20} height={20} fill={`#F06531`} />
+                                                : <CircleIcon  width={20} height={20} fill={`#94a3b8`} />}
+                                                <label  className={`text-sm ${order.status == 'finalizado' ? 'text-orange-500' : 'text-slate-400' } font-semibold cursor-pointer`}>Finalizado</label>
+                                            </div>
+                                            <div onClick={()=> setOrder({...order, status: 'arquivado'})} className={`flex items-center ${order.status == 'arquivado' ? 'bg-orange-100' : 'bg-slate-100' } gap-1 px-1 py-2  rounded-lg w-full hover:scale-110 duration-100 cursor-pointer ${ statusDb != 'finalizado' ? 'hidden' : ''}`}>
+                                                {order.status == 'arquivado' ? <CircleCheckIcon  width={20} height={20} fill={`#F06531`} />
+                                                        : <CircleIcon  width={20} height={20} fill={`#94a3b8`} />}
+                                                <label  className={`text-sm ${order.status == 'arquivado' ? 'text-orange-500' : 'text-slate-400' } font-semibold cursor-pointer`}>Arquivado</label>
+                                            </div>
+                                        </div>
                                         
 
                                     </article>

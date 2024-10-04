@@ -112,7 +112,7 @@ const Prateleiras: NextPage = () => {
           <article className="flex w-full justify-between py-2">
 
             <div className="flex justify-center items-center">
-              <p className="text-3xl text-slate-600 font-semibold">Prateleiras</p>
+              <p className="text-3xl text-slate-600 font-semibold">Usuários</p>
             </div>
 
             <div className="flex gap-3">
