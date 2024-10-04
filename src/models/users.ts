@@ -23,13 +23,28 @@ function model() {
         const userDb = await prisma.users.findFirst({
             where: { 
                 id: idParam, 
+                AND: { NOT: { deleted: true } }
+            }
+        })
+        return userDb
+    }
+    const getUserByEmail = async(email: string) => {
+        const userDb = await prisma.users.findFirst({
+            where: { 
+                email: email, 
+                AND: { NOT: { deleted: true } }
             }
         })
         return userDb
     }
 
     const getAllUsers = async() => {
-        const userDb = await prisma.users.findMany({select: {id:true, name:true, email:true, role:true}})
+        const userDb = await prisma.users.findMany({
+            where: {
+                NOT: { deleted: true }
+            },
+            select: {id:true, name:true, email:true, role:true}
+        })
         return userDb
     }
 
@@ -52,6 +67,6 @@ function model() {
 
 
     // export all function that is in the return
-    return { createUser, upsert, getUserById, getAllUsers, deleteUser }
+    return { createUser, upsert, getUserById, getAllUsers, deleteUser, getUserByEmail }
 }
 export const Users = model();

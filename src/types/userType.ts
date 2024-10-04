@@ -4,6 +4,7 @@ export interface UserType {
     email: string;
     password: string;
     role: number
+    deleted?: boolean
 }
 
 export const EMPTY_USER = {
@@ -12,6 +13,7 @@ export const EMPTY_USER = {
     name: '',
     email: '',
     password: '',
-    role: 200
+    role: 200,
+    deleted: false
     
 }

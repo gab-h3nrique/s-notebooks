@@ -80,7 +80,14 @@ const Prateleiras: NextPage = () => {
 
       setLoading(true)
 
-      const { data } = await Api.delete('/api/auth/users', { id: userPage.id })
+      const formatedUser = {
+
+        ...userPage,
+        deleted: true
+
+      }
+
+      const { data } = await Api.post('/api/auth/users', { user: formatedUser })
 
       if(!data) return notification.push({ type: 'error', title: 'Atenção!', description: 'Falha ao salvar os dados.' })
 
@@ -106,14 +113,7 @@ const Prateleiras: NextPage = () => {
 
       setLoading(true)
 
-      const formatedUser = {
-
-        ...userPage,
-        password: password ? password : ''
-
-      }
-
-      const { data } = await Api.post('/api/auth/users', { user: formatedUser })
+      const { data } = await Api.post('/api/auth/users', { user: userPage, newPassword: password ? password : undefined })
 
       if(!data) return notification.push({ type: 'error', title: 'Atenção!', description: 'Falha ao salvar os dados.' })
 

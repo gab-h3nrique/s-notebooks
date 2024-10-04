@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { Users } from '../../../models/users'
+import bcrypt from 'bcrypt'
 
 // 200 OK
 // 201 Created
@@ -52,9 +53,13 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
         try {
 
-            const { user } = req.body
+            const { user, newPassword } = req.body
 
-            const data = Users.upsert(user)
+            let formatedUser = { ...user }
+
+            if(newPassword) formatedUser.password = await bcrypt.hash(newPassword, 2)
+
+            const data = Users.upsert(formatedUser)
 
             return res.status(201).json({ data, success: true })
 

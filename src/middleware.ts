@@ -3,7 +3,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Api from "../lib/api";
 import { verify } from '../lib/jwtToken';
-import { Users } from './models/users';
+// import { Users } from './models/users';
+// import { PrismaClient } from '@prisma/client/edge'
+
+// const prisma = new PrismaClient();
 
 export default async function middleware(req: NextRequest) {
 
@@ -28,14 +31,36 @@ export const config = {
 
 async function isAuthenticated(request: NextRequest):Promise<boolean> {
 
-    const authorization = request.headers.get('authorization') || request.cookies.get('auth') || '';
-    const token = <string>authorization.replace('Bearer ', '');
+    try {
 
-    if(!token) return false
+        const authorization = request.headers.get('authorization') || request.cookies.get('auth') || '';
+        const token = <string>authorization.replace('Bearer ', '');
+    
+        if(!token) return false
+    
+        const decodedToken = await verify(token, process.env.ACCESS_TOKEN as string)
+    
+        if(!decodedToken || !decodedToken.id) return false
 
-    const decodedToken = await verify(token, process.env.ACCESS_TOKEN as string)
+        // const user = await prisma.users.findFirst({
+        //     where: { 
+        //         id: decodedToken.id, 
+        //         AND: { NOT: { deleted: true } }
+        //     }
+        // })
+    
+        // // const user = await Users.getUserById(Number(decodedToken.id))
 
-    return decodedToken.id ? true : false;
+        // if(!user || !user.id) return false
+    
+        return decodedToken.id ? true : false;
+        
+    } catch (error) {
+
+        return false
+        
+    }
+
 
 }
 

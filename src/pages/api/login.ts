@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from "../../../db/prisma";
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt'
+import { Users } from '../../models/users';
 
 export default async function handler(req: NextApiRequest,res: NextApiResponse) {
 
@@ -15,9 +16,11 @@ export default async function handler(req: NextApiRequest,res: NextApiResponse) 
 
     try {
 
-        const userDb = await prisma.users.findUnique({
-            where: { email: email }
-        })
+        // const userDb = await prisma.users.findUnique({
+        //     where: { email: email }
+        // })
+
+        const userDb = await Users.getUserByEmail(email)
         
         if(!userDb)  return res.status(404).json({ message: 'email ou senha inválidos!' })
         
