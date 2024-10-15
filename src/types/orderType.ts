@@ -1,6 +1,7 @@
 import { ClientType } from "./clientType";
 
 export interface OrderType {
+    
     id?:number
     status: string;
 
@@ -34,4 +35,6 @@ export interface OrderType {
     deliveryConfirmation:boolean;
 
     value?:number;
+
+    updatedAt?: any
 }

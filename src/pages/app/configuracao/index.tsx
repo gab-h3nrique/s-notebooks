@@ -45,7 +45,7 @@ const Configuracao: NextPage = () => {
   useEffect(()=>{
 
     (async()=>{
-        setUserArray(await getUsers())
+      setUserArray(await getUsers())
     })()
 
   },[])
@@ -74,6 +74,14 @@ const Configuracao: NextPage = () => {
 
             <p className="text-xl text-slate-400 font-semibold ">Usuários</p>
             <p className="text-sm text-slate-400 font-semibold ">Configure os usuários do sistema</p>
+
+
+          </article>
+
+          <article onClick={()=>{Router.push('/app/configuracao/servicos')}} className='flex flex-col bg-white p-4 gap-3 rounded-lg cursor-pointer hover:scale-105 duration-150'>
+
+            <p className="text-xl text-slate-400 font-semibold ">Serviços</p>
+            <p className="text-sm text-slate-400 font-semibold ">Configure os serviços do sistema</p>
 
 
           </article>

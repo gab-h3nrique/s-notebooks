@@ -29,12 +29,12 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
         try {
 
-            const { name } = req.query
+            const { name, id } = req.query
 
             let services;
 
-            // if(name) orders = await Orders.getServiceByName(name)
-            if(!name) services = await Services.getAllServices()
+            if(id) services = await Services.getById(Number(id))
+            else if(!name) services = await Services.getAllServices()
 
             return res.status(201).json({ response: services })
 
@@ -42,6 +42,47 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
             console.error(error)
             return res.status(500).json({ message: error.message })
+            
+        }
+        
+
+    }
+
+    if(method === 'POST') {
+
+        try {
+
+            const { service } = req.body
+
+            console.log(service)
+
+            const data = Services.upsert(service)
+
+            return res.status(201).json({ data, success: true })
+
+        } catch(error:any) {
+
+            console.error(error)
+            return res.status(500).json({ message: error.message, success: false })
+            
+        }
+
+    }
+
+    if(method === 'DELETE') {
+
+        try {
+
+            const { id } = req.query
+
+            const data = Services.deleteService(Number(id))
+
+            return res.status(200).json({ data: data })
+
+        } catch(error:any) {
+
+            console.error(error)
+            return res.status(500).json({ message: error.message, success: false })
             
         }
 
