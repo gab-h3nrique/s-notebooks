@@ -6,7 +6,7 @@ import ReactDom from "react-dom";
 import Api from "../../../lib/api";
 import { ClientType } from "../../types/clientType";
 import { OrderType } from "../../types/orderType";
-import { ServiceType } from "../../types/serviceType";
+import { ServiceOrderType, ServiceType } from "../../types/serviceType";
 import { Shelf } from "../../types/shelf";
 import { UserType } from "../../types/userType";
 import CheckDouble from "../icons/CheckDouble";
@@ -71,14 +71,6 @@ const emptyOrder :OrderType = {
     value:0,
 }
 
-interface ServiceOrderType {
-    id?: number;
-    name: string;
-    status: string;
-    orderId?: number;
-    value: string;
-}
-
 const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
     const { user } = userContext()
@@ -108,7 +100,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
 
     const [serviceModal, setServiceModal] = useState(false)
-    const [newService, setNewService] = useState<ServiceOrderType>({id: undefined, name:"", status: "", orderId: undefined, value: ""})
+    const [newService, setNewService] = useState<ServiceOrderType>({id: undefined, name:"", status: "", type: 'serviço', orderId: undefined, value: ""})
     const [indexServiceOrder, setIndexServiceOrder] = useState<number>(-1)
 
     const [dropdownEquipament, setDropdownEquipament] = useState<boolean>(false)
@@ -185,7 +177,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
 
         if(serviceParam && index != -1) return setNewService(serviceParam)
         
-        setNewService({id: undefined, name:"", status: "", orderId: undefined, value: "0"})
+        setNewService({id: undefined, name:"", status: "", type: 'serviço', orderId: undefined, value: "0"})
 
     }
 
@@ -196,7 +188,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
         if(indexServiceOrder != -1) setArrayservices(services => services.map((e, i) => i == indexServiceOrder ? ({...newService}) : e))
         else setArrayservices(services => [...services, newService])
 
-        setNewService({id: undefined, name:"", status: "", orderId: undefined, value: "0"})
+        setNewService({id: undefined, name:"", status: "", type: 'serviço', orderId: undefined, value: "0"})
         setServiceModal(false)
 
     }
@@ -355,7 +347,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
             return;
         } 
 
-        notification.push({ type: 'success', title: 'Sucesso!', description: `OS salva na prateleira: ${response?.shelfId}`, time: 4000 })
+        notification.push({ type: 'success', title: 'Sucesso!', description: order.status != 'arquivado'?  `OS salva na prateleira: ${response?.shelfId}` : 'Os arquivada com sucesso!', time: 4000 })
         
         setTimeout(async()=> {
 
@@ -374,7 +366,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
         setContentLoading(true)
         setClient({name: "", document: "", email: "", number: "", cep: "", info: ""})
         setArrayservices([])
-        setNewService({id: undefined, name:"", status: "", orderId: undefined, value: "0"})
+        setNewService({id: undefined, name:"", status: "", type: 'serviço', orderId: undefined, value: "0"})
     }
 
     return (
@@ -757,6 +749,22 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                             })
                                                         }
                                                     </DropDown.card>
+
+                                                    <label className="font-bold text-xs text-slate-500">Tipo</label>
+
+                                                    <article className="flex justify-between gap-2">
+                                                        <div onClick={()=> setNewService({...newService, type: 'serviço'})} className={`flex items-center ${newService.type == 'serviço' ? 'bg-orange-100' : 'bg-slate-100' } gap-1 px-1 py-2  rounded-lg w-full hover:scale-110 duration-100 cursor-pointer `}>
+                                                            {newService.type == 'serviço' ? <CircleCheckIcon  width={20} height={20} fill={`#F06531`} />
+                                                                    : <CircleIcon  width={20} height={20} fill={`#94a3b8`} />}
+                                                            <label  className={`text-sm ${newService.type == 'serviço' ? 'text-orange-500' : 'text-slate-400' } font-semibold overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer`}>Serviço</label>
+                                                        </div>
+
+                                                        <div onClick={()=> setNewService({...newService, type: 'produto'})} className={`flex items-center ${newService.type == 'produto' ? 'bg-orange-100' : 'bg-slate-100' } gap-1 px-1 py-2  rounded-lg w-full hover:scale-110 duration-100 cursor-pointer `}>
+                                                            {newService.type == 'produto' ? <CircleCheckIcon  width={20} height={20} fill={`#F06531`} />
+                                                                    : <CircleIcon  width={20} height={20} fill={`#94a3b8`} />}
+                                                            <label  className={`text-sm ${newService.type == 'produto' ? 'text-orange-500' : 'text-slate-400' } font-semibold overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer`}>Produto</label>
+                                                        </div>
+                                                    </article>
                                                         
                                                     <label className="font-bold text-xs text-slate-500">Status</label>
 
@@ -767,7 +775,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                         </svg>
                                                     </div>
 
-                                                    <DropDown.card isOpen={dropdownStatusService} close={()=>setDropdownStatusService(false)} className="top-10 left-9 w-44 h-40">
+                                                    <DropDown.card isOpen={dropdownStatusService} close={()=>setDropdownStatusService(false)} className="top-[6rem] left-[4rem] w-44 h-40">
                                                         <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "aprovado"})}} value={'Aprovado'}/>
                                                         <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "aguardando peça"})}} value={'Aguardando peça'}/>
                                                         <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "aguardando"})}} value={'Aguardando'}/>
@@ -775,6 +783,8 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                                         <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "reprovado"})}} value={'Reprovado'}/>
                                                         <DropDown.item onClick={()=>{setDropdownStatusService(false); setNewService({...newService, status: "sem solução"})}} value={'Sem solução'}/>
                                                     </DropDown.card>
+
+
 
                                                     <label className="font-bold text-xs text-slate-500">Valor</label>
 

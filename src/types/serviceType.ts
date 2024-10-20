@@ -6,6 +6,7 @@ export interface ServiceOrderType {
   id?: number;
   name: string;
   status: string;
+  type: string;
   orderId?: number;
   value: any;
 }
