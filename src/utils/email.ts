@@ -5,7 +5,7 @@ import { ServiceOrderType, ServiceType } from "../types/serviceType";
 
 export function emailObject(order: OrderType, client: ClientType, services: ServiceOrderType[] | undefined): any {
 
-    const filtered = services?.filter(e => e.status == 'reparado')
+    const filtered = services?.filter(e => e.status != 'reprovado' && e.status != 'sem solução')
 
     const body = (`
         <p>Olá ${client.name} o status do seu atendimento é <b>${order.status}</b></p>
@@ -15,7 +15,7 @@ export function emailObject(order: OrderType, client: ClientType, services: Serv
                 services?.map(e=>
                      (`
                     <li>
-                        ${e.name}  ${ e.status == 'reparado' ? e.value.toLocaleString("pt-BR", { minimumFractionDigits: 2 , style: 'currency', currency: 'BRL' }) : ''} <b>${e.status}</b>
+                        ${e.name}  ${ e.status != 'reprovado' && e.status != 'sem solução' ? e.value.toLocaleString("pt-BR", { minimumFractionDigits: 2 , style: 'currency', currency: 'BRL' }) : ''} <b>${e.status}</b>
                     </li>
                 `)) 
             }

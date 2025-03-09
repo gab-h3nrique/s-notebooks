@@ -37,12 +37,7 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
             const subject: string = req.body.subject
             const html: string = req.body.html
 
-
-            // email.send('gabrielbielrique10@gmail.com', subject, html)
-
-            const info = await email.send({to: 'gabrielbielrique10@gmail.com', subject: subject, html: html})
-
-            console.log('info: ', info)
+            const info = await email.send({to: to, subject: subject, html: html})
 
             return res.status(201).json({ success: true })
             
