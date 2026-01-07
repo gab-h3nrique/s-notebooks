@@ -67,6 +67,6 @@ function model() {
 
 
     // export all function that is in the return
-    return { createUser, upsert, getUserById, getAllUsers, deleteUser, getUserByEmail }
+    return { query: prisma.users, createUser, upsert, getUserById, getAllUsers, deleteUser, getUserByEmail }
 }
 export const Users = model();

@@ -865,7 +865,7 @@ const NewOrderModal = ({isOpen, onClose, id, orderHandle}:Props) => {
                                             <div onClick={()=> setOrder({...order, status: order.status == 'arquivado' ? 'finalizado' : 'arquivado'})} className={`flex items-center ${order.status == 'arquivado' ? 'bg-orange-100' : 'bg-slate-100' } gap-1 px-1 py-2  rounded-lg w-full hover:scale-110 duration-100 cursor-pointer ${ statusDb != 'finalizado' ? 'hidden' : ''}`}>
                                                 {order.status == 'arquivado' ? <CircleCheckIcon  width={20} height={20} fill={`#F06531`} />
                                                         : <CircleIcon  width={20} height={20} fill={`#94a3b8`} />}
-                                                <label  className={`text-sm ${order.status == 'arquivado' ? 'text-orange-500' : 'text-slate-400' } font-semibold cursor-pointer`}>Arquivado {creationTime(order.updatedAt)}</label>
+                                                <label  className={`text-sm ${order.status == 'arquivado' ? 'text-orange-500' : 'text-slate-400' } font-semibold cursor-pointer`}>Arquivado { order.status == 'arquivado' ? creationTime(order.updatedAt) : ''}</label>
                                             </div>
                                             <div className={`flex items-center bg-slate-100 gap-1 px-1 py-2  rounded-lg w-full hover:scale-110 duration-100 cursor-pointer ${ statusDb != 'arquivado' ? 'hidden' : ''}`}>
                                                 <label  className={`text-sm text-slate-400 font-semibold cursor-pointer`}>Arquivado {creationTime(order.updatedAt)}</label>
