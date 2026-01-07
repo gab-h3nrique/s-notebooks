@@ -39,7 +39,13 @@ export default async function handler( req: NextApiRequest,res: NextApiResponse<
 
 
 
-            const LIST = response?.map(e => ({...e, password: bcrypt.}))
+            const LIST = response?.map(e => {
+
+                const { password, ...rest } = e
+
+                return { ...rest }
+
+            }) as any[]
 
             return res.status(200).json(LIST)
 
